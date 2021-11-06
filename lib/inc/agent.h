@@ -27,6 +27,7 @@
 #include <memory>
 #include <Eigen/Dense>
 
+
 class Agent
 {
 
@@ -44,6 +45,13 @@ public:
      * Destructor
      */
     virtual ~Agent();
+
+    /**
+     * Compute agent's motion after specific time.
+     * @param time Time in second
+     * @return Pair of position and speed.
+     */
+    std::pair<Eigen::Vector2d, Eigen::Vector2d> computeMotion(double time) const;
 
     /**
      * Get the agent's id.
@@ -87,14 +95,26 @@ public:
      */
     void setVelocity(const Eigen::Vector2d &velocity);
 
+    /**
+     * Get agent's acceleration m/s^2
+     * @return Acceleration
+     */
+    Eigen::Vector2d getAcceleration() const;
+
+    /**
+     * Set agent's acceleration m/s^2.
+     * @param Acceleration
+     */
+    void setAcceleration(const Eigen::Vector2d& acceleration);
+
 private:
 
     unsigned int m_id;
     double m_radius;
     Eigen::Vector2d m_position;
     Eigen::Vector2d m_velocity;
+    Eigen::Vector2d m_acceleration;
     double m_maxVelocity;
-    double m_acceleration;
     double m_maxAcceleration;
 };
 

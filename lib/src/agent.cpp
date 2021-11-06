@@ -28,7 +28,7 @@ std::shared_ptr<Agent> Agent::createAgent(unsigned int id)
     return std::shared_ptr<Agent>(new Agent(id));
 }
 
-Agent::Agent(unsigned int id) : m_id(id), m_radius(0.0), m_velocity(Eigen::Vector2d(0.0, 0.0))
+Agent::Agent(unsigned int id) : m_id(id), m_radius(0.0), m_velocity(Eigen::Vector2d(0.0, 0.0)), m_acceleration(Eigen::Vector2d(0.0, 0.0))
 {
 
 }
@@ -36,6 +36,14 @@ Agent::Agent(unsigned int id) : m_id(id), m_radius(0.0), m_velocity(Eigen::Vecto
 Agent::~Agent()
 {
 
+}
+
+std::pair<Eigen::Vector2d, Eigen::Vector2d> Agent::computeMotion(double time) const
+{
+    auto newSpeed = getVelocity() + getAcceleration()*time;
+    auto relevantSpeed = getVelocity() + getAcceleration()*time / 2.0;
+    auto newPos = getPosition() + relevantSpeed * time;
+    return {newPos, newSpeed};
 }
 
 unsigned int Agent::id() const
@@ -71,4 +79,14 @@ Eigen::Vector2d Agent::getVelocity() const
 void Agent::setVelocity(const Eigen::Vector2d &velocity)
 {
     m_velocity = velocity;
+}
+
+Eigen::Vector2d Agent::getAcceleration() const
+{
+    return m_acceleration;
+}
+
+void Agent::setAcceleration(const Eigen::Vector2d& acceleration)
+{
+    m_acceleration = acceleration;
 }
