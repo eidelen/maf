@@ -21,6 +21,8 @@
 **
 *****************************************************************************/
 
+#include <iostream>
+
 #include "agent.h"
 
 std::shared_ptr<Agent> Agent::createAgent(unsigned int id)
@@ -41,7 +43,7 @@ Agent::~Agent()
 std::pair<Eigen::Vector2d, Eigen::Vector2d> Agent::computeMotion(double time) const
 {
     auto newSpeed = getVelocity() + getAcceleration()*time;
-    auto relevantSpeed = getVelocity() + getAcceleration()*time / 2.0;
+    auto relevantSpeed = (getVelocity() + newSpeed)/2.0;
     auto newPos = getPosition() + relevantSpeed * time;
     return {newPos, newSpeed};
 }
