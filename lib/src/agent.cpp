@@ -43,6 +43,10 @@ Agent::~Agent()
 std::pair<Eigen::Vector2d, Eigen::Vector2d> Agent::computeMotion(double time) const
 {
     auto newSpeed = getVelocity() + getAcceleration()*time;
+
+    std::cout << "dbg vel: " << getVelocity().transpose() << std::endl;
+    std::cout << "dbg vel add: " << (getVelocity() + newSpeed).transpose() << std::endl;
+
     auto relevantSpeed = (getVelocity() + newSpeed)/2.0;
     auto newPos = getPosition() + relevantSpeed * time;
 
