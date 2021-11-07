@@ -30,6 +30,10 @@
 #include "environment.h"
 
 
+/**
+ * @brief The Agent class is a base class implementing basic physical
+ * laws, such as motion, and basic interaction with the environment.
+ */
 class Agent
 {
 
@@ -145,6 +149,30 @@ private:
     double m_maxAcceleration;
 
     std::shared_ptr<Environment> m_environment;
+};
+
+
+/**
+ * @brief The AgentFactory class is the base class for further
+ * derived Agent classes.
+ */
+class AgentFactory
+{
+public:
+    AgentFactory() : m_cnt(0) {}
+    virtual ~AgentFactory() {}
+
+    /**
+     * Overwrite function for specific agent.
+     * @return Generic Agent.
+     */
+    virtual std::shared_ptr<Agent> createAgent()
+    {
+        return Agent::createAgent(m_cnt++);
+    }
+
+private:
+    unsigned int m_cnt;
 };
 
 

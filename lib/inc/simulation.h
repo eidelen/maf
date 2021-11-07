@@ -26,6 +26,8 @@
 
 #include <memory>
 
+#include "agent.h"
+#include "environment.h"
 
 class Simulation
 {
@@ -34,7 +36,15 @@ public:
 
     static std::shared_ptr<Simulation> createSimulation(unsigned int id);
 
+    /**
+     * Constructor for simulation.
+     * @param id Simulation id.
+     */
     Simulation(unsigned int id);
+
+    /**
+     * Destructor.
+     */
     virtual ~Simulation();
 
     /**
@@ -44,13 +54,33 @@ public:
     unsigned int id() const;
 
     /**
-     * Update the simulation by a specific time step.
-     * @param t Time step in ms.
+     * Get the agent factory.
+     * @return Agent factory
      */
-    void doStep(double t);
+    std::shared_ptr<AgentFactory> agentFactory() const;
+
+    /**
+     * Sets the agent factory.
+     * @param agentFactory An agent factory.
+     */
+    void setAgentFactory(const std::shared_ptr<AgentFactory> &agentFactory);
+
+    /**
+     * Get the environment factory.
+     * @return Environment factory.
+     */
+    std::shared_ptr<EnvironmentFactory> environmentFactory() const;
+
+    /**
+     * Sets the environment factory.
+     * @param environmentFactory Environment factory.
+     */
+    void setEnvironmentFactory(const std::shared_ptr<EnvironmentFactory> &environmentFactory);
 
 private:
     unsigned int m_id;
+    std::shared_ptr<AgentFactory> m_agentFactory;
+    std::shared_ptr<EnvironmentFactory> m_environmentFactory;
 };
 
 

@@ -43,9 +43,26 @@ unsigned int Simulation::id() const
     return m_id;
 }
 
-void Simulation::doStep(double t)
+std::shared_ptr<AgentFactory> Simulation::agentFactory() const
 {
-
+    return m_agentFactory;
 }
+
+void Simulation::setAgentFactory(const std::shared_ptr<AgentFactory> &agentFactory)
+{
+    m_agentFactory = agentFactory;
+}
+
+std::shared_ptr<EnvironmentFactory> Simulation::environmentFactory() const
+{
+    return m_environmentFactory;
+}
+
+void Simulation::setEnvironmentFactory(const std::shared_ptr<EnvironmentFactory> &environmentFactory)
+{
+    m_environmentFactory = environmentFactory;
+}
+
+
 
 

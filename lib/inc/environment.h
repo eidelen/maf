@@ -27,6 +27,10 @@
 #include <memory>
 #include <Eigen/Dense>
 
+/**
+ * @brief The Environment class is base class representing the agent's
+ * environment, respectiveley an interface.
+ */
 class Environment
 {
 
@@ -65,6 +69,30 @@ public:
 private:
 
     unsigned int m_id;
+};
+
+
+/**
+ * @brief The EnvironmentFactory class is the base class for further
+ * derived Environment classes.
+ */
+class EnvironmentFactory
+{
+public:
+    EnvironmentFactory() : m_cnt(0) {}
+    virtual ~EnvironmentFactory() {}
+
+    /**
+     * Overwrite function for specific environment.
+     * @return Generic Environment.
+     */
+    virtual std::shared_ptr<Environment> createEnvironment()
+    {
+        return Environment::createEnvironment(m_cnt++);
+    }
+
+private:
+    unsigned int m_cnt;
 };
 
 

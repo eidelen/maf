@@ -49,3 +49,4 @@ std::pair<bool, Eigen::Vector2d> Environment::possibleMove(const Eigen::Vector2d
 {
     return {true, destination};
 }
+
