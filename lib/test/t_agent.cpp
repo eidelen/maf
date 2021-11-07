@@ -69,6 +69,8 @@ TEST(Agent, AccelerationMotion)
     a->setVelocity(Eigen::Vector2d(0.0, 0.0));
     a->setPosition(Eigen::Vector2d(0.0, 0.0));
     auto [p0, v0] = a->computeMotion(1.0);
+    std::cout << "p0: " << p0.transpose() << std::endl;
+    std::cout << "v1: " << v0.transpose() << std::endl;
     ASSERT_TRUE((p0 - Eigen::Vector2d(1.0, 2.0)).isMuchSmallerThan(0.0001));
     ASSERT_TRUE((v0 - Eigen::Vector2d(2.0, 4.0)).isMuchSmallerThan(0.0001));
     auto [p1, v1] = a->computeMotion(2.0);
@@ -83,6 +85,4 @@ TEST(Agent, AccelerationMotion)
     ASSERT_TRUE((p3 - Eigen::Vector2d(2.0, 4.0)).isMuchSmallerThan(0.0001));
     ASSERT_TRUE((v3 - Eigen::Vector2d(3.0, 6.0)).isMuchSmallerThan(0.0001));
 }
-
-
 
