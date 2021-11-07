@@ -54,11 +54,12 @@ public:
     /**
      * Check if move is possible within environment. This function needs
      * to be overwritten in a derived Environment class.
-     * @param move The planned position.
+     * @param origin Original position.
+     * @param destination Target position.
      * @return Is move possible? When true, second result is usually the planned move
-     * position. If false, the closest possible position is returnd.
+     * position. If false, the closest possible position can returnd.
      */
-    virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& move) const;
+    virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const;
 
 
 private:

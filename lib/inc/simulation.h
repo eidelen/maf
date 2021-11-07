@@ -24,20 +24,33 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
+#include <memory>
+
 
 class Simulation
 {
 
 public:
 
-    Simulation();
+    static std::shared_ptr<Simulation> createSimulation(unsigned int id);
+
+    Simulation(unsigned int id);
     virtual ~Simulation();
+
+    /**
+     * Get Simulation id.
+     * @return Id.
+     */
+    unsigned int id() const;
 
     /**
      * Update the simulation by a specific time step.
      * @param t Time step in ms.
      */
     void doStep(double t);
+
+private:
+    unsigned int m_id;
 };
 
 

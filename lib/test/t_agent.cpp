@@ -84,3 +84,93 @@ TEST(Agent, AccelerationMotion)
     ASSERT_TRUE((v3 - Eigen::Vector2d(3.0, 6.0)).isMuchSmallerThan(0.0001));
 }
 
+TEST(Agent, SetEnvironment)
+{
+    auto a = Agent::createAgent(5);
+
+    ASSERT_FALSE(a->hasEnvironment());
+
+    auto e = Environment::createEnvironment(9);
+    a->setEnvironment(e);
+
+    ASSERT_TRUE(a->hasEnvironment());
+    ASSERT_EQ(a->getEnvironment()->id(), 9);
+}
+
+TEST(Agent, MoveStandardImpl)
+{
+    auto a = Agent::createAgent(5);
+    auto e = Environment::createEnvironment(9);
+    a->setEnvironment(e);
+
+    // nothing happens
+    a->setAcceleration(Eigen::Vector2d(0.0, 0.0));
+    a->setVelocity(Eigen::Vector2d(0.0, 0.0));
+    a->setPosition(Eigen::Vector2d(0.0, 0.0));
+    a->move(1.0);
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
+
+    a->setAcceleration(Eigen::Vector2d(1.0, 2.0));
+    a->setVelocity(Eigen::Vector2d(0.0, 0.0));
+    a->setPosition(Eigen::Vector2d(0.0, 0.0));
+    a->move(0.0);
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
+
+    // acceleration
+    a->setAcceleration(Eigen::Vector2d(1.0, 2.0));
+    a->setVelocity(Eigen::Vector2d(0.0, 0.0));
+    a->setPosition(Eigen::Vector2d(0.0, 0.0));
+    a->move(1.0);
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(1.0, 2.0)).isMuchSmallerThan(0.0001));
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(0.5, 1.0)).isMuchSmallerThan(0.0001));
+    a->move(1.0);
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(2.0, 4.0)).isMuchSmallerThan(0.0001));
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(2.0, 4.0)).isMuchSmallerThan(0.0001));
+
+    // negative acceleration
+    a->setAcceleration(Eigen::Vector2d(-1.0, -2.0));
+    a->move(2.0);
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
+}
+
+
+class CircEnv: public Environment
+{
+public:
+    CircEnv(unsigned int id): Environment(id) {}
+    virtual ~CircEnv() {}
+    virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override
+    {
+        // Circular environmet with radius 10. If move not possible, return
+        // previous position.
+        double radius = 10.0;
+        if(destination.norm() < radius)
+            return {true, destination};
+        else
+            return {false, origin};
+    }
+
+};
+
+TEST(Agent, MoveSpecialEnv)
+{
+    auto a = Agent::createAgent(5);
+    auto e = std::shared_ptr<CircEnv>(new CircEnv(3));
+    a->setEnvironment(e);
+
+    a->setVelocity(Eigen::Vector2d(10.0, 0.0));
+    a->setAcceleration(Eigen::Vector2d(0.0, 0.0));
+    a->setPosition(Eigen::Vector2d(0.0, 0.0));
+
+    // ok
+    a->move(0.9);
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(9.0, 0.0)).isMuchSmallerThan(0.0001));
+    a->move(0.05);
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(9.5, 0.0)).isMuchSmallerThan(0.0001));
+
+    // not ok anymore -> position not changes
+    a->move(0.1);
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(9.5, 0.0)).isMuchSmallerThan(0.0001));
+}

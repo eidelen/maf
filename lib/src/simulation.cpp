@@ -21,9 +21,14 @@
 **
 *****************************************************************************/
 
-#include <simulation.h>
+#include "simulation.h"
 
-Simulation::Simulation()
+std::shared_ptr<Simulation> Simulation::createSimulation(unsigned int id)
+{
+    return std::shared_ptr<Simulation>(new Simulation(id));
+}
+
+Simulation::Simulation(unsigned int id): m_id(id)
 {
 
 }
@@ -31,6 +36,11 @@ Simulation::Simulation()
 Simulation::~Simulation()
 {
 
+}
+
+unsigned int Simulation::id() const
+{
+    return m_id;
 }
 
 void Simulation::doStep(double t)

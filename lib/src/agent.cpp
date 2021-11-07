@@ -92,3 +92,28 @@ void Agent::setAcceleration(const Eigen::Vector2d& acceleration)
 {
     m_acceleration = acceleration;
 }
+
+void Agent::setEnvironment(std::shared_ptr<Environment> env)
+{
+    m_environment = env;
+}
+
+std::shared_ptr<Environment> Agent::getEnvironment() const
+{
+    return m_environment;
+}
+
+bool Agent::hasEnvironment() const
+{
+    return m_environment.get() != nullptr;
+}
+
+void Agent::move(double time)
+{
+    // A very basic implementation how an agent moves.
+    auto[p, v] = computeMotion(time);
+    auto[possible, finalPos] = getEnvironment()->possibleMove(getPosition(), p);
+
+    setPosition(finalPos);
+    setVelocity(possible ? v : getVelocity()); // only update velocity when motion was possible
+}

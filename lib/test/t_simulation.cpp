@@ -3,10 +3,10 @@
 
 #include "simulation.h"
 
-TEST(Simulation, TimeElapsed)
+TEST(Simulation, Id)
 {
-    auto s = new Simulation();    
-    delete s;
+    auto s = Simulation::createSimulation(4);
+    ASSERT_EQ(s->id(), 4);
 }
 
 

@@ -45,7 +45,7 @@ unsigned int Environment::id() const
     return m_id;
 }
 
-std::pair<bool, Eigen::Vector2d> Environment::possibleMove(const Eigen::Vector2d& move) const
+std::pair<bool, Eigen::Vector2d> Environment::possibleMove(const Eigen::Vector2d& /*origin*/, const Eigen::Vector2d& destination) const
 {
-    return {true, move};
+    return {true, destination};
 }

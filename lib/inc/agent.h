@@ -27,6 +27,8 @@
 #include <memory>
 #include <Eigen/Dense>
 
+#include "environment.h"
+
 
 class Agent
 {
@@ -107,6 +109,31 @@ public:
      */
     void setAcceleration(const Eigen::Vector2d& acceleration);
 
+    /**
+     * Set the agent's environment.
+     * @param env Environment.
+     */
+    void setEnvironment(std::shared_ptr<Environment> env);
+
+    /**
+     * Get the agent's environment.
+     * @return Environment.
+     */
+    std::shared_ptr<Environment> getEnvironment() const;
+
+    /**
+     * Checks if the agent has an environment.
+     * @return True or false.
+     */
+    bool hasEnvironment() const;
+
+    /**
+     * Move the agent within the environment for a given time step.
+     * Overwrite with specific agent behavior.
+     * @param time Time step in s.
+     */
+    virtual void move(double time);
+
 private:
 
     unsigned int m_id;
@@ -116,6 +143,8 @@ private:
     Eigen::Vector2d m_acceleration;
     double m_maxVelocity;
     double m_maxAcceleration;
+
+    std::shared_ptr<Environment> m_environment;
 };
 
 
