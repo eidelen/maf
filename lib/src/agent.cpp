@@ -45,6 +45,13 @@ std::pair<Eigen::Vector2d, Eigen::Vector2d> Agent::computeMotion(double time) co
     auto newSpeed = getVelocity() + getAcceleration()*time;
     auto relevantSpeed = (getVelocity() + newSpeed)/2.0;
     auto newPos = getPosition() + relevantSpeed * time;
+
+    std::cout << "newSpeed: " << newSpeed.transpose() << std::endl;
+    std::cout << "relevantSpeed: " << relevantSpeed.transpose() << std::endl;
+    std::cout << "acceleration: " << getAcceleration().transpose() << std::endl;
+    std::cout << "oldSpeed: " << getVelocity().transpose() << std::endl;
+    std::cout << "oldPos: " << getPosition().transpose() << std::endl;
+
     return {newPos, newSpeed};
 }
 
