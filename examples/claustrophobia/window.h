@@ -27,6 +27,8 @@
 
 #include <QWidget>
 
+#include "clsimulation.h"
+
 class Window : public QWidget
 {
 Q_OBJECT
@@ -34,6 +36,8 @@ Q_OBJECT
 public:
     Window();
 
+private:
+    std::shared_ptr<HumanoidAgentQtSim> m_hSim;
 };
 
 

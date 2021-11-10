@@ -36,6 +36,12 @@ Window::Window()
 
     GLWidget *openGL = new GLWidget(this);
 
+    // create simulation and pass and instance to GL_Widget
+    double timeStep = 0.01; //10ms
+    m_hSim = std::shared_ptr<HumanoidAgentQtSim>(new HumanoidAgentQtSim());
+    m_hSim->setTimeStep(timeStep);
+    openGL->setQtSimulation(m_hSim);
+
     QPushButton* nextEpochBtn = new QPushButton("New Epoch");
     QPushButton* nextTrackBtn = new QPushButton("Next");
     QPushButton* saveBtn = new QPushButton("Save");
@@ -65,7 +71,7 @@ Window::Window()
 
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, openGL, &GLWidget::animate);
-    timer->start(10);
+    timer->start(static_cast<int>(timeStep*1000));
 
     connect(nextEpochBtn, SIGNAL (released()),openGL, SLOT (doNewEpoch()));
     connect(nextTrackBtn, SIGNAL (released()),openGL, SLOT (nextTrack()));
