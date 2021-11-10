@@ -25,6 +25,7 @@
 #define SIMULATION_H
 
 #include <memory>
+#include <list>
 
 #include "agent.h"
 #include "environment.h"
@@ -77,10 +78,40 @@ public:
      */
     void setEnvironmentFactory(const std::shared_ptr<EnvironmentFactory> &environmentFactory);
 
+    /**
+     * Inits the environment. No agents added yet.
+     */
+    void initEnvironment();
+
+    /**
+     * Creates and adds an agent.
+     */
+    void addAgent();
+
+    /**
+     * Run the simulation for specific time.
+     * @param time Time in seconds.
+     */
+    void doTimeStep(double time);
+
+    /**
+     * Get a handle to all agents in the simulation.
+     * @return List of agents.
+     */
+    std::list<std::shared_ptr<Agent>>& getAgents();
+
+    /**
+     * Get the environment.
+     * @return Environment
+     */
+    std::shared_ptr<Environment> getEnvironment();
+
 private:
     unsigned int m_id;
     std::shared_ptr<AgentFactory> m_agentFactory;
     std::shared_ptr<EnvironmentFactory> m_environmentFactory;
+    std::shared_ptr<Environment> m_environment;
+    std::list<std::shared_ptr<Agent>> m_agents;
 };
 
 

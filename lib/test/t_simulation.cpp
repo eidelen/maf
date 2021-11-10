@@ -23,4 +23,120 @@ TEST(Simulation, Factories)
     ASSERT_TRUE(s->environmentFactory().get() != nullptr);
 }
 
+TEST(Simulation, InitEnvAgent)
+{
+    auto s = Simulation::createSimulation(4);
+    s->setAgentFactory(std::shared_ptr<AgentFactory>(new AgentFactory()));
+    s->setEnvironmentFactory(std::shared_ptr<EnvironmentFactory>(new EnvironmentFactory()));
+
+    ASSERT_FALSE(s->getEnvironment().get() != nullptr);
+    ASSERT_EQ(s->getAgents().size(), 0);
+
+    s->initEnvironment();
+    s->addAgent();
+
+    ASSERT_TRUE(s->getEnvironment().get() != nullptr);
+    ASSERT_EQ(s->getAgents().size(), 1);
+}
+
+class CircEnv: public Environment
+{
+public:
+    CircEnv(unsigned int id): Environment(id) {}
+    virtual ~CircEnv() {}
+    virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override
+    {
+        // Circular environmet with radius 10. If move not possible, return
+        // previous position.
+        double radius = 10.0;
+        if(destination.norm() < radius)
+            return {true, destination};
+        else
+            return {false, origin};
+    }
+};
+
+class CircEnvFactory: public EnvironmentFactory
+{
+public:
+    CircEnvFactory(): EnvironmentFactory() {}
+    virtual ~CircEnvFactory() {}
+
+    virtual std::shared_ptr<Environment> createEnvironment() override
+    {
+        return std::shared_ptr<CircEnv>(new CircEnv(99));
+    }
+};
+
+class MyBoringAgent: public Agent
+{
+public:
+    MyBoringAgent(unsigned int k): Agent(k)
+    {
+        setPosition(Eigen::Vector2d(0.0, 0.0));
+        setVelocity(Eigen::Vector2d(1.0, 0.0));
+    }
+    virtual ~MyBoringAgent() {}
+};
+
+class MyBoringAgentFactory: public AgentFactory
+{
+public:
+    MyBoringAgentFactory(): AgentFactory() {}
+    virtual ~MyBoringAgentFactory() {}
+    std::shared_ptr<Agent> createAgent() override
+    {
+        return std::shared_ptr<MyBoringAgent>(new MyBoringAgent(m_k++));
+    }
+    unsigned int m_k = 0;
+};
+
+TEST(Simulation, TestBaseSimulation)
+{
+    auto s = Simulation::createSimulation(4);
+    s->setAgentFactory(std::shared_ptr<MyBoringAgentFactory>(new MyBoringAgentFactory()));
+    s->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
+
+    s->initEnvironment();
+    s->addAgent();
+    s->addAgent();
+
+    ASSERT_TRUE(s->getEnvironment().get() != nullptr);
+    ASSERT_EQ(s->getAgents().size(), 2);
+
+    // MyBoringAgent is created a position 0,0 and moves with 1m/s in x-axis direction
+
+    // Time zero -> velocity 1, pos 0,0
+    auto myAgents = s->getAgents();
+    std::for_each(myAgents.begin(), myAgents.end(), [](std::shared_ptr<Agent>& a){
+        ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
+        ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
+    });
+
+    // Time 2s -> velocity 1, pos 2,0
+    s->doTimeStep(2.0);
+    auto myAgents1 = s->getAgents();
+    std::for_each(myAgents1.begin(), myAgents1.end(), [](std::shared_ptr<Agent>& a){
+        ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(2.0, 0.0)).isMuchSmallerThan(0.0001));
+        ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
+    });
+
+    // Time 5s -> velocity 1, pos 3,0
+    s->doTimeStep(3.0);
+    auto myAgents2 = s->getAgents();
+    std::for_each(myAgents2.begin(), myAgents2.end(), [](std::shared_ptr<Agent>& a){
+        ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(5.0, 0.0)).isMuchSmallerThan(0.0001));
+        ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
+    });
+
+    // Time 11s -> outside, not possible. Position stays as before
+    s->doTimeStep(6.0);
+    auto myAgents3 = s->getAgents();
+    std::for_each(myAgents3.begin(), myAgents3.end(), [](std::shared_ptr<Agent>& a){
+        ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(5.0, 0.0)).isMuchSmallerThan(0.0001));
+        ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
+    });
+
+}
+
 
