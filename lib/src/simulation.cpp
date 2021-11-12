@@ -97,4 +97,19 @@ std::shared_ptr<Environment> Simulation::getEnvironment()
     return m_environment;
 }
 
+std::pair<std::vector<unsigned int>, Eigen::MatrixXd> Simulation::getAgentDistanceMap()
+{
+    return m_agentDistanceMap;
+}
+
+void Simulation::computeDistanceMap()
+{
+
+}
+
+Eigen::Vector2d Simulation::computeDistance(const std::shared_ptr<Agent> &a, const std::shared_ptr<Agent> &b)
+{
+    return b->getPosition() - a->getPosition();
+}
+
 

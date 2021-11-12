@@ -106,12 +106,34 @@ public:
      */
     std::shared_ptr<Environment> getEnvironment();
 
+    /**
+     * Get the agents distance map.
+     * @return pair of a vector, which assigns the agent ids to the matrix row, and
+     * a matrix with distances between each agent to each other agent.
+     */
+    std::pair<std::vector<unsigned int>, Eigen::MatrixXd> getAgentDistanceMap();
+
+    /**
+     * Compute the distances between each agent to each other agent. The
+     * distance map can be accessed with getAgentDistanceMap().
+     */
+    void computeDistanceMap();
+
+    /**
+     * Compute the distance vector between two agents;
+     * @param a Agent 1
+     * @param b Agent 2
+     * @return Distance vector.
+     */
+    static Eigen::Vector2d computeDistance(const std::shared_ptr<Agent>& a, const std::shared_ptr<Agent>& b);
+
 private:
     unsigned int m_id;
     std::shared_ptr<AgentFactory> m_agentFactory;
     std::shared_ptr<EnvironmentFactory> m_environmentFactory;
     std::shared_ptr<Environment> m_environment;
     std::list<std::shared_ptr<Agent>> m_agents;
+    std::pair<std::vector<unsigned int>, Eigen::MatrixXd> m_agentDistanceMap;
 };
 
 
