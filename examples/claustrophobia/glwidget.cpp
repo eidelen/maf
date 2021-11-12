@@ -28,14 +28,22 @@
 #include <QPaintEvent>
 #include <QRgb>
 
+#include <iostream>
+
 GLWidget::GLWidget(QWidget *parent): QOpenGLWidget(parent)
 {
     setFixedSize(1200, 800);
     setAutoFillBackground(false);
 }
 
+void GLWidget::setQtSimulation(std::shared_ptr<HumanoidAgentQtSim> sim)
+{
+    m_sim = sim;
+}
+
 void GLWidget::animate()
 {
+    m_sim->update();
     update();
 }
 
@@ -54,6 +62,8 @@ void GLWidget::paintEvent(QPaintEvent *event)
     painter.setFont(font);
     painter.setPen(QColor(255,255,255));
     painter.drawText(QPoint(100,100), "Yeahh");
+
+    m_sim->drawSim(painter);
 
     painter.end();
 }

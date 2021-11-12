@@ -21,16 +21,13 @@
 **
 *****************************************************************************/
 
-
 #ifndef MAFCL_GLWIDGET_H
 #define MAFCL_GLWIDGET_H
 
-
 #include <QOpenGLWidget>
 #include <QTime>
-#include <vector>
 
-class Helper;
+#include "clsimulation.h"
 
 class GLWidget : public QOpenGLWidget
 {
@@ -38,12 +35,16 @@ Q_OBJECT
 
 public:
     GLWidget(QWidget *parent);
+    void setQtSimulation(std::shared_ptr<HumanoidAgentQtSim> sim);
 
 public slots:
     void animate();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+
+private:
+    std::shared_ptr<HumanoidAgentQtSim> m_sim;
 
 };
 
