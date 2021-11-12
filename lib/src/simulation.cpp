@@ -68,11 +68,14 @@ void Simulation::initEnvironment()
     m_environment = m_environmentFactory->createEnvironment();
 }
 
-void Simulation::addAgent()
+void Simulation::initAgents()
 {
-    auto agent = m_agentFactory->createAgent();
-    agent->setEnvironment(m_environment);
-    m_agents.push_back(agent);
+    auto agents = m_agentFactory->createAgents();
+    std::for_each(agents.begin(), agents.end(), [=] (std::shared_ptr<Agent>& a)
+    {
+        a->setEnvironment(m_environment);
+        m_agents.push_back(a);
+    });
 }
 
 void Simulation::doTimeStep(double time)

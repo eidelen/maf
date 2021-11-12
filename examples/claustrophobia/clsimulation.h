@@ -80,11 +80,11 @@ class HumanoidAgentFactory: public AgentFactory
 public:
     HumanoidAgentFactory(): AgentFactory() {}
     virtual ~HumanoidAgentFactory() {}
-    std::shared_ptr<Agent> createAgent() override
+    std::list<std::shared_ptr<Agent>> createAgents() override
     {
-        return std::shared_ptr<HumanoidAgent>(new HumanoidAgent(m_k++));
+        // return one agent
+        return {std::shared_ptr<HumanoidAgent>(new HumanoidAgent(0))};
     }
-    unsigned int m_k = 0;
 };
 
 class HumanoidAgentQtSim
@@ -97,7 +97,7 @@ public:
         m_sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
 
         m_sim->initEnvironment();
-        m_sim->addAgent();
+        m_sim->initAgents();
     }
 
     virtual ~HumanoidAgentQtSim() {}

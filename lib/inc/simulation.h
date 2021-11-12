@@ -84,9 +84,9 @@ public:
     void initEnvironment();
 
     /**
-     * Creates and adds an agent.
+     * Creates and add the agents.
      */
-    void addAgent();
+    void initAgents();
 
     /**
      * Run the simulation for specific time.

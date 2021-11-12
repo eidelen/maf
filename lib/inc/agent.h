@@ -25,6 +25,7 @@
 #define AGENT_H
 
 #include <memory>
+#include <list>
 #include <Eigen/Dense>
 
 #include "environment.h"
@@ -159,16 +160,19 @@ private:
 class AgentFactory
 {
 public:
-    AgentFactory() : m_cnt(0) {}
+    AgentFactory() {}
     virtual ~AgentFactory() {}
 
     /**
      * Overwrite function for specific agent.
      * @return Generic Agent.
      */
-    virtual std::shared_ptr<Agent> createAgent()
+    virtual std::list<std::shared_ptr<Agent>> createAgents()
     {
-        return Agent::createAgent(m_cnt++);
+        // Default just 1 agent
+        std::list<std::shared_ptr<Agent>> agents;
+        agents.push_back( Agent::createAgent(6) );
+        return agents;
     }
 
 private:

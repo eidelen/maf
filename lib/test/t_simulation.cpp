@@ -33,7 +33,7 @@ TEST(Simulation, InitEnvAgent)
     ASSERT_EQ(s->getAgents().size(), 0);
 
     s->initEnvironment();
-    s->addAgent();
+    s->initAgents();
 
     ASSERT_TRUE(s->getEnvironment().get() != nullptr);
     ASSERT_EQ(s->getAgents().size(), 1);
@@ -84,11 +84,12 @@ class MyBoringAgentFactory: public AgentFactory
 public:
     MyBoringAgentFactory(): AgentFactory() {}
     virtual ~MyBoringAgentFactory() {}
-    std::shared_ptr<Agent> createAgent() override
+    std::list<std::shared_ptr<Agent>> createAgents() override
     {
-        return std::shared_ptr<MyBoringAgent>(new MyBoringAgent(m_k++));
+        // create 2 agents
+        return {std::shared_ptr<MyBoringAgent>(new MyBoringAgent(0)),
+                    std::shared_ptr<MyBoringAgent>(new MyBoringAgent(1))};
     }
-    unsigned int m_k = 0;
 };
 
 TEST(Simulation, TestBaseSimulation)
@@ -98,8 +99,7 @@ TEST(Simulation, TestBaseSimulation)
     s->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
 
     s->initEnvironment();
-    s->addAgent();
-    s->addAgent();
+    s->initAgents();
 
     ASSERT_TRUE(s->getEnvironment().get() != nullptr);
     ASSERT_EQ(s->getAgents().size(), 2);
