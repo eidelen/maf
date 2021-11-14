@@ -71,6 +71,7 @@ public:
     {
         setPosition(Eigen::Vector2d(0.0, 0.0));
         setVelocity(Eigen::Vector2d(1.0, 0.0));
+        setRadius(0.3);
     }
     virtual ~HumanoidAgent() {}
 };
@@ -112,23 +113,29 @@ public:
         m_sim->doTimeStep(m_timeStep);
     }
 
+    QPointF sim2WidTrans(const Eigen::Vector2d& simCoord)
+    {
+        Eigen::Vector2d circOrigin(500.0, 400.0);
+        Eigen::Vector2d widCoord = (simCoord * sim2WidScale(1.0)) + circOrigin;
+        return QPointF(widCoord(0), widCoord(1));
+    }
+
+    double sim2WidScale(double simLength)
+    {
+        return simLength * 30.0;
+    }
+
     void drawSim(QPainter& painter)
     {
-        double meterToPixel = 30.0;
-        Eigen::Vector2d circOrigin(500.0, 400.0);
-
         // draw circle
         painter.setBrush(Qt::white);
-        painter.drawEllipse(QPointF(circOrigin(0), circOrigin(1)), meterToPixel*10.0, meterToPixel*10.0);
+        painter.drawEllipse(sim2WidTrans(Eigen::Vector2d(0.0, 0.0)), sim2WidScale(10.0), sim2WidScale(10.0));
 
         // draw agents
         auto agents = m_sim->getAgents();
-        std::for_each(agents.begin(), agents.end(), [&painter, circOrigin, meterToPixel](const auto& a) {
-
-            Eigen::Vector2d pPix = (a->getPosition() * meterToPixel) + circOrigin;
+        std::for_each(agents.begin(), agents.end(), [=, &painter](const auto& a) {
             painter.setBrush(Qt::blue);
-            painter.drawEllipse(QPointF(pPix(0), pPix(1)), meterToPixel*0.3, meterToPixel*0.3);
-
+            painter.drawEllipse(sim2WidTrans(a->getPosition()), sim2WidScale(a->getRadius()), sim2WidScale(a->getRadius()));
         });
     }
 

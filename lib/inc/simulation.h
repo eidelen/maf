@@ -26,6 +26,7 @@
 
 #include <memory>
 #include <list>
+#include <vector>
 
 #include "agent.h"
 #include "environment.h"
