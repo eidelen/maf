@@ -30,13 +30,12 @@ TEST(Simulation, InitEnvAgent)
     s->setEnvironmentFactory(std::shared_ptr<EnvironmentFactory>(new EnvironmentFactory()));
 
     ASSERT_FALSE(s->getEnvironment().get() != nullptr);
-    ASSERT_EQ(s->getAgents().size(), 0);
 
     s->initEnvironment();
     s->initAgents();
 
     ASSERT_TRUE(s->getEnvironment().get() != nullptr);
-    ASSERT_EQ(s->getAgents().size(), 1);
+    ASSERT_EQ(s->getEnvironment()->getAgents().size(), 1);
 }
 
 class CircEnv: public Environment
@@ -102,12 +101,12 @@ TEST(Simulation, TestBaseSimulation)
     s->initAgents();
 
     ASSERT_TRUE(s->getEnvironment().get() != nullptr);
-    ASSERT_EQ(s->getAgents().size(), 2);
+    ASSERT_EQ(s->getEnvironment()->getAgents().size(), 2);
 
     // MyBoringAgent is created a position 0,0 and moves with 1m/s in x-axis direction
 
     // Time zero -> velocity 1, pos 0,0
-    auto myAgents = s->getAgents();
+    auto myAgents = s->getEnvironment()->getAgents();
     std::for_each(myAgents.begin(), myAgents.end(), [](std::shared_ptr<Agent>& a){
         ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
         ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
@@ -115,7 +114,7 @@ TEST(Simulation, TestBaseSimulation)
 
     // Time 2s -> velocity 1, pos 2,0
     s->doTimeStep(2.0);
-    auto myAgents1 = s->getAgents();
+    auto myAgents1 = s->getEnvironment()->getAgents();
     std::for_each(myAgents1.begin(), myAgents1.end(), [](std::shared_ptr<Agent>& a){
         ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(2.0, 0.0)).isMuchSmallerThan(0.0001));
         ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
@@ -123,7 +122,7 @@ TEST(Simulation, TestBaseSimulation)
 
     // Time 5s -> velocity 1, pos 3,0
     s->doTimeStep(3.0);
-    auto myAgents2 = s->getAgents();
+    auto myAgents2 = s->getEnvironment()->getAgents();
     std::for_each(myAgents2.begin(), myAgents2.end(), [](std::shared_ptr<Agent>& a){
         ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(5.0, 0.0)).isMuchSmallerThan(0.0001));
         ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
@@ -131,22 +130,10 @@ TEST(Simulation, TestBaseSimulation)
 
     // Time 11s -> outside, not possible. Position stays as before
     s->doTimeStep(6.0);
-    auto myAgents3 = s->getAgents();
+    auto myAgents3 = s->getEnvironment()->getAgents();
     std::for_each(myAgents3.begin(), myAgents3.end(), [](std::shared_ptr<Agent>& a){
         ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(5.0, 0.0)).isMuchSmallerThan(0.0001));
         ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
     });
 }
 
-TEST(Simulation, AgentDistance)
-{
-    auto a = Agent::createAgent(4);
-    auto b = Agent::createAgent(5);
-
-    a->setPosition(Eigen::Vector2d(-4.0, 0.0));
-    b->setPosition(Eigen::Vector2d(0.0, 3.0));
-
-    Eigen::Vector2d res = Simulation::computeDistance(a, b);
-
-    ASSERT_TRUE((res - Eigen::Vector2d(4.0,3.0)).isMuchSmallerThan(0.0001));
-}

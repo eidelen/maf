@@ -132,7 +132,7 @@ public:
         painter.drawEllipse(sim2WidTrans(Eigen::Vector2d(0.0, 0.0)), sim2WidScale(10.0), sim2WidScale(10.0));
 
         // draw agents
-        auto agents = m_sim->getAgents();
+        auto agents = m_sim->getEnvironment()->getAgents();
         std::for_each(agents.begin(), agents.end(), [=, &painter](const auto& a) {
             painter.setBrush(Qt::blue);
             painter.drawEllipse(sim2WidTrans(a->getPosition()), sim2WidScale(a->getRadius()), sim2WidScale(a->getRadius()));

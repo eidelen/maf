@@ -25,9 +25,12 @@
 #define ENVIRONMENT_H
 
 #include <memory>
+#include <list>
+#include <vector>
 #include <Eigen/Dense>
 
 #include "environment_interface.h"
+#include "agent.h"
 
 /**
  * @brief The Environment class is base class representing the agent's
@@ -57,6 +60,46 @@ public:
      */
     unsigned int id() const;
 
+    /**
+     * Update environment by a time step. This function
+     * can be overwritten with specific functionality.
+     * @param time Time in second.
+     */
+    virtual void update(double time);
+
+    /**
+     * Add an agent to the environment.
+     * @param a Agent
+     */
+    void addAgent(std::shared_ptr<Agent> a);
+
+    /**
+     * Get a handle to all agents in the simulation.
+     * @return List of agents.
+     */
+    std::list<std::shared_ptr<Agent>>& getAgents();
+
+    /**
+     * Get the agents distance map.
+     * @return pair of a vector, which assigns the agent ids to the matrix row, and
+     * a matrix with distances between each agent to each other agent.
+     */
+    std::pair<std::vector<unsigned int>, Eigen::MatrixXd> getAgentDistanceMap();
+
+    /**
+     * Compute the distances between each agent to each other agent. The
+     * distance map can be accessed with getAgentDistanceMap().
+     */
+    void computeDistanceMap();
+
+    /**
+     * Compute the distance vector between two agents;
+     * @param a Agent 1
+     * @param b Agent 2
+     * @return Distance vector.
+     */
+    static Eigen::Vector2d computeDistance(const std::shared_ptr<Agent>& a, const std::shared_ptr<Agent>& b);
+
 
 public: //Inherited from EnvironmentInterface
 
@@ -66,6 +109,8 @@ public: //Inherited from EnvironmentInterface
 private:
 
     unsigned int m_id;
+    std::list<std::shared_ptr<Agent>> m_agents;
+    std::pair<std::vector<unsigned int>, Eigen::MatrixXd> m_agentDistanceMap;
 };
 
 

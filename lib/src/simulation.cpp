@@ -74,42 +74,17 @@ void Simulation::initAgents()
     std::for_each(agents.begin(), agents.end(), [=] (std::shared_ptr<Agent>& a)
     {
         a->setEnvironment(m_environment);
-        m_agents.push_back(a);
+        m_environment->addAgent(a);
     });
 }
 
 void Simulation::doTimeStep(double time)
 {
-    // update the agents
-    std::for_each(m_agents.begin(), m_agents.end(), [time](std::shared_ptr<Agent>& a)
-    {
-        a->move(time);
-    });
-}
-
-std::list<std::shared_ptr<Agent> > &Simulation::getAgents()
-{
-    return m_agents;
+    m_environment->update(time);
 }
 
 std::shared_ptr<Environment> Simulation::getEnvironment()
 {
     return m_environment;
 }
-
-std::pair<std::vector<unsigned int>, Eigen::MatrixXd> Simulation::getAgentDistanceMap()
-{
-    return m_agentDistanceMap;
-}
-
-void Simulation::computeDistanceMap()
-{
-
-}
-
-Eigen::Vector2d Simulation::computeDistance(const std::shared_ptr<Agent> &a, const std::shared_ptr<Agent> &b)
-{
-    return b->getPosition() - a->getPosition();
-}
-
 

@@ -45,8 +45,42 @@ unsigned int Environment::id() const
     return m_id;
 }
 
+void Environment::update(double time)
+{
+    // update the agents
+    std::for_each(m_agents.begin(), m_agents.end(), [time](std::shared_ptr<Agent>& a)
+    {
+        a->move(time);
+    });
+}
+
+void Environment::addAgent(std::shared_ptr<Agent> a)
+{
+    m_agents.push_back(a);
+}
+
+std::list<std::shared_ptr<Agent> > &Environment::getAgents()
+{
+    return m_agents;
+}
+
 std::pair<bool, Eigen::Vector2d> Environment::possibleMove(const Eigen::Vector2d& /*origin*/, const Eigen::Vector2d& destination) const
 {
     return {true, destination};
+}
+
+std::pair<std::vector<unsigned int>, Eigen::MatrixXd> Environment::getAgentDistanceMap()
+{
+    return m_agentDistanceMap;
+}
+
+void Environment::computeDistanceMap()
+{
+
+}
+
+Eigen::Vector2d Environment::computeDistance(const std::shared_ptr<Agent> &a, const std::shared_ptr<Agent> &b)
+{
+    return b->getPosition() - a->getPosition();
 }
 
