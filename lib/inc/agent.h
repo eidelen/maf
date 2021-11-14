@@ -28,7 +28,7 @@
 #include <list>
 #include <Eigen/Dense>
 
-#include "environment.h"
+#include "environment_interface.h"
 
 
 /**
@@ -118,13 +118,13 @@ public:
      * Set the agent's environment.
      * @param env Environment.
      */
-    void setEnvironment(std::shared_ptr<Environment> env);
+    void setEnvironment(std::shared_ptr<EnvironmentInterface> env);
 
     /**
      * Get the agent's environment.
      * @return Environment.
      */
-    std::shared_ptr<Environment> getEnvironment() const;
+    std::shared_ptr<EnvironmentInterface> getEnvironment() const;
 
     /**
      * Checks if the agent has an environment.
@@ -149,7 +149,7 @@ private:
     double m_maxVelocity;
     double m_maxAcceleration;
 
-    std::shared_ptr<Environment> m_environment;
+    std::shared_ptr<EnvironmentInterface> m_environment;
 };
 
 

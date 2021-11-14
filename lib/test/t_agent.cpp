@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "agent.h"
+#include "environment.h"
 
 
 TEST(Agent, Ctor)
@@ -94,7 +95,6 @@ TEST(Agent, SetEnvironment)
     a->setEnvironment(e);
 
     ASSERT_TRUE(a->hasEnvironment());
-    ASSERT_EQ(a->getEnvironment()->id(), 9);
 }
 
 TEST(Agent, MoveStandardImpl)

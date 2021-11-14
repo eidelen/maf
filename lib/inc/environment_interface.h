@@ -21,76 +21,31 @@
 **
 *****************************************************************************/
 
-#ifndef ENVIRONMENT_H
-#define ENVIRONMENT_H
+#ifndef ENVIRONMENTINTERFACE_H
+#define ENVIRONMENTINTERFACE_H
 
 #include <memory>
 #include <Eigen/Dense>
 
-#include "environment_interface.h"
-
 /**
- * @brief The Environment class is base class representing the agent's
- * environment, respectiveley an interface.
+ * @brief The EnvironmentInterface class is an interface the
+ * agents can use to access their einvironment. The agents should
+ * have restricted view on the scene.
  */
-class Environment: public EnvironmentInterface
+class EnvironmentInterface
 {
 
 public:
 
-    static std::shared_ptr<Environment> createEnvironment(unsigned int id);
-
     /**
-     * Constructor
-     * @param id Environment id.
+     * Check if move is possible within environment. This function needs
+     * to be overwritten in a derived Environment class.
+     * @param origin Original position.
+     * @param destination Target position.
+     * @return Is move possible? When true, second result is usually the planned move
+     * position. If false, the closest possible position can returnd.
      */
-    Environment(unsigned int id);
-
-    /**
-     * Destructor
-     */
-    virtual ~Environment();
-
-    /**
-     * Get id of environment.
-     * @return Id
-     */
-    unsigned int id() const;
-
-
-public: //Inherited from EnvironmentInterface
-
-    virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override;
-
-
-private:
-
-    unsigned int m_id;
+    virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const = 0;
 };
 
-
-/**
- * @brief The EnvironmentFactory class is the base class for further
- * derived Environment classes.
- */
-class EnvironmentFactory
-{
-public:
-    EnvironmentFactory() : m_cnt(0) {}
-    virtual ~EnvironmentFactory() {}
-
-    /**
-     * Overwrite function for specific environment.
-     * @return Generic Environment.
-     */
-    virtual std::shared_ptr<Environment> createEnvironment()
-    {
-        return Environment::createEnvironment(m_cnt++);
-    }
-
-private:
-    unsigned int m_cnt;
-};
-
-
-#endif // ENVIRONMENT_H
+#endif // ENVIRONMENTINTERFACE_H

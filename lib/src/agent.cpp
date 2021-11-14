@@ -93,12 +93,12 @@ void Agent::setAcceleration(const Eigen::Vector2d& acceleration)
     m_acceleration = acceleration;
 }
 
-void Agent::setEnvironment(std::shared_ptr<Environment> env)
+void Agent::setEnvironment(std::shared_ptr<EnvironmentInterface> env)
 {
     m_environment = env;
 }
 
-std::shared_ptr<Environment> Agent::getEnvironment() const
+std::shared_ptr<EnvironmentInterface> Agent::getEnvironment() const
 {
     return m_environment;
 }
