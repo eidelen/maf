@@ -27,6 +27,7 @@
 #include <memory>
 #include <list>
 #include <vector>
+#include <queue>
 #include <Eigen/Dense>
 
 #include "environment_interface.h"
@@ -78,6 +79,33 @@ public:
      * @return List of agents.
      */
     std::list<std::shared_ptr<Agent>>& getAgents();
+
+    /**
+     * @brief The Distance struct
+     */
+    struct Distance
+    {
+        double dist;
+        unsigned int targetId;
+        Eigen::Vector2d vect;
+    };
+
+    /**
+     * @brief The compare distances function for priority queue
+     */
+    class CompareDistance
+    {
+    public:
+        bool operator() (Distance a, Distance b)
+        {
+            return a.dist > b.dist;
+        }
+    };
+
+    /**
+     * DistanceQueue is able to maintain the lowest distance on the top.
+     */
+    using DistanceQueue = std::priority_queue<Distance, std::vector<Distance>, CompareDistance>;
 
     /**
      * Get the agents distance map.

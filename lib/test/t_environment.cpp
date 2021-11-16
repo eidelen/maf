@@ -70,3 +70,61 @@ TEST(Environment, DistanceMap)
     ASSERT_NEAR(dists(1,2), 15.0, 0.00001);
     ASSERT_NEAR(dists(2,1), 15.0, 0.00001);
 }
+
+#include <queue>
+
+struct Di
+{
+    double d;
+    std::string a;
+};
+
+class CmpDi
+{
+public:
+    bool operator() (Di a, Di b)
+    {
+        return a.d > b.d;
+    }
+};
+
+TEST(Environment, TestPriorityQueuesDistances)
+{
+    std::priority_queue<Di, std::vector<Di>, CmpDi> q;
+    q.push({4.5, "abc"});
+    q.push({1.2, "rst"});
+    q.push({7.9, "opp"});
+
+    while(!q.empty())
+    {
+        Di d = q.top();
+        //std::cout << d.d << "   " << d.a << std::endl;
+        q.pop();
+    }
+}
+
+void compareDist(Environment::Distance a, Environment::Distance b)
+{
+    auto[d0, id0, vec0] = a;
+    auto[d1, id1, vec1] = b;
+    ASSERT_NEAR(d0, d1, 0.0001);
+    ASSERT_TRUE((vec0 - vec1).isMuchSmallerThan(0.0001));
+    ASSERT_EQ(id0, id1);
+}
+
+TEST(Environment, TestActualDistanceQueue)
+{
+    Environment::DistanceQueue q;
+    q.push({4.2, 9, Eigen::Vector2d(4.2, 9.0)});
+    q.push({7.5, 5, Eigen::Vector2d(7.5, 5.0)});
+    q.push({-2.8, 12, Eigen::Vector2d(-2.8, 12.0)});
+
+    compareDist(q.top(), {-2.8, 12, Eigen::Vector2d(-2.8, 12.0)});
+    q.pop();
+    compareDist(q.top(), {4.2, 9, Eigen::Vector2d(4.2, 9.0)});
+    q.pop();
+    compareDist(q.top(), {7.5, 5, Eigen::Vector2d(7.5, 5.0)});
+    q.pop();
+}
+
+
