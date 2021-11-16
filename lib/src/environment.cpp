@@ -69,14 +69,40 @@ std::pair<bool, Eigen::Vector2d> Environment::possibleMove(const Eigen::Vector2d
     return {true, destination};
 }
 
-std::pair<std::vector<unsigned int>, Eigen::MatrixXd> Environment::getAgentDistanceMap()
+std::pair<std::vector<unsigned int>, Eigen::MatrixXd> Environment::getAgentDistances()
 {
     return m_agentDistanceMap;
 }
 
-void Environment::computeDistanceMap()
+void Environment::computeDistances()
 {
+    const auto& agents = getAgents();
+    size_t nbrAgents = agents.size();
+    std::vector<unsigned int> agentIds;
+    Eigen::MatrixXd distances(nbrAgents, nbrAgents);
 
+    // O( n * log(n) )
+    size_t m = 0;
+    for(auto fromA = agents.begin(); fromA != agents.end(); fromA++)
+    {
+        const auto& agentA = *fromA;
+        agentIds.push_back(agentA->id());
+
+        size_t n = m;
+        for(auto toA = fromA; toA != agents.end(); toA++)
+        {
+            double dist = Environment::computeDistance(agentA, *toA).norm();
+
+            // extend matrix with distances in both direction
+            distances(m,n) = dist;
+            distances(n,m) = dist;
+            n++;
+        }
+
+        m++;
+    }
+
+    m_agentDistanceMap = {agentIds, distances};
 }
 
 Eigen::Vector2d Environment::computeDistance(const std::shared_ptr<Agent> &a, const std::shared_ptr<Agent> &b)

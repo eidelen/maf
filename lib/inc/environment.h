@@ -84,13 +84,13 @@ public:
      * @return pair of a vector, which assigns the agent ids to the matrix row, and
      * a matrix with distances between each agent to each other agent.
      */
-    std::pair<std::vector<unsigned int>, Eigen::MatrixXd> getAgentDistanceMap();
+    std::pair<std::vector<unsigned int>, Eigen::MatrixXd> getAgentDistances();
 
     /**
      * Compute the distances between each agent to each other agent. The
      * distance map can be accessed with getAgentDistanceMap().
      */
-    void computeDistanceMap();
+    void computeDistances();
 
     /**
      * Compute the distance vector between two agents;
