@@ -30,7 +30,8 @@ std::shared_ptr<Agent> Agent::createAgent(unsigned int id)
     return std::shared_ptr<Agent>(new Agent(id));
 }
 
-Agent::Agent(unsigned int id) : m_id(id), m_radius(0.0), m_velocity(Eigen::Vector2d(0.0, 0.0)), m_acceleration(Eigen::Vector2d(0.0, 0.0))
+Agent::Agent(unsigned int id) : m_id(id), m_radius(0.0), m_velocity(Eigen::Vector2d(0.0, 0.0)),
+    m_acceleration(Eigen::Vector2d(0.0, 0.0)), m_position(Eigen::Vector2d(0.0, 0.0))
 {
 
 }
@@ -112,7 +113,12 @@ void Agent::move(double time)
 {
     // A very basic implementation how an agent moves.
     auto[p, v] = computeMotion(time);
+
+    std::cout << "p1" << std::endl;
+
     auto[possible, finalPos] = getEnvironment()->possibleMove(getPosition(), p);
+
+    std::cout << "p2" << std::endl;
 
     setPosition(finalPos);
     setVelocity(possible ? v : getVelocity()); // only update velocity when motion was possible

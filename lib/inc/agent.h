@@ -58,7 +58,7 @@ public:
      * @param time Time in second
      * @return Pair of position and speed.
      */
-    std::pair<Eigen::Vector2d, Eigen::Vector2d> computeMotion(double time) const;
+    virtual std::pair<Eigen::Vector2d, Eigen::Vector2d> computeMotion(double time) const;
 
     /**
      * Get the agent's id.
@@ -100,7 +100,7 @@ public:
      * Set velocity vector in m/s.
      * @param velocity in m/s
      */
-    void setVelocity(const Eigen::Vector2d &velocity);
+    virtual void setVelocity(const Eigen::Vector2d &velocity);
 
     /**
      * Get agent's acceleration m/s^2
@@ -112,7 +112,7 @@ public:
      * Set agent's acceleration m/s^2.
      * @param Acceleration
      */
-    void setAcceleration(const Eigen::Vector2d& acceleration);
+    virtual void setAcceleration(const Eigen::Vector2d& acceleration);
 
     /**
      * Set the agent's environment.
@@ -139,15 +139,13 @@ public:
      */
     virtual void move(double time);
 
-private:
+protected:
 
     unsigned int m_id;
     double m_radius;
     Eigen::Vector2d m_position;
     Eigen::Vector2d m_velocity;
     Eigen::Vector2d m_acceleration;
-    double m_maxVelocity;
-    double m_maxAcceleration;
 
     std::shared_ptr<EnvironmentInterface> m_environment;
 };

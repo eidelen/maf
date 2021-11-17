@@ -11,7 +11,7 @@ FILE(GLOB_RECURSE  MAF_INCLUDES        inc/*.h)
 FILE(GLOB_RECURSE  MAF_SOURCES         src/*.cpp)
 
 ADD_LIBRARY(maflib STATIC ${MAF_INCLUDES} ${MAF_SOURCES} )
-target_include_directories(maflib INTERFACE inc)
+target_include_directories(maflib INTERFACE inc )
 target_link_libraries(maflib Eigen3::Eigen )
 target_compile_features(maflib PRIVATE cxx_std_17 )
 
