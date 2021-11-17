@@ -96,7 +96,7 @@ void Human::move(double time)
         // Default acceleration is towards stopping -> NOTE: Thats not fine yet. For long time spans it fails
         if(currentSpeed > 0.00001)
         {
-            newAcceleration = -speedDirection * m_maxAccelreation / 2.0;
+            newAcceleration = -speedDirection * m_maxAccelreation;
         }
         else
         {
