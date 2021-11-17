@@ -47,6 +47,9 @@ unsigned int Environment::id() const
 
 void Environment::update(double time)
 {
+    // update the distance map -> agent move will access this map further down
+    computeDistances();
+
     // update the agents
     std::for_each(m_agents.begin(), m_agents.end(), [time](std::shared_ptr<Agent>& a)
     {
@@ -67,6 +70,11 @@ std::list<std::shared_ptr<Agent> > &Environment::getAgents()
 std::pair<bool, Eigen::Vector2d> Environment::possibleMove(const Eigen::Vector2d& /*origin*/, const Eigen::Vector2d& destination) const
 {
     return {true, destination};
+}
+
+EnvironmentInterface::DistanceQueue Environment::getAgentDistancesToAllOtherAgents(unsigned int id)
+{
+    return getAgentDistances()[id];
 }
 
 Environment::DistanceMap& Environment::getAgentDistances()

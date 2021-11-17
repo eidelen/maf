@@ -25,6 +25,7 @@
 #define ENVIRONMENTINTERFACE_H
 
 #include <memory>
+#include <queue>
 #include <Eigen/Dense>
 
 /**
@@ -46,6 +47,40 @@ public:
      * position. If false, the closest possible position can returnd.
      */
     virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const = 0;
+
+    /**
+     * @brief The Distance struct
+     */
+    struct Distance
+    {
+        double dist;
+        unsigned int targetId;
+        Eigen::Vector2d vect;
+    };
+
+    /**
+     * @brief The compare distances function for priority queue
+     */
+    class CompareDistance
+    {
+    public:
+        bool operator() (Distance a, Distance b)
+        {
+            return a.dist > b.dist;
+        }
+    };
+
+    /**
+     * DistanceQueue is able to maintain the lowest distance on the top.
+     */
+    using DistanceQueue = std::priority_queue<Distance, std::vector<Distance>, CompareDistance>;
+
+    /**
+     * Get all distances to all other agents for a given agent.
+     * @param id Agent id.
+     * @return Queue with closest agent first
+     */
+    virtual DistanceQueue getAgentDistancesToAllOtherAgents(unsigned int id) = 0;
 };
 
 #endif // ENVIRONMENTINTERFACE_H

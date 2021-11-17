@@ -38,24 +38,35 @@ class Human: public Agent
 
 public:
 
-    static std::shared_ptr<Human> createHuman(unsigned int id, double maxSpeed = 5, double maxAcceleration = 2.5);
+    static std::shared_ptr<Human> createHuman(unsigned int id, double maxSpeed = 5,
+                                              double maxAcceleration = 2.5, double obsDistance = 3.0);
 
     /**
-     * Constructor
-     * @param id Civilian id.
+     * Human like agent
+     * @param id Id of the agent
+     * @param maxSpeed Maximum speed the human can reach
+     * @param maxAcceleration Maximum acceleration the human can apply
+     * @param obsDistance Outside this distance, the human does not care.
      */
-    Human(unsigned int id, double maxSpeed, double maxAcceleration);
+    Human(unsigned int id, double maxSpeed, double maxAcceleration, double obsDistance);
 
     /**
      * Destructor
      */
     virtual ~Human();
 
+    /**
+     * Disable this agent to react on nothing.
+     * @param disable
+     */
+    void disableReacting(bool disable);
+
 
 public: // inherited from Agent
-    std::pair<Eigen::Vector2d, Eigen::Vector2d> computeMotion(double time) const;
-    void setVelocity(const Eigen::Vector2d &velocity);
-    void setAcceleration(const Eigen::Vector2d &acceleration);
+    std::pair<Eigen::Vector2d, Eigen::Vector2d> computeMotion(double time) const override;
+    void setVelocity(const Eigen::Vector2d &velocity) override;
+    void setAcceleration(const Eigen::Vector2d &acceleration) override;
+    void move(double time) override;
 
 private:
     Eigen::Vector2d correctVectorScale(const Eigen::Vector2d& in, double maxMagnitude) const;
@@ -64,6 +75,9 @@ private:
 protected:
     double m_maxSpeed;
     double m_maxAccelreation;
+    double m_obsDistance;
+    bool m_disableReacting;
+
 };
 
 

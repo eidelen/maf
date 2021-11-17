@@ -82,33 +82,6 @@ public:
     std::list<std::shared_ptr<Agent>>& getAgents();
 
     /**
-     * @brief The Distance struct
-     */
-    struct Distance
-    {
-        double dist;
-        unsigned int targetId;
-        Eigen::Vector2d vect;
-    };
-
-    /**
-     * @brief The compare distances function for priority queue
-     */
-    class CompareDistance
-    {
-    public:
-        bool operator() (Distance a, Distance b)
-        {
-            return a.dist > b.dist;
-        }
-    };
-
-    /**
-     * DistanceQueue is able to maintain the lowest distance on the top.
-     */
-    using DistanceQueue = std::priority_queue<Distance, std::vector<Distance>, CompareDistance>;
-
-    /**
      * DistanceMap holds a DistanceQueue for each agent.
      */
     using DistanceMap = std::unordered_map<unsigned int, DistanceQueue>;
@@ -137,7 +110,7 @@ public:
 public: //Inherited from EnvironmentInterface
 
     virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override;
-
+    virtual DistanceQueue getAgentDistancesToAllOtherAgents(unsigned int id) override;
 
 private:
 

@@ -25,13 +25,15 @@
 #include "human.h"
 
 
-std::shared_ptr<Human> Human::createHuman(unsigned int id, double maxSpeed, double maxAcceleration)
+std::shared_ptr<Human> Human::createHuman(unsigned int id, double maxSpeed,
+                                          double maxAcceleration, double obsDistance)
 {
-    return std::shared_ptr<Human>(new Human(id, maxSpeed, maxAcceleration));
+    return std::shared_ptr<Human>(new Human(id, maxSpeed, maxAcceleration, obsDistance));
 }
 
-Human::Human(unsigned int id, double maxSpeed, double maxAcceleration) :
-    Agent(id), m_maxSpeed(maxSpeed), m_maxAccelreation(maxAcceleration)
+Human::Human(unsigned int id, double maxSpeed, double maxAcceleration, double obsDistance) :
+    Agent(id), m_maxSpeed(maxSpeed), m_maxAccelreation(maxAcceleration), m_obsDistance(obsDistance),
+    m_disableReacting(false)
 {
 
 }
@@ -39,6 +41,11 @@ Human::Human(unsigned int id, double maxSpeed, double maxAcceleration) :
 Human::~Human()
 {
 
+}
+
+void Human::disableReacting(bool disable)
+{
+    m_disableReacting = disable;
 }
 
 std::pair<Eigen::Vector2d, Eigen::Vector2d> Human::computeMotion(double time) const
@@ -69,5 +76,51 @@ Eigen::Vector2d Human::correctVectorScale(const Eigen::Vector2d &in, double maxM
     }
 
     return in;
+}
+
+void Human::move(double time)
+{
+    assert(hasEnvironment());
+
+    auto env = getEnvironment();
+
+    if( !m_disableReacting )
+    {
+        EnvironmentInterface::DistanceQueue agentDistances = env->getAgentDistancesToAllOtherAgents(id());
+
+        // React on neighbours. When no neigbhours, slow down.
+        Eigen::Vector2d newAcceleration;
+        double currentSpeed = m_velocity.norm();
+        Eigen::Vector2d speedDirection = m_velocity / currentSpeed;
+
+        // Default acceleration is towards stopping -> NOTE: Thats not fine yet. For long time spans it fails
+        if(currentSpeed > 0.00001)
+        {
+            newAcceleration = -speedDirection * m_maxAccelreation / 2.0;
+        }
+        else
+        {
+            newAcceleration = Eigen::Vector2d(0.0, 0.0);
+        }
+
+        // Consider agents
+        if(!agentDistances.empty())
+        {
+            EnvironmentInterface::Distance closestAgent = agentDistances.top();
+            if(closestAgent.dist < m_obsDistance)
+            {
+                newAcceleration = -closestAgent.vect;
+            }
+        }
+
+        setAcceleration(newAcceleration);
+    }
+
+
+    // Update new velocity and position
+    auto[p, v] = computeMotion(time);
+    auto[possible, finalPos] = env->possibleMove(getPosition(), p);
+    setPosition(finalPos);
+    setVelocity(possible ? v : getVelocity()); // only update velocity when motion was possible
 }
 
