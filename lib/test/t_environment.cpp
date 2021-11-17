@@ -29,47 +29,15 @@ TEST(Environment, AgentDistance)
     ASSERT_TRUE((res - Eigen::Vector2d(4.0,3.0)).isMuchSmallerThan(0.0001));
 }
 
-TEST(Environment, DistanceMap)
+void compareDist(Environment::Distance a, Environment::Distance b)
 {
-    auto e = Environment::createEnvironment(9);
-
-    // No entries in yet
-    ASSERT_EQ(e->getAgentDistances().first.size(), 0);
-    e->computeDistances();
-    ASSERT_EQ(e->getAgentDistances().first.size(), 0);
-
-    auto a = Agent::createAgent(2);
-    a->setPosition(Eigen::Vector2d(2.0, 0.0));
-    e->addAgent(a);
-
-    auto b = Agent::createAgent(5);
-    b->setPosition(Eigen::Vector2d(5.0, 0.0));
-    e->addAgent(b);
-
-    auto c = Agent::createAgent(20);
-    c->setPosition(Eigen::Vector2d(20.0, 0.0));
-    e->addAgent(c);
-
-    e->computeDistances();
-    auto[id, dists] = e->getAgentDistances();
-
-    ASSERT_EQ(id.size(), 3);
-    ASSERT_EQ(id.at(0), 2);
-    ASSERT_EQ(id.at(1), 5);
-    ASSERT_EQ(id.at(2), 20);
-
-    ASSERT_NEAR(dists(0,0), 0.0, 0.00001);
-    ASSERT_NEAR(dists(1,1), 0.0, 0.00001);
-    ASSERT_NEAR(dists(2,2), 0.0, 0.00001);
-
-    ASSERT_NEAR(dists(0,1), 3.0, 0.00001);
-    ASSERT_NEAR(dists(0,2), 18.0, 0.00001);
-    ASSERT_NEAR(dists(1,0), 3.0, 0.00001);
-    ASSERT_NEAR(dists(2,0), 18.0, 0.00001);
-
-    ASSERT_NEAR(dists(1,2), 15.0, 0.00001);
-    ASSERT_NEAR(dists(2,1), 15.0, 0.00001);
+    auto[d0, id0, vec0] = a;
+    auto[d1, id1, vec1] = b;
+    ASSERT_NEAR(d0, d1, 0.0001);
+    ASSERT_TRUE((vec0 - vec1).isMuchSmallerThan(0.0001));
+    ASSERT_EQ(id0, id1);
 }
+
 
 #include <queue>
 
@@ -101,15 +69,6 @@ TEST(Environment, TestPriorityQueuesDistances)
         //std::cout << d.d << "   " << d.a << std::endl;
         q.pop();
     }
-}
-
-void compareDist(Environment::Distance a, Environment::Distance b)
-{
-    auto[d0, id0, vec0] = a;
-    auto[d1, id1, vec1] = b;
-    ASSERT_NEAR(d0, d1, 0.0001);
-    ASSERT_TRUE((vec0 - vec1).isMuchSmallerThan(0.0001));
-    ASSERT_EQ(id0, id1);
 }
 
 TEST(Environment, TestActualDistanceQueue)
@@ -150,3 +109,52 @@ TEST(Environment, TestDistanceMap)
     compareDist(m[5].top(), {7.5, 55, Eigen::Vector2d(7.5, 55.0)});
     compareDist(m5Ref.top(), {7.5, 55, Eigen::Vector2d(7.5, 55.0)});
 }
+
+TEST(Environment, DistanceMap)
+{
+    auto e = Environment::createEnvironment(9);
+
+    // No entries in yet
+    ASSERT_EQ(e->getAgentDistances().size(), 0);
+    e->computeDistances();
+    ASSERT_EQ(e->getAgentDistances().size(), 0);
+
+    auto a = Agent::createAgent(2);
+    a->setPosition(Eigen::Vector2d(2.0, 0.0));
+    e->addAgent(a);
+
+    auto b = Agent::createAgent(5);
+    b->setPosition(Eigen::Vector2d(5.0, 0.0));
+    e->addAgent(b);
+
+    auto c = Agent::createAgent(20);
+    c->setPosition(Eigen::Vector2d(20.0, 0.0));
+    e->addAgent(c);
+
+    e->computeDistances();
+    Environment::DistanceMap& dMap = e->getAgentDistances();
+
+    ASSERT_EQ(dMap.size(), 3);
+
+    // Check distances of Agent id = 2
+    Environment::DistanceQueue& qA2 = dMap[2];
+    ASSERT_EQ(qA2.size(), 2);
+    compareDist(qA2.top(), {3.0, 5, Eigen::Vector2d(3.0, 0.0)});
+    qA2.pop();
+    compareDist(qA2.top(), {18.0, 20, Eigen::Vector2d(18.0, 0.0)});
+
+    // Check distances of Agent id = 5
+    Environment::DistanceQueue& qA5 = dMap[5];
+    ASSERT_EQ(qA5.size(), 2);
+    compareDist(qA5.top(), {3.0, 2, Eigen::Vector2d(-3.0, 0.0)});
+    qA5.pop();
+    compareDist(qA5.top(), {15.0, 20, Eigen::Vector2d(15.0, 0.0)});
+
+    // Check distances of Agent id = 20
+    Environment::DistanceQueue& qA20 = dMap[20];
+    ASSERT_EQ(qA20.size(), 2);
+    compareDist(qA20.top(), {15.0, 5, Eigen::Vector2d(-15.0, 0.0)});
+    qA20.pop();
+    compareDist(qA20.top(), {18.0, 2, Eigen::Vector2d(-18.0, 0.0)});
+}
+

@@ -115,10 +115,9 @@ public:
 
     /**
      * Get the agents distance map.
-     * @return pair of a vector, which assigns the agent ids to the matrix row, and
-     * a matrix with distances between each agent to each other agent.
+     * @return Hash table containing min-Heaps of distances for each agent.
      */
-    std::pair<std::vector<unsigned int>, Eigen::MatrixXd> getAgentDistances();
+    DistanceMap& getAgentDistances();
 
     /**
      * Compute the distances between each agent to each other agent. The
@@ -144,7 +143,7 @@ private:
 
     unsigned int m_id;
     std::list<std::shared_ptr<Agent>> m_agents;
-    std::pair<std::vector<unsigned int>, Eigen::MatrixXd> m_agentDistanceMap;
+    DistanceMap m_agentDistanceMap;
 };
 
 
