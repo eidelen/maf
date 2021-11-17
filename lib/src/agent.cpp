@@ -111,14 +111,12 @@ bool Agent::hasEnvironment() const
 
 void Agent::move(double time)
 {
-    // A very basic implementation how an agent moves.
+    assert(hasEnvironment());
+
+    // A very basic default implementation how an agent moves.
     auto[p, v] = computeMotion(time);
 
-    std::cout << "p1" << std::endl;
-
     auto[possible, finalPos] = getEnvironment()->possibleMove(getPosition(), p);
-
-    std::cout << "p2" << std::endl;
 
     setPosition(finalPos);
     setVelocity(possible ? v : getVelocity()); // only update velocity when motion was possible

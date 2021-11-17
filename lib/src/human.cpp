@@ -41,16 +41,11 @@ Human::~Human()
 
 }
 
-
-
 std::pair<Eigen::Vector2d, Eigen::Vector2d> Human::computeMotion(double time) const
 {
-    std::cout << "computeMotion " <<  getVelocity().transpose() << "  ,   " << getAcceleration().transpose() << std::endl;
     Eigen::Vector2d newSpeed = correctVectorScale( getVelocity() + getAcceleration()*time, m_maxSpeed);
-    std::cout << "new Speed " <<  newSpeed.transpose()  << std::endl;
     Eigen::Vector2d relevantSpeed = (getVelocity() + newSpeed)/2.0;
     Eigen::Vector2d newPos = getPosition() + relevantSpeed * time;
-    std::cout << "new Pos " <<  newPos.transpose()  << std::endl;
 
     return {newPos, newSpeed};
 }
@@ -68,7 +63,7 @@ void Human::setAcceleration(const Eigen::Vector2d &acceleration)
 Eigen::Vector2d Human::correctVectorScale(const Eigen::Vector2d &in, double maxMagnitude) const
 {
     double inLength = in.norm();
-    if( inLength > 1.0e-10 && inLength > maxMagnitude ) // do not correct small vectors
+    if( inLength > 1.0e-10 && inLength > maxMagnitude ) // do not correct small vectors -> zero division
     {
         return (in / inLength) * maxMagnitude;
     }
