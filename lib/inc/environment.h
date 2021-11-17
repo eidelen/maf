@@ -28,6 +28,7 @@
 #include <list>
 #include <vector>
 #include <queue>
+#include <unordered_map>
 #include <Eigen/Dense>
 
 #include "environment_interface.h"
@@ -106,6 +107,11 @@ public:
      * DistanceQueue is able to maintain the lowest distance on the top.
      */
     using DistanceQueue = std::priority_queue<Distance, std::vector<Distance>, CompareDistance>;
+
+    /**
+     * DistanceMap holds a DistanceQueue for each agent.
+     */
+    using DistanceMap = std::unordered_map<unsigned int, DistanceQueue>;
 
     /**
      * Get the agents distance map.

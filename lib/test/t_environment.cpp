@@ -127,4 +127,26 @@ TEST(Environment, TestActualDistanceQueue)
     q.pop();
 }
 
+TEST(Environment, TestDistanceMap)
+{
+    Environment::DistanceMap m;
 
+    // add content to queues
+    m[5].push({7.5, 55, Eigen::Vector2d(7.5, 55.0)});
+    m[5].push({3.5, 555, Eigen::Vector2d(3.5, 555.0)});
+    m[8].push({7.5, 88, Eigen::Vector2d(7.5, 88.0)});
+    m[8].push({3.5, 888, Eigen::Vector2d(3.5, 888.0)});
+
+    compareDist(m[5].top(), {3.5, 555, Eigen::Vector2d(3.5, 555.0)});
+    compareDist(m[8].top(), {3.5, 888, Eigen::Vector2d(3.5, 888.0)});
+
+    // check when using reference
+    Environment::DistanceQueue& m5Ref = m[5];
+    compareDist(m5Ref.top(), {3.5, 555, Eigen::Vector2d(3.5, 555.0)});
+
+    // pop from reference
+    m5Ref.pop();
+
+    compareDist(m[5].top(), {7.5, 55, Eigen::Vector2d(7.5, 55.0)});
+    compareDist(m5Ref.top(), {7.5, 55, Eigen::Vector2d(7.5, 55.0)});
+}
