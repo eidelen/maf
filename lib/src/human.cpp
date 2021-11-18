@@ -112,13 +112,25 @@ void Human::performFinalMove(double time)
 {
     auto env = getEnvironment();
 
-    std::random_device rd{};
-    std::mt19937 gen{rd()};
-    std::normal_distribution<> d{0.0, 0.3};
+    // try to move with initial settings
+    auto[pi, vi] = computeMotion(time);
+    auto[initialPossible, resFinalPos] = env->possibleMove(getPosition(), pi);
+    if(initialPossible)
+    {
+        setPosition(resFinalPos);
+        setVelocity(vi);
+        return;
+    }
+
+    // initial move did not work, try something similiar
 
     // randomly generating angle deviation around wanted direction
+    std::random_device rd{};
+    std::mt19937 gen{rd()};
+    std::normal_distribution<> d{0.0, 3.14};
+
     Eigen::Vector2d wantedAcceleration = getAcceleration();
-    for(int k = 0; k < 10; k++)
+    for(int k = 0; k < 5; k++)
     {
         Eigen::Rotation2D<double> rotMat( d(gen) );
         Eigen::Vector2d actualAcceleration = rotMat * wantedAcceleration;
@@ -129,7 +141,7 @@ void Human::performFinalMove(double time)
 
         if(possible)
         {
-            // found possible move
+            // found possible random move
             setPosition(finalPos);
             setVelocity(v);
             return;
