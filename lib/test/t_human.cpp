@@ -6,7 +6,7 @@
 TEST(Human, MaxSpeed)
 {
     auto env = Environment::createEnvironment(3);
-    auto h = Human::createHuman(11, 10.0, 1.0);
+    auto h = Human::createHuman(11, 10.0, 1.0, 3.0, -1.0);
     h->disableReacting(true);
     h->setEnvironment(env);
 
@@ -73,7 +73,7 @@ TEST(Human, SlowDown)
 TEST(Human, LongSlowDown)
 {
     auto env = Environment::createEnvironment(3);
-    auto h = Human::createHuman(11, 10.0, 4.0);
+    auto h = Human::createHuman(11, 10.0, 4.0, 3.0, 0.0001);
     h->setEnvironment(env);
 
     h->setVelocity(Eigen::Vector2d(10.0, 0.0));
@@ -92,7 +92,7 @@ TEST(Human, MoveAwayFromOtherHuman)
 {
     auto env = Environment::createEnvironment(3);
 
-    auto h1 = Human::createHuman(0, 10.0, 10.0, 10.0);
+    auto h1 = Human::createHuman(0, 10.0, 10.0, 10.0, 0.0001);
     h1->setEnvironment(env);
     h1->setVelocity(Eigen::Vector2d(0.0, 0.0));
 

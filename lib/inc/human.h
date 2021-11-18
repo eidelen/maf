@@ -39,7 +39,8 @@ class Human: public Agent
 public:
 
     static std::shared_ptr<Human> createHuman(unsigned int id, double maxSpeed = 5,
-                                              double maxAcceleration = 2.5, double obsDistance = 3.0);
+                                              double maxAcceleration = 2.5, double obsDistance = 3.0,
+                                              double reactionTime = 0.5);
 
     /**
      * Human like agent
@@ -47,8 +48,9 @@ public:
      * @param maxSpeed Maximum speed the human can reach
      * @param maxAcceleration Maximum acceleration the human can apply
      * @param obsDistance Outside this distance, the human does not care.
+     * @param reactionTime How long it takes till human performs action.
      */
-    Human(unsigned int id, double maxSpeed, double maxAcceleration, double obsDistance);
+    Human(unsigned int id, double maxSpeed, double maxAcceleration, double obsDistance, double reactionTime);
 
     /**
      * Destructor
@@ -80,6 +82,8 @@ protected:
     double m_maxAccelreation;
     double m_obsDistance;
     bool m_disableReacting;
+    double m_reactionTime;
+    double m_timeSinceLastReaction;
 
 };
 

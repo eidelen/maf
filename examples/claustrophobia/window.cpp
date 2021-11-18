@@ -37,7 +37,7 @@ Window::Window()
     GLWidget *openGL = new GLWidget(this);
 
     // create simulation and pass and instance to GL_Widget
-    double timeStep = 0.025; //25ms
+    double timeStep = 0.05; //25ms
     m_hSim = std::shared_ptr<HumanoidAgentQtSim>(new HumanoidAgentQtSim());
     m_hSim->setTimeStep(timeStep);
     openGL->setQtSimulation(m_hSim);

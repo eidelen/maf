@@ -25,6 +25,7 @@
 #define CL_SIM_H
 
 #include <iostream>
+#include <random>
 #include <Eigen/Dense>
 #include <QPainter>
 
@@ -74,11 +75,15 @@ public:
     {
         std::list<std::shared_ptr<Agent>> agents;
 
-        for(size_t m = 0; m < 10; m++)
+        std::random_device rd{};
+        std::mt19937 gen{rd()};
+        std::normal_distribution<> reactionDist{0.7, 0.2};
+
+        for(size_t m = 0; m < 12; m++)
         {
-            for(size_t n = 0; n < 10; n++)
+            for(size_t n = 0; n < 12; n++)
             {
-                auto h1 = std::shared_ptr<Human>(new Human(m*10+n, 2.0, 1.5, 2.0));
+                auto h1 = std::shared_ptr<Human>(new Human(m*10+n, 2.0, 1.0, 2.0, reactionDist(gen)));
                 h1->setPosition(Eigen::Vector2d(-3.0, -3.0) + m * Eigen::Vector2d(0.5, 0.0) + n * Eigen::Vector2d(0.0, 0.5) );
                 agents.push_back(h1);
             }
@@ -137,6 +142,9 @@ public:
         std::for_each(agents.begin(), agents.end(), [=, &painter](const auto& a) {
             painter.setBrush(Qt::blue);
             painter.drawEllipse(sim2WidTrans(a->getPosition()), sim2WidScale(a->getRadius()), sim2WidScale(a->getRadius()));
+
+            painter.setPen(QPen(Qt::black, 1, Qt::SolidLine));
+            painter.drawLine(sim2WidTrans(a->getPosition()), sim2WidTrans(a->getPosition() + a->getAcceleration()));
         });
     }
 

@@ -28,14 +28,15 @@
 
 
 std::shared_ptr<Human> Human::createHuman(unsigned int id, double maxSpeed,
-                                          double maxAcceleration, double obsDistance)
+                                          double maxAcceleration, double obsDistance,
+                                          double reactionTime)
 {
-    return std::shared_ptr<Human>(new Human(id, maxSpeed, maxAcceleration, obsDistance));
+    return std::shared_ptr<Human>(new Human(id, maxSpeed, maxAcceleration, obsDistance, reactionTime));
 }
 
-Human::Human(unsigned int id, double maxSpeed, double maxAcceleration, double obsDistance) :
+Human::Human(unsigned int id, double maxSpeed, double maxAcceleration, double obsDistance, double reactionTime) :
     Agent(id), m_maxSpeed(maxSpeed), m_maxAccelreation(maxAcceleration), m_obsDistance(obsDistance),
-    m_disableReacting(false)
+    m_disableReacting(false), m_reactionTime(reactionTime), m_timeSinceLastReaction(0.0)
 {
     setRadius(0.3);
 
@@ -73,6 +74,16 @@ void Human::setAcceleration(const Eigen::Vector2d &acceleration)
 void Human::move(double time)
 {
     assert(hasEnvironment());
+
+    // do not navigate in every move
+    m_timeSinceLastReaction += time;
+    if( m_timeSinceLastReaction < m_reactionTime )
+    {
+        performFinalMove(time);
+        return;
+    }
+    m_timeSinceLastReaction = 0.0;
+
 
     auto env = getEnvironment();
 
