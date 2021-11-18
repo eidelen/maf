@@ -68,8 +68,6 @@ public: // inherited from Agent
     void setAcceleration(const Eigen::Vector2d &acceleration) override;
     void move(double time) override;
 
-private:
-    Eigen::Vector2d correctVectorScale(const Eigen::Vector2d& in, double maxMagnitude) const;
 
 
 protected:

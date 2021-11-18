@@ -59,15 +59,29 @@ TEST(Human, SlowDown)
     h->move(1.0);
     ASSERT_GT(lastSpeed, h->getVelocity().norm());
     lastSpeed = h->getVelocity().norm();
-    std::cout << lastSpeed << std::endl;
 
     h->move(1.0);
     ASSERT_GT(lastSpeed, h->getVelocity().norm());
     lastSpeed = h->getVelocity().norm();
-    std::cout << lastSpeed << std::endl;
 
     h->move(1.0);
-    std::cout << lastSpeed << std::endl;
     ASSERT_GT(lastSpeed, h->getVelocity().norm());
+}
 
+TEST(Human, LongSlowDown)
+{
+    auto env = Environment::createEnvironment(3);
+    auto h = Human::createHuman(11, 10.0, 4.0);
+    h->setEnvironment(env);
+
+    h->setVelocity(Eigen::Vector2d(10.0, 0.0));
+    double lastSpeed = h->getVelocity().norm();
+
+    for(size_t k = 0; k < 2000; k++)
+    {
+        h->move(0.01);
+        double cSpeed = h->getVelocity().norm();
+        ASSERT_TRUE(cSpeed < lastSpeed || cSpeed < 10e-5);
+        lastSpeed = cSpeed;
+    }
 }

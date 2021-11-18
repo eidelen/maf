@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include "human.h"
+#include "helpers.h"
 
 
 std::shared_ptr<Human> Human::createHuman(unsigned int id, double maxSpeed,
@@ -50,7 +51,7 @@ void Human::disableReacting(bool disable)
 
 std::pair<Eigen::Vector2d, Eigen::Vector2d> Human::computeMotion(double time) const
 {
-    Eigen::Vector2d newSpeed = correctVectorScale( getVelocity() + getAcceleration()*time, m_maxSpeed);
+    Eigen::Vector2d newSpeed = MafHlp::correctVectorScale( getVelocity() + getAcceleration()*time, m_maxSpeed);
     Eigen::Vector2d relevantSpeed = (getVelocity() + newSpeed)/2.0;
     Eigen::Vector2d newPos = getPosition() + relevantSpeed * time;
 
@@ -59,23 +60,12 @@ std::pair<Eigen::Vector2d, Eigen::Vector2d> Human::computeMotion(double time) co
 
 void Human::setVelocity(const Eigen::Vector2d &velocity)
 {
-    m_velocity = correctVectorScale(velocity, m_maxSpeed);
+    m_velocity = MafHlp::correctVectorScale(velocity, m_maxSpeed);
 }
 
 void Human::setAcceleration(const Eigen::Vector2d &acceleration)
 {
-    m_acceleration = correctVectorScale(acceleration, m_maxAccelreation);
-}
-
-Eigen::Vector2d Human::correctVectorScale(const Eigen::Vector2d &in, double maxMagnitude) const
-{
-    double inLength = in.norm();
-    if( inLength > 1.0e-10 && inLength > maxMagnitude ) // do not correct small vectors -> zero division
-    {
-        return (in / inLength) * maxMagnitude;
-    }
-
-    return in;
+    m_acceleration = MafHlp::correctVectorScale(acceleration, m_maxAccelreation);
 }
 
 void Human::move(double time)
@@ -90,18 +80,6 @@ void Human::move(double time)
 
         // React on neighbours. When no neigbhours, slow down.
         Eigen::Vector2d newAcceleration;
-        double currentSpeed = m_velocity.norm();
-        Eigen::Vector2d speedDirection = m_velocity / currentSpeed;
-
-        // Default acceleration is towards stopping -> NOTE: Thats not fine yet. For long time spans it fails
-        if(currentSpeed > 0.00001)
-        {
-            newAcceleration = -speedDirection * m_maxAccelreation;
-        }
-        else
-        {
-            newAcceleration = Eigen::Vector2d(0.0, 0.0);
-        }
 
         // Consider agents
         if(!agentDistances.empty())
@@ -109,8 +87,17 @@ void Human::move(double time)
             EnvironmentInterface::Distance closestAgent = agentDistances.top();
             if(closestAgent.dist < m_obsDistance)
             {
-                newAcceleration = -closestAgent.vect;
+                //                  unit direction pointing away from other agent
+                newAcceleration = -(closestAgent.vect / closestAgent.dist) * m_maxAccelreation;
             }
+            else
+            {
+                newAcceleration = MafHlp::computeSlowDown(m_velocity, m_maxAccelreation, time);
+            }
+        }
+        else
+        {
+            newAcceleration = MafHlp::computeSlowDown(m_velocity, m_maxAccelreation, time);
         }
 
         setAcceleration(newAcceleration);
