@@ -83,7 +83,7 @@ public:
         {
             for(size_t n = 0; n < 12; n++)
             {
-                auto h1 = std::shared_ptr<Human>(new Human(m*10+n, 2.0, 1.0, 2.0, reactionDist(gen)));
+                auto h1 = std::shared_ptr<Human>(new Human(m*10+n, 1.0, 2.0, 1.5, reactionDist(gen)));
                 h1->setPosition(Eigen::Vector2d(-3.0, -3.0) + m * Eigen::Vector2d(0.5, 0.0) + n * Eigen::Vector2d(0.0, 0.5) );
                 agents.push_back(h1);
             }
@@ -144,7 +144,7 @@ public:
             painter.drawEllipse(sim2WidTrans(a->getPosition()), sim2WidScale(a->getRadius()), sim2WidScale(a->getRadius()));
 
             painter.setPen(QPen(Qt::black, 1, Qt::SolidLine));
-            painter.drawLine(sim2WidTrans(a->getPosition()), sim2WidTrans(a->getPosition() + a->getAcceleration()));
+            painter.drawLine(sim2WidTrans(a->getPosition()), sim2WidTrans(a->getPosition() + (a->getAcceleration()/2.0)));
         });
     }
 
