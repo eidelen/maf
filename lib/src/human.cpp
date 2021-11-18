@@ -81,21 +81,29 @@ void Human::move(double time)
         EnvironmentInterface::DistanceQueue agentDistances = env->getAgentDistancesToAllOtherAgents(id());
 
         // React on neighbours. When no neigbhours, slow down.
-        Eigen::Vector2d newAcceleration;
 
-        // Consider agents
-        if(!agentDistances.empty())
+        // Compute mean direction of agents in range
+        Eigen::Vector2d newAcceleration(0.0, 0.0);
+        size_t cntAgents = 0;
+        while(!agentDistances.empty())
         {
-            EnvironmentInterface::Distance closestAgent = agentDistances.top();
-            if(closestAgent.dist < m_obsDistance)
+            if( agentDistances.top().dist < m_obsDistance )
             {
-                //                  unit direction pointing away from other agent
-                newAcceleration = -(closestAgent.vect / closestAgent.dist) * m_maxAccelreation;
+                cntAgents++;
+
+                // weigthed summation
+                newAcceleration = newAcceleration + (agentDistances.top().vect / agentDistances.top().dist) * 1.0 / cntAgents;
+                agentDistances.pop();
             }
             else
             {
-                newAcceleration = MafHlp::computeSlowDown(m_velocity, m_maxAccelreation, time);
+                break;
             }
+        }
+
+        if(cntAgents > 0)
+        {
+            newAcceleration = -(newAcceleration / newAcceleration.norm()) * m_maxAccelreation;
         }
         else
         {
