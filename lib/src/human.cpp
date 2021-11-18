@@ -22,6 +22,7 @@
 *****************************************************************************/
 
 #include <iostream>
+#include <random>
 #include "human.h"
 #include "helpers.h"
 
@@ -104,11 +105,39 @@ void Human::move(double time)
         setAcceleration(newAcceleration);
     }
 
+    performFinalMove(time);
+}
 
-    // Update new velocity and position
-    auto[p, v] = computeMotion(time);
-    auto[possible, finalPos] = env->possibleMove(getPosition(), p);
-    setPosition(finalPos);
-    setVelocity(possible ? v : getVelocity()); // only update velocity when motion was possible
+void Human::performFinalMove(double time)
+{
+    auto env = getEnvironment();
+
+    std::random_device rd{};
+    std::mt19937 gen{rd()};
+    std::normal_distribution<> d{0.0, 0.3};
+
+    // randomly generating angle deviation around wanted direction
+    Eigen::Vector2d wantedAcceleration = getAcceleration();
+    for(int k = 0; k < 10; k++)
+    {
+        Eigen::Rotation2D<double> rotMat( d(gen) );
+        Eigen::Vector2d actualAcceleration = rotMat * wantedAcceleration;
+
+        setAcceleration(actualAcceleration);
+        auto[p, v] = computeMotion(time);
+        auto[possible, finalPos] = env->possibleMove(getPosition(), p);
+
+        if(possible)
+        {
+            // found possible move
+            setPosition(finalPos);
+            setVelocity(v);
+            return;
+        }
+    }
+
+    // No move found within sampling range
+    setVelocity(Eigen::Vector2d(0.0, 0.0));
+    setAcceleration(Eigen::Vector2d(0.0, 0.0));
 }
 

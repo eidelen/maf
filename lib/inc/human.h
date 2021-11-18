@@ -62,6 +62,11 @@ public:
     void disableReacting(bool disable);
 
 
+private:
+
+    void performFinalMove(double time);
+
+
 public: // inherited from Agent
     std::pair<Eigen::Vector2d, Eigen::Vector2d> computeMotion(double time) const override;
     void setVelocity(const Eigen::Vector2d &velocity) override;
