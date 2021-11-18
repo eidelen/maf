@@ -29,7 +29,7 @@
 #include <QPainter>
 
 #include "environment.h"
-#include "agent.h"
+#include "human.h"
 #include "simulation.h"
 
 /**
@@ -64,27 +64,28 @@ public:
     }
 };
 
-class HumanoidAgent: public Agent
-{
-public:
-    HumanoidAgent(unsigned int k): Agent(k)
-    {
-        setPosition(Eigen::Vector2d(0.0, 0.0));
-        setVelocity(Eigen::Vector2d(1.0, 0.0));
-        setRadius(0.3);
-    }
-    virtual ~HumanoidAgent() {}
-};
 
-class HumanoidAgentFactory: public AgentFactory
+class CivilianAgentFactory: public AgentFactory
 {
 public:
-    HumanoidAgentFactory(): AgentFactory() {}
-    virtual ~HumanoidAgentFactory() {}
+    CivilianAgentFactory(): AgentFactory() {}
+    virtual ~CivilianAgentFactory() {}
     std::list<std::shared_ptr<Agent>> createAgents() override
     {
-        // return one agent
-        return {std::shared_ptr<HumanoidAgent>(new HumanoidAgent(0))};
+        std::list<std::shared_ptr<Agent>> agents;
+
+        for(size_t m = 0; m < 10; m++)
+        {
+            for(size_t n = 0; n < 10; n++)
+            {
+                auto h1 = std::shared_ptr<Human>(new Human(m*10+n, 3.0, 1.5, 2.0));
+                h1->setPosition(Eigen::Vector2d(-3.0, -3.0) + m * Eigen::Vector2d(0.5, 0.0) + n * Eigen::Vector2d(0.0, 0.5) );
+                agents.push_back(h1);
+            }
+        }
+
+
+        return agents;
     }
 };
 
@@ -94,7 +95,7 @@ public:
     HumanoidAgentQtSim()
     {
         m_sim = Simulation::createSimulation(4);
-        m_sim->setAgentFactory(std::shared_ptr<HumanoidAgentFactory>(new HumanoidAgentFactory()));
+        m_sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory()));
         m_sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
 
         m_sim->initEnvironment();

@@ -36,6 +36,7 @@ Human::Human(unsigned int id, double maxSpeed, double maxAcceleration, double ob
     Agent(id), m_maxSpeed(maxSpeed), m_maxAccelreation(maxAcceleration), m_obsDistance(obsDistance),
     m_disableReacting(false)
 {
+    setRadius(0.3);
 
 }
 
