@@ -63,10 +63,16 @@ public:
      */
     void disableReacting(bool disable);
 
+    /**
+     * Get agent's stress level (0.0 -> 1.0)
+     */
+    double getStressLevel() const;
+
 
 private:
 
     void performFinalMove(double time);
+    void computeStressLevel(EnvironmentInterface::DistanceQueue otherAgents);
 
 
 public: // inherited from Agent
@@ -84,6 +90,7 @@ protected:
     bool m_disableReacting;
     double m_reactionTime;
     double m_timeSinceLastReaction;
+    double m_stressLevel;
 
 };
 

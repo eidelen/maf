@@ -56,13 +56,6 @@ void GLWidget::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::Antialiasing);
     painter.fillRect(event->rect(), QBrush(QColor(64, 32, 64)));
 
-    // draw text
-    QFont font = painter.font() ;
-    font.setPointSize(25);
-    painter.setFont(font);
-    painter.setPen(QColor(255,255,255));
-    painter.drawText(QPoint(100,100), "Yeahh");
-
     m_sim->drawSim(painter);
 
     painter.end();

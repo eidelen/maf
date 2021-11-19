@@ -36,7 +36,7 @@ std::shared_ptr<Human> Human::createHuman(unsigned int id, double maxSpeed,
 
 Human::Human(unsigned int id, double maxSpeed, double maxAcceleration, double obsDistance, double reactionTime) :
     Agent(id), m_maxSpeed(maxSpeed), m_maxAccelreation(maxAcceleration), m_obsDistance(obsDistance),
-    m_disableReacting(false), m_reactionTime(reactionTime), m_timeSinceLastReaction(0.0)
+    m_disableReacting(false), m_reactionTime(reactionTime), m_timeSinceLastReaction(0.0), m_stressLevel(0.0)
 {
     setRadius(0.3);
 
@@ -50,6 +50,23 @@ Human::~Human()
 void Human::disableReacting(bool disable)
 {
     m_disableReacting = disable;
+}
+
+double Human::getStressLevel() const
+{
+    return m_stressLevel;
+}
+
+void Human::computeStressLevel(EnvironmentInterface::DistanceQueue otherAgents)
+{
+    // get closest agent and weight with obsDistance
+    double stress = 0.0;
+    if(!otherAgents.empty())
+    {
+        stress = (-1.0/m_obsDistance*otherAgents.top().dist) + 1.0;
+    }
+
+    m_stressLevel = std::max(0.0, std::min(1.0, stress));
 }
 
 std::pair<Eigen::Vector2d, Eigen::Vector2d> Human::computeMotion(double time) const
@@ -102,6 +119,8 @@ void Human::move(double time)
         {
             setAcceleration(MafHlp::computeSlowDown(m_velocity, m_maxAccelreation, time));
         }
+
+        computeStressLevel(env->getAgentDistancesToAllOtherAgents(id()));
     }
 
     performFinalMove(time);
@@ -129,7 +148,7 @@ void Human::performFinalMove(double time)
     std::normal_distribution<> d{0.0, 3.14};
 
     Eigen::Vector2d wantedAcceleration = getAcceleration();
-    for(int k = 0; k < 5; k++)
+    for(int k = 0; k < 10; k++)
     {
         Eigen::Rotation2D<double> rotMat( d(gen) );
         Eigen::Vector2d actualAcceleration = rotMat * wantedAcceleration;
@@ -150,5 +169,6 @@ void Human::performFinalMove(double time)
     // No move found within sampling range
     setVelocity(Eigen::Vector2d(0.0, 0.0));
     setAcceleration(Eigen::Vector2d(0.0, 0.0));
+    m_stressLevel = 1.0;
 }
 
