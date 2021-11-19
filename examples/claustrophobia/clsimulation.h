@@ -100,6 +100,13 @@ class HumanoidAgentQtSim
 public:
     HumanoidAgentQtSim()
     {
+        restart();
+    }
+
+    virtual ~HumanoidAgentQtSim() {}
+
+    void restart()
+    {
         m_stressSeconds = 0.0;
 
         m_sim = Simulation::createSimulation(4);
@@ -108,8 +115,6 @@ public:
         m_sim->initEnvironment();
         m_sim->initAgents();
     }
-
-    virtual ~HumanoidAgentQtSim() {}
 
     void setTimeStep(double ts)
     {

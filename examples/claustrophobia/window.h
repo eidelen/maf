@@ -36,6 +36,10 @@ Q_OBJECT
 public:
     Window();
 
+public slots:
+    void resetSimulation();
+
+
 private:
     std::shared_ptr<HumanoidAgentQtSim> m_hSim;
 };
