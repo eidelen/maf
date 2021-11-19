@@ -26,6 +26,8 @@
 
 #include <Eigen/Dense>
 
+#include "environment_interface.h"
+
 class MafHlp
 {
 public:
@@ -73,6 +75,42 @@ public:
         // unit acceleration opposite velocity and scaled
         return ((-velocity) / speed) * chosenAcc;
     }
+
+    /**
+     * Compute the average direction to all agents which are closer than a specified distance "obsDist".
+     * A weighted averaging is chosen, so that closer agents matter more.
+     * @param dists Distance queue
+     * @param obsDist Observation distance
+     * @return normalized average direction.
+     */
+    static std::pair<bool,Eigen::Vector2d> computeAvgWeightedDirectionToOtherAgents(EnvironmentInterface::DistanceQueue dists, double obsDist)
+    {
+        Eigen::Vector2d avgDir(0.0, 0.0);
+        size_t cntAgents = 0;
+        while(!dists.empty())
+        {
+            const auto& d = dists.top();
+            if( d.dist < obsDist )
+            {
+                cntAgents++;
+
+                // weigthed summation -> as more far the agent is, as less impact it has
+                avgDir = avgDir + (d.vect * (1.0 / cntAgents));
+                dists.pop();
+            }
+            else
+            {
+                // DistanceQueue is ordered -> next one is smaller as well
+                break;
+            }
+        }
+
+        if(cntAgents > 0)
+            return {true, avgDir.normalized()};
+        else
+            return {false, avgDir};
+    }
+
 };
 
 #endif // HELPERS_H

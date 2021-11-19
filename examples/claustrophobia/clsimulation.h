@@ -79,16 +79,17 @@ public:
         std::mt19937 gen{rd()};
         std::normal_distribution<> reactionDist{0.7, 0.2};
 
-        for(size_t m = 0; m < 12; m++)
+        size_t sideNbr = 12;
+        unsigned int agentIdx = 0;
+        for(size_t m = 0; m < sideNbr; m++)
         {
-            for(size_t n = 0; n < 12; n++)
+            for(size_t n = 0; n < sideNbr; n++)
             {
-                auto h1 = std::shared_ptr<Human>(new Human(m*10+n, 1.0, 2.0, 1.5, reactionDist(gen)));
+                auto h1 = std::shared_ptr<Human>(new Human(agentIdx++, 1.0, 2.0, 1.5, reactionDist(gen)));
                 h1->setPosition(Eigen::Vector2d(-3.0, -3.0) + m * Eigen::Vector2d(0.5, 0.0) + n * Eigen::Vector2d(0.0, 0.5) );
                 agents.push_back(h1);
             }
         }
-
 
         return agents;
     }
@@ -102,7 +103,6 @@ public:
         m_sim = Simulation::createSimulation(4);
         m_sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory()));
         m_sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
-
         m_sim->initEnvironment();
         m_sim->initAgents();
     }
@@ -147,8 +147,6 @@ public:
             painter.drawLine(sim2WidTrans(a->getPosition()), sim2WidTrans(a->getPosition() + (a->getAcceleration()/2.0)));
         });
     }
-
-
 
 private:
     double m_timeStep;
