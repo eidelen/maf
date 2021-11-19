@@ -28,7 +28,7 @@ std::shared_ptr<Simulation> Simulation::createSimulation(unsigned int id)
     return std::shared_ptr<Simulation>(new Simulation(id));
 }
 
-Simulation::Simulation(unsigned int id): m_id(id)
+Simulation::Simulation(unsigned int id): m_id(id), m_simulationRunningTime(0.0)
 {
 
 }
@@ -80,11 +80,17 @@ void Simulation::initAgents()
 
 void Simulation::doTimeStep(double time)
 {
+    m_simulationRunningTime += time;
     m_environment->update(time);
 }
 
 std::shared_ptr<Environment> Simulation::getEnvironment()
 {
     return m_environment;
+}
+
+double Simulation::getSimulationRunningTime() const
+{
+    return m_simulationRunningTime;
 }
 

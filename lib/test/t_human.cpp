@@ -32,8 +32,6 @@ TEST(Human, MaxSpeed)
 
     h->move(5.0);
 
-    std::cout << h->getVelocity().transpose() << std::endl;
-
     ASSERT_TRUE((h->getVelocity() - Eigen::Vector2d(5.0, 0.0)).isMuchSmallerThan(0.0001));
 
     h->move(5.0);

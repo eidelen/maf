@@ -101,8 +101,15 @@ public:
      */
     std::shared_ptr<Environment> getEnvironment();
 
+    /**
+     * Return the overall simulation running time in seconds.
+     * @return Running time in seconds.
+     */
+    double getSimulationRunningTime() const;
+
 private:
     unsigned int m_id;
+    double m_simulationRunningTime;
     std::shared_ptr<AgentFactory> m_agentFactory;
     std::shared_ptr<EnvironmentFactory> m_environmentFactory;
     std::shared_ptr<Environment> m_environment;

@@ -79,7 +79,7 @@ public:
         std::mt19937 gen{rd()};
         std::normal_distribution<> reactionDist{0.7, 0.2};
 
-        size_t sideNbr = 12;
+        size_t sideNbr = 11;
         unsigned int agentIdx = 0;
         for(size_t m = 0; m < sideNbr; m++)
         {
@@ -101,7 +101,6 @@ public:
     HumanoidAgentQtSim()
     {
         m_stressSeconds = 0.0;
-        m_runningTime = 0.0;
 
         m_sim = Simulation::createSimulation(4);
         m_sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory()));
@@ -136,8 +135,6 @@ public:
 
     void drawSim(QPainter& painter)
     {
-        m_runningTime += m_timeStep;
-
         // draw circle
         painter.setBrush(Qt::white);
         painter.drawEllipse(sim2WidTrans(Eigen::Vector2d(0.0, 0.0)), sim2WidScale(10.0), sim2WidScale(10.0));
@@ -174,14 +171,13 @@ public:
         painter.setPen(QColor(255,255,255));
 
         QString stat;
-        stat.sprintf("Time: %.3f, Stress: %.3f, AccStress: %.3f", m_runningTime, avgStress, m_stressSeconds);
+        stat.sprintf("Time: %.3f, Stress: %.3f, AccStress: %.3f", m_sim->getSimulationRunningTime(), avgStress, m_stressSeconds);
         painter.drawText(QPoint(30,30), stat);
     }
 
 private:
     double m_timeStep;
     double m_stressSeconds;
-    double m_runningTime;
     std::shared_ptr<Simulation> m_sim;
 };
 

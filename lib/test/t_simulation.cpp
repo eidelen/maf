@@ -137,3 +137,22 @@ TEST(Simulation, TestBaseSimulation)
     });
 }
 
+TEST(Simulation, RunningTime)
+{
+    auto s = Simulation::createSimulation(4);
+    s->setAgentFactory(std::shared_ptr<MyBoringAgentFactory>(new MyBoringAgentFactory()));
+    s->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
+    s->initEnvironment();
+    s->initAgents();
+
+    ASSERT_NEAR(s->getSimulationRunningTime(), 0.0, 0.0001);
+
+    s->doTimeStep(0.5);
+
+    ASSERT_NEAR(s->getSimulationRunningTime(), 0.5, 0.0001);
+
+    s->doTimeStep(2.5);
+
+    ASSERT_NEAR(s->getSimulationRunningTime(), 3.0, 0.0001);
+}
+
