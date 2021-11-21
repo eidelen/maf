@@ -21,8 +21,8 @@
 **
 *****************************************************************************/
 
-#include <thread>
 #include <iostream>
+#include <algorithm>
 
 #include "parallel.h"
 
@@ -38,7 +38,10 @@ Parallel::Parallel(size_t nThreads) : m_nbrThreads(nThreads)
 
 Parallel::~Parallel()
 {
-
+    for (std::thread& t : m_threadPool)
+    {
+        t.join();
+    }
 }
 
 void Parallel::addSimulation(std::shared_ptr<Simulation> aSimulation, double timeSteps, double simulationTime)
@@ -46,46 +49,43 @@ void Parallel::addSimulation(std::shared_ptr<Simulation> aSimulation, double tim
     m_simQueue.push({aSimulation, timeSteps, simulationTime});
 }
 
-void Parallel::run()
+void Parallel::doWork()
 {
-    std::vector<std::thread> workers;
-    std::cout << "Run threads..." << std::endl;
-    while(!m_simQueue.empty())
+    while (true)
     {
-        auto fr = m_simQueue.front();
-        std::shared_ptr<Simulation> sim = std::get<0>(fr);
-        double timeStep = std::get<1>(fr);
-        double simDuration = std::get<2>(fr);
+        SimQueueElement sq;
+        bool gotSim = false;
+        {
+            std::unique_lock<std::mutex> lock(m_queueMutex);
 
-        m_simQueue.pop();
-
-
-
-
-
-
-        std::cout << "Prepare sim " << sim->id() << std::endl;
-
-        workers.push_back(std::thread([sim, timeStep, simDuration](){
-            sim->initEnvironment();
-            sim->initAgents();
-
-
-            std::cout << "Init done " << sim->id() << std::endl;
-
-            while(sim->getSimulationRunningTime() < simDuration)
+            if( m_simQueue.empty() )
             {
-                sim->doTimeStep(timeStep);
+                std::cout << "Nothing left to do" << std::endl;
+                return;
             }
 
-            std::cout << "Sim done " << sim->id() << std::endl;
-        }));
+            sq = m_simQueue.front();
+            gotSim = true;
+            m_simQueue.pop();
+
+            // lock is unlocked when leavin scope
+        }
+
+        if(gotSim)
+        {
+            // run the simulation
+            std::shared_ptr<Simulation> sim = std::get<0>(sq);
+            std::cout << "Run simulation " << sim->id() << std::endl;;
+        }
+
     }
+};
 
-    std::for_each(workers.begin(), workers.end(), [](std::thread &t)
+void Parallel::run()
+{
+    for(size_t k = 0; k < m_nbrThreads; k++)
     {
-        t.join();
-    });
-
-    std::cout << "All threads done..." << std::endl;
+        std::cout << "Create Thread " << k << std::endl;
+        m_threadPool.push_back(std::thread([this] { this->doWork(); } ));
+    }
 }

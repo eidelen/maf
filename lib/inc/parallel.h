@@ -25,6 +25,8 @@
 #define PARALLEL_H
 
 #include <queue>
+#include <thread>
+#include <mutex>
 #include "simulation.h"
 
 /**
@@ -34,6 +36,8 @@ class Parallel
 {
 
 public:
+
+    using SimQueueElement = std::tuple<std::shared_ptr<Simulation>, double, double>;
 
     static std::shared_ptr<Parallel> createParallel(size_t nThreads);
 
@@ -61,9 +65,16 @@ public:
      */
     void run();
 
+    /**
+     * Main function of threads.
+     */
+    void doWork();
+
 private:
-    std::queue<std::tuple<std::shared_ptr<Simulation>, double, double>> m_simQueue;
+    std::queue<SimQueueElement> m_simQueue;
     size_t m_nbrThreads;
+    std::vector<std::thread> m_threadPool;
+    std::mutex m_queueMutex;
 };
 
 #endif // PARALLEL_H

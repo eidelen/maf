@@ -4,7 +4,7 @@
 
 TEST(Parallel, Run)
 {
-    auto p = Parallel::createParallel(4);
+    auto p = Parallel::createParallel(2);
 
     for(unsigned int k = 0; k < 4; k++ )
     {
