@@ -31,7 +31,7 @@ std::shared_ptr<Parallel> Parallel::createParallel(size_t nThreads)
     return std::shared_ptr<Parallel>(new Parallel(nThreads));
 }
 
-Parallel::Parallel(size_t nThreads) : m_nbrThreads(nThreads)
+Parallel::Parallel(size_t nThreads) : m_nbrThreads(nThreads), m_nbrOfFinishedSimulations(0)
 {
 
 }
@@ -60,7 +60,6 @@ void Parallel::doWork()
 
             if( m_simQueue.empty() )
             {
-                std::cout << "Nothing left to do" << std::endl;
                 return;
             }
 
@@ -68,24 +67,30 @@ void Parallel::doWork()
             gotSim = true;
             m_simQueue.pop();
 
-            // lock is unlocked when leavin scope
+            // lock is unlocked when leaving scope
         }
 
         if(gotSim)
         {
             // run the simulation
-            std::shared_ptr<Simulation> sim = std::get<0>(sq);
-            std::cout << "Run simulation " << sim->id() << std::endl;;
+            auto[sim, ts, dur] = sq;
+            sim->initEnvironment();
+            sim->initAgents();
+            sim->runSimulation(ts, dur);
+            m_nbrOfFinishedSimulations++;
         }
-
     }
-};
+}
 
 void Parallel::run()
 {
     for(size_t k = 0; k < m_nbrThreads; k++)
     {
-        std::cout << "Create Thread " << k << std::endl;
         m_threadPool.push_back(std::thread([this] { this->doWork(); } ));
     }
+}
+
+std::pair<double, double> Parallel::getProgress() const
+{
+    return {m_nbrOfFinishedSimulations, m_simQueue.size()};
 }

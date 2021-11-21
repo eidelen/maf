@@ -94,3 +94,10 @@ double Simulation::getSimulationRunningTime() const
     return m_simulationRunningTime;
 }
 
+void Simulation::runSimulation(double timeStep, double simulationDuration)
+{
+    while( m_simulationRunningTime < simulationDuration )
+    {
+        doTimeStep(timeStep);
+    }
+}

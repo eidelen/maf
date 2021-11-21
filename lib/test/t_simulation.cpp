@@ -156,3 +156,17 @@ TEST(Simulation, RunningTime)
     ASSERT_NEAR(s->getSimulationRunningTime(), 3.0, 0.0001);
 }
 
+TEST(Simulation, RunSimulation)
+{
+    auto s = Simulation::createSimulation(4);
+    s->setAgentFactory(std::shared_ptr<MyBoringAgentFactory>(new MyBoringAgentFactory()));
+    s->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
+    s->initEnvironment();
+    s->initAgents();
+
+    ASSERT_NEAR(s->getSimulationRunningTime(), 0.0, 0.0001);
+
+    s->runSimulation(0.05, 10.0);
+
+    ASSERT_NEAR(s->getSimulationRunningTime(), 10.0, 0.0001);
+}

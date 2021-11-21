@@ -70,11 +70,18 @@ public:
      */
     void doWork();
 
+    /**
+     * Get progress.
+     * @return <number of finished simulations, number of queued simulations>
+     */
+    std::pair<double, double> getProgress() const;
+
 private:
     std::queue<SimQueueElement> m_simQueue;
     size_t m_nbrThreads;
     std::vector<std::thread> m_threadPool;
     std::mutex m_queueMutex;
+    std::atomic_size_t m_nbrOfFinishedSimulations;
 };
 
 #endif // PARALLEL_H

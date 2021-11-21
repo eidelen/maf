@@ -107,6 +107,13 @@ public:
      */
     double getSimulationRunningTime() const;
 
+    /**
+     * Run simulation for a given time with given time steps.
+     * @param timeStep Time steps in seconds.
+     * @param simulationDuration Simulation duration in seconds.
+     */
+    void runSimulation(double timeStep, double simulationDuration);
+
 private:
     unsigned int m_id;
     double m_simulationRunningTime;
