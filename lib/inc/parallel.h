@@ -27,6 +27,7 @@
 #include <queue>
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include "simulation.h"
 
 /**
