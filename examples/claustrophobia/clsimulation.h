@@ -79,7 +79,7 @@ public:
         std::mt19937 gen{rd()};
         std::normal_distribution<> reactionDist{0.7, 0.2};
 
-        size_t sideNbr = 11;
+        size_t sideNbr = 9;
         unsigned int agentIdx = 0;
         for(size_t m = 0; m < sideNbr; m++)
         {
@@ -94,15 +94,16 @@ public:
         // add a soldier
         auto s1 = Soldier::createSoldier(3440);
         s1->setPosition(Eigen::Vector2d(-9.0, 0.0));
-        s1->setVelocity(Eigen::Vector2d(1.0, 0.0));
+        s1->addObjective(Eigen::Vector2d(9.0, 0.0));
 
         auto s2 = Soldier::createSoldier(3441);
         s2->setPosition(Eigen::Vector2d(-9.5, 0.5));
-        s2->setVelocity(Eigen::Vector2d(1.0, 0.0));
+        s2->addObjective(Eigen::Vector2d(8.5, 0.5));
 
         auto s3 = Soldier::createSoldier(3442);
         s3->setPosition(Eigen::Vector2d(-9.5, -0.5));
-        s3->setVelocity(Eigen::Vector2d(1.0, 0.0));
+        s3->addObjective(Eigen::Vector2d(8.5, -0.5));
+
 
         agents.push_back(s1);
         agents.push_back(s2);

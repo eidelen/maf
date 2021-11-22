@@ -24,6 +24,7 @@
 #ifndef SOLDIER_H
 #define SOLDIER_H
 
+#include <queue>
 #include "human.h"
 
 class Soldier: public Human
@@ -31,8 +32,8 @@ class Soldier: public Human
 
 public:
 
-    static std::shared_ptr<Soldier> createSoldier(unsigned int id, double maxSpeed = 7,
-                                                    double maxAcceleration = 3.5, double obsDistance = 1.5,
+    static std::shared_ptr<Soldier> createSoldier(unsigned int id, double maxSpeed = 2.0,
+                                                    double maxAcceleration = 1.0, double obsDistance = 1.5,
                                                     double reactionTime = 0.3);
 
     Soldier(unsigned int id, double maxSpeed, double maxAcceleration, double obsDistance, double reactionTime);
@@ -46,6 +47,16 @@ public:
      * React. Specify behaviour in this function.
      */
     virtual void react(double time) override;
+
+    /**
+     * Add an objective / target location, the soldier
+     * should move to.
+     * @param target Target location.
+     */
+    void addObjective(const Eigen::Vector2d& target);
+
+protected:
+    std::queue<Eigen::Vector2d> m_objectives;
 
 };
 

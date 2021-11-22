@@ -22,6 +22,7 @@
 *****************************************************************************/
 
 #include "soldier.h"
+#include "helpers.h"
 
 std::shared_ptr<Soldier> Soldier::createSoldier(unsigned int id, double maxSpeed, double maxAcceleration, double obsDistance, double reactionTime)
 {
@@ -40,5 +41,41 @@ Soldier::~Soldier()
 
 void Soldier::react(double time)
 {
+    // React on neighbours but keep going towards objective
 
+    // Compute target direction
+    bool hasTarget = false;
+    Eigen::Vector2d targetDirNorm(0.0, 0.0);
+    if(!m_objectives.empty())
+    {
+        Eigen::Vector2d target = m_objectives.front();
+        targetDirNorm = (target - getPosition()).normalized();
+        hasTarget = true;
+    }
+
+    // check if reacting on neigbhours
+    auto[compPossible, avgAgentDir] = MafHlp::computeAvgWeightedDirectionToOtherAgents(getEnvironment()->getAgentDistancesToAllOtherAgents(id()), m_obsDistance);
+
+    if( compPossible && hasTarget )
+    {
+        setAcceleration((-avgAgentDir + targetDirNorm).normalized() * m_maxAccelreation);
+    }
+    else if(compPossible)
+    {
+        setAcceleration(-(avgAgentDir) * m_maxAccelreation);
+    }
+    else if(hasTarget)
+    {
+        setAcceleration(targetDirNorm* m_maxAccelreation);
+    }
+    else
+    {
+        // deaccelerate over reaction time
+        setAcceleration(MafHlp::computeSlowDown(m_velocity, m_maxAccelreation, m_reactionTime));
+    }
+}
+
+void Soldier::addObjective(const Eigen::Vector2d &target)
+{
+    m_objectives.push(target);
 }

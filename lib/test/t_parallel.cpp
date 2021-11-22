@@ -32,5 +32,4 @@ TEST(Parallel, Run)
     auto[d2, q2] = p->getProgress();
     ASSERT_EQ(d2, 4);
     ASSERT_EQ(q2, 0);
-
 }
