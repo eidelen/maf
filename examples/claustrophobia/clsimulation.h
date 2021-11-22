@@ -30,6 +30,7 @@
 
 #include "environment.h"
 #include "human.h"
+#include "soldier.h"
 #include "simulation.h"
 
 /**
@@ -89,6 +90,23 @@ public:
                 agents.push_back(h1);
             }
         }
+
+        // add a soldier
+        auto s1 = Soldier::createSoldier(3440);
+        s1->setPosition(Eigen::Vector2d(-9.0, 0.0));
+        s1->setVelocity(Eigen::Vector2d(1.0, 0.0));
+
+        auto s2 = Soldier::createSoldier(3441);
+        s2->setPosition(Eigen::Vector2d(-9.5, 0.5));
+        s2->setVelocity(Eigen::Vector2d(1.0, 0.0));
+
+        auto s3 = Soldier::createSoldier(3442);
+        s3->setPosition(Eigen::Vector2d(-9.5, -0.5));
+        s3->setVelocity(Eigen::Vector2d(1.0, 0.0));
+
+        agents.push_back(s1);
+        agents.push_back(s2);
+        agents.push_back(s3);
 
         return agents;
     }
