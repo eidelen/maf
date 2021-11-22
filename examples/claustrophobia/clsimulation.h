@@ -27,7 +27,6 @@
 #include <iostream>
 #include <random>
 #include <Eigen/Dense>
-#include <QPainter>
 
 #include "environment.h"
 #include "human.h"
@@ -93,97 +92,6 @@ public:
 
         return agents;
     }
-};
-
-class HumanoidAgentQtSim
-{
-public:
-    HumanoidAgentQtSim()
-    {
-        restart();
-    }
-
-    virtual ~HumanoidAgentQtSim() {}
-
-    void restart()
-    {
-        m_stressSeconds = 0.0;
-
-        m_sim = Simulation::createSimulation(4);
-        m_sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory()));
-        m_sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
-        m_sim->initEnvironment();
-        m_sim->initAgents();
-    }
-
-    void setTimeStep(double ts)
-    {
-        m_timeStep = ts;
-    }
-
-    void update()
-    {
-        m_sim->doTimeStep(m_timeStep);
-    }
-
-    QPointF sim2WidTrans(const Eigen::Vector2d& simCoord)
-    {
-        Eigen::Vector2d circOrigin(500.0, 400.0);
-        Eigen::Vector2d widCoord = (simCoord * sim2WidScale(1.0)) + circOrigin;
-        return QPointF(widCoord(0), widCoord(1));
-    }
-
-    double sim2WidScale(double simLength)
-    {
-        return simLength * 30.0;
-    }
-
-    void drawSim(QPainter& painter)
-    {
-        // draw circle
-        painter.setBrush(Qt::white);
-        painter.drawEllipse(sim2WidTrans(Eigen::Vector2d(0.0, 0.0)), sim2WidScale(10.0), sim2WidScale(10.0));
-
-        // draw agents
-        auto agents = m_sim->getEnvironment()->getAgents();
-        double avgStress = 0.0;
-        size_t cntAgents = 0;
-        std::for_each(agents.begin(), agents.end(), [=, &painter, &avgStress, &cntAgents](const auto& a) {
-
-            // cast from hell :)
-            Human* h = (Human*)a.get();
-
-            double stress = h->getStressLevel();
-
-            avgStress += stress;
-            cntAgents++;
-
-            QColor agentColor( (int)(stress*255.0), 255-(int)(stress*255.0), 0.0 );
-            painter.setBrush(agentColor);
-            painter.drawEllipse(sim2WidTrans(h->getPosition()), sim2WidScale(h->getRadius()), sim2WidScale(h->getRadius()));
-
-            painter.setPen(QPen(Qt::black, 1, Qt::SolidLine));
-            painter.drawLine(sim2WidTrans(h->getPosition()), sim2WidTrans(h->getPosition() + (h->getAcceleration()/2.0)));
-        });
-
-        avgStress = avgStress / cntAgents;
-        m_stressSeconds += m_timeStep * avgStress;
-
-        // draw text
-        QFont font = painter.font();
-        font.setPointSize(12);
-        painter.setFont(font);
-        painter.setPen(QColor(255,255,255));
-
-        QString stat;
-        stat.sprintf("Time: %.3f, Stress: %.3f, AccStress: %.3f", m_sim->getSimulationRunningTime(), avgStress, m_stressSeconds);
-        painter.drawText(QPoint(30,30), stat);
-    }
-
-private:
-    double m_timeStep;
-    double m_stressSeconds;
-    std::shared_ptr<Simulation> m_sim;
 };
 
 

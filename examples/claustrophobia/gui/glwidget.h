@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (c) 2017 Adrian Schneider
+** Copyright (c) 2021 Adrian Schneider
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and associated documentation files (the "Software"),
@@ -21,11 +21,31 @@
 **
 *****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <iostream>
+#ifndef MAFCL_GLWIDGET_H
+#define MAFCL_GLWIDGET_H
 
-int main(int argc, char ** argv)
+#include <QOpenGLWidget>
+#include <QTime>
+
+#include "clsimQt.h"
+
+class GLWidget : public QOpenGLWidget
 {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
+Q_OBJECT
+
+public:
+    GLWidget(QWidget *parent);
+    void setQtSimulation(std::shared_ptr<HumanoidAgentQtSim> sim);
+
+public slots:
+    void animate();
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
+private:
+    std::shared_ptr<HumanoidAgentQtSim> m_sim;
+
+};
+
+#endif //MAFCL_GLWIDGET_H

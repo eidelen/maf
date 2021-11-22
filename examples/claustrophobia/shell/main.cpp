@@ -21,28 +21,48 @@
 **
 *****************************************************************************/
 
-#ifndef MAFCL_WINDOW_H
-#define MAFCL_WINDOW_H
+#include <chrono>
 
-
-#include <QWidget>
-
+#include "parallel.h"
 #include "clsimulation.h"
 
-class Window : public QWidget
+int main(int argc, char *argv[])
 {
-Q_OBJECT
+    using namespace std::chrono_literals;
+    auto start = std::chrono::high_resolution_clock::now();
 
-public:
-    Window();
+    auto p = Parallel::createParallel(std::thread::hardware_concurrency());
 
-public slots:
-    void resetSimulation();
+    size_t nSims = 20;
+    double tStep = 0.2;
+    double simDur = 10.0;
 
+    for(unsigned int k = 0; k < nSims; k++ )
+    {
+        auto sim = Simulation::createSimulation(4);
+        sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory()));
+        sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
+        p->addSimulation(sim, tStep, simDur);
+    }
 
-private:
-    std::shared_ptr<HumanoidAgentQtSim> m_hSim;
-};
+    p->run();
 
+    while(true)
+    {
+        auto[done, queued] = p->getProgress();
+        std::cout << "[" << done << ", " << queued << "]" << std::endl;
 
-#endif //MAFCL_WINDOW_H
+        if(done == nSims)
+            break;
+
+        std::this_thread::sleep_for(2000ms);
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::milli> elapsed = end-start;
+    std::cout << "Waited " << elapsed.count() << " ms" << std::endl;
+    std::cout << "Time per step: " << elapsed.count() / (nSims * (simDur/tStep)) << " ms" << std::endl;
+
+    return 0;
+}

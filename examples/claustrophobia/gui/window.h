@@ -21,31 +21,28 @@
 **
 *****************************************************************************/
 
-#ifndef MAFCL_GLWIDGET_H
-#define MAFCL_GLWIDGET_H
+#ifndef MAFCL_WINDOW_H
+#define MAFCL_WINDOW_H
 
-#include <QOpenGLWidget>
-#include <QTime>
 
-#include "clsimulation.h"
+#include <QWidget>
 
-class GLWidget : public QOpenGLWidget
+#include "clsimQt.h"
+
+class Window : public QWidget
 {
 Q_OBJECT
 
 public:
-    GLWidget(QWidget *parent);
-    void setQtSimulation(std::shared_ptr<HumanoidAgentQtSim> sim);
+    Window();
 
 public slots:
-    void animate();
+    void resetSimulation();
 
-protected:
-    void paintEvent(QPaintEvent *event) override;
 
 private:
-    std::shared_ptr<HumanoidAgentQtSim> m_sim;
-
+    std::shared_ptr<HumanoidAgentQtSim> m_hSim;
 };
 
-#endif //MAFCL_GLWIDGET_H
+
+#endif //MAFCL_WINDOW_H
