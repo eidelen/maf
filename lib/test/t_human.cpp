@@ -47,7 +47,7 @@ TEST(Human, MaxSpeed)
 TEST(Human, SlowDown)
 {
     auto env = Environment::createEnvironment(3);
-    auto h = Human::createHuman(11, 10.0, 4.0);
+    auto h = Human::createHuman(11, 10.0, 4.0, 3.0);
     h->setEnvironment(env);
 
     h->setVelocity(Eigen::Vector2d(10.0, 0.0));

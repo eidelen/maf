@@ -123,8 +123,8 @@ void Human::react(double time)
     }
     else
     {
-        // deaccelerate over reaction time
-        setAcceleration(MafHlp::computeSlowDown(m_velocity, m_maxAccelreation, m_reactionTime));
+        // deaccelerate over reaction time, as react() will be no called in between.
+        setAcceleration(MafHlp::computeSlowDown(m_velocity, m_maxAccelreation, std::max(time, m_reactionTime)));
     }
 }
 

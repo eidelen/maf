@@ -38,7 +38,7 @@ class Human: public Agent
 
 public:
 
-    static std::shared_ptr<Human> createHuman(unsigned int id, double maxSpeed = 5,
+    static std::shared_ptr<Human> createHuman(unsigned int id, double maxSpeed = 1.5,
                                               double maxAcceleration = 2.5, double obsDistance = 3.0,
                                               double reactionTime = 0.5);
 

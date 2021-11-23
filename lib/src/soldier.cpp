@@ -46,32 +46,43 @@ void Soldier::react(double time)
     // Compute target direction
     bool hasTarget = false;
     Eigen::Vector2d targetDirNorm(0.0, 0.0);
+    double targetDist = 0.0;
     if(!m_objectives.empty())
     {
         Eigen::Vector2d target = m_objectives.front();
-        targetDirNorm = (target - getPosition()).normalized();
+        Eigen::Vector2d diffVect = target - getPosition();
+        targetDist = diffVect.norm();
+        targetDirNorm = diffVect / targetDist;
         hasTarget = true;
+
+        // pop objective when very close
+        if(targetDist < 1.0)
+        {
+            m_objectives.pop();
+        }
     }
 
     // check if reacting on neigbhours
     auto[compPossible, avgAgentDir] = MafHlp::computeAvgWeightedDirectionToOtherAgents(getEnvironment()->getAgentDistancesToAllOtherAgents(id()), m_obsDistance);
 
-    if( compPossible && hasTarget )
+    if( compPossible || hasTarget )
     {
-        setAcceleration((-avgAgentDir + targetDirNorm).normalized() * m_maxAccelreation);
-    }
-    else if(compPossible)
-    {
-        setAcceleration(-(avgAgentDir) * m_maxAccelreation);
-    }
-    else if(hasTarget)
-    {
-        setAcceleration(targetDirNorm* m_maxAccelreation);
+        // if we are close to a target
+        if(hasTarget && targetDist < m_reactionTime*m_maxSpeed*2.0)
+        {
+            // assert not to go over target -> zero speed at target.
+            setAcceleration( -getVelocity() / m_reactionTime );
+        }
+        else
+        {
+            // get around agents but still go towards target.
+            setAcceleration((-avgAgentDir + targetDirNorm).normalized() * m_maxAccelreation);
+        }
     }
     else
     {
         // deaccelerate over reaction time
-        setAcceleration(MafHlp::computeSlowDown(m_velocity, m_maxAccelreation, m_reactionTime));
+        setAcceleration(MafHlp::computeSlowDown(m_velocity, m_maxAccelreation, std::max(time, m_reactionTime)));
     }
 }
 
