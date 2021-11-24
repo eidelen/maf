@@ -79,7 +79,7 @@ public:
         std::mt19937 gen{rd()};
         std::normal_distribution<> reactionDist{0.7, 0.2};
 
-        size_t sideNbr = 9;
+        size_t sideNbr = 8;
         unsigned int agentIdx = 0;
         for(size_t m = 0; m < sideNbr; m++)
         {
@@ -87,7 +87,7 @@ public:
             {
                 auto h1 = std::shared_ptr<Human>(new Human(agentIdx++, 1.0, 2.5, 1.5, reactionDist(gen)));
                 h1->setPosition(Eigen::Vector2d(-3.0, -3.0) + m * Eigen::Vector2d(0.5, 0.0) + n * Eigen::Vector2d(0.0, 0.5) );
-                //agents.push_back(h1);
+                agents.push_back(h1);
             }
         }
 

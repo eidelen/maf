@@ -97,6 +97,19 @@ public:
 
             painter.setPen(QPen(Qt::black, 1, Qt::SolidLine));
             painter.drawLine(sim2WidTrans(h->getPosition()), sim2WidTrans(h->getPosition() + (h->getAcceleration()/2.0)));
+
+            if(h->type() == AgentType::ESoldier)
+            {
+                QFont sfont = painter.font();
+                sfont.setPointSize(15);
+                painter.setFont(sfont);
+                painter.setPen(Qt::black);
+                painter.drawText(sim2WidTrans(h->getPosition())+QPointF(-5,5), "S");
+
+                QString stat;
+                stat.sprintf("Time: %.3f, Stress: %.3f, AccStress: %.3f", m_sim->getSimulationRunningTime(), avgStress, m_stressSeconds);
+                painter.drawText(QPoint(30,30), stat);
+            }
         });
 
         avgStress = avgStress / cntAgents;
@@ -104,7 +117,7 @@ public:
 
         // draw text
         QFont font = painter.font();
-        font.setPointSize(12);
+        font.setPointSize(18);
         painter.setFont(font);
         painter.setPen(QColor(255,255,255));
 
