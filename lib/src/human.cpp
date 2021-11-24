@@ -47,6 +47,11 @@ Human::~Human()
 
 }
 
+AgentType Human::type() const
+{
+    return AgentType::EHuman;
+}
+
 void Human::disableReacting(bool disable)
 {
     m_disableReacting = disable;

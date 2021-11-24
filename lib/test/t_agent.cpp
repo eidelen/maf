@@ -10,6 +10,12 @@ TEST(Agent, Ctor)
     ASSERT_EQ(a->id(), 5);
 }
 
+TEST(Agent, Type)
+{
+    auto a = Agent::createAgent(5);
+    ASSERT_EQ(a->type(), AgentType::EAgent);
+}
+
 TEST(Agent, Radius)
 {
     auto a = Agent::createAgent(5);

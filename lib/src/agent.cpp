@@ -54,6 +54,11 @@ unsigned int Agent::id() const
     return m_id;
 }
 
+AgentType Agent::type() const
+{
+    return AgentType::EAgent;
+}
+
 double Agent::getRadius() const
 {
     return m_radius;

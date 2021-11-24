@@ -44,16 +44,16 @@ public:
     virtual ~Soldier();
 
     /**
-     * React. Specify behaviour in this function.
-     */
-    virtual void react(double time) override;
-
-    /**
      * Add an objective / target location, the soldier
      * should move to.
      * @param target Target location.
      */
     void addObjective(const Eigen::Vector2d& target);
+
+public:
+    // from Human
+    virtual void react(double time) override;
+    AgentType type() const override;
 
 protected:
     std::queue<Eigen::Vector2d> m_objectives;

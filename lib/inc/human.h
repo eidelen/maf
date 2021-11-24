@@ -85,6 +85,7 @@ public: // inherited from Agent
     void setVelocity(const Eigen::Vector2d &velocity) override;
     void setAcceleration(const Eigen::Vector2d &acceleration) override;
     void move(double time) override;
+    AgentType type() const override;
 
 
 

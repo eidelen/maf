@@ -39,6 +39,11 @@ Soldier::~Soldier()
 
 }
 
+AgentType Soldier::type() const
+{
+    return AgentType::ESoldier;
+}
+
 void Soldier::react(double time)
 {
     // React on neighbours but keep going towards objective

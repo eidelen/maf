@@ -30,6 +30,17 @@
 
 #include "environment_interface.h"
 
+/**
+ * @brief The AgentType holds agent type identifiers. With
+ * every new agent class, this structs needs to be extended.
+ */
+enum AgentType
+{
+    EAgent,
+    EHuman,
+    ESoldier
+};
+
 
 /**
  * @brief The Agent class is a base class implementing basic physical
@@ -65,6 +76,12 @@ public:
      * @return Agent id.
      */
     unsigned int id() const;
+
+    /**
+     * Return type of agent.
+     * @return Type string.
+     */
+    virtual AgentType type() const;
 
     /**
      * Get the radius of the agent.
@@ -138,7 +155,6 @@ public:
      * @param time Time step in s.
      */
     virtual void move(double time);
-
 
 protected:
 
