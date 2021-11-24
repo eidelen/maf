@@ -87,14 +87,15 @@ public:
             {
                 auto h1 = std::shared_ptr<Human>(new Human(agentIdx++, 1.0, 2.5, 1.5, reactionDist(gen)));
                 h1->setPosition(Eigen::Vector2d(-3.0, -3.0) + m * Eigen::Vector2d(0.5, 0.0) + n * Eigen::Vector2d(0.0, 0.5) );
-                agents.push_back(h1);
+                //agents.push_back(h1);
             }
         }
 
         // add a soldier
         auto s1 = Soldier::createSoldier(3440);
         s1->setPosition(Eigen::Vector2d(-9.0, 0.0));
-        s1->addObjective(Eigen::Vector2d(0.0, 0.0));
+        s1->addObjective(Eigen::Vector2d(9.0, 0.0));
+        s1->addObjective(Eigen::Vector2d(0.0, 9.0));
 
         auto s2 = Soldier::createSoldier(3441);
         s2->setPosition(Eigen::Vector2d(-9.5, 0.5));
@@ -103,6 +104,7 @@ public:
         auto s3 = Soldier::createSoldier(3442);
         s3->setPosition(Eigen::Vector2d(-9.5, -0.5));
         s3->addObjective(Eigen::Vector2d(8.5, -0.5));
+        s3->addObjective(Eigen::Vector2d(0.0, -9.0));
 
         agents.push_back(s1);
         agents.push_back(s2);

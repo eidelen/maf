@@ -68,10 +68,11 @@ void Soldier::react(double time)
     if( compPossible || hasTarget )
     {
         // if we are close to a target
-        if(hasTarget && targetDist < m_reactionTime*m_maxSpeed*2.0)
+        if(hasTarget && targetDist < m_reactionTime*getVelocity().norm())
         {
             // assert not to go over target -> zero speed at target.
-            setAcceleration( -getVelocity() / m_reactionTime );
+            // cheating!! exceed max possible acceleration by directly setting it :)
+            m_acceleration = -getVelocity() / m_reactionTime;
         }
         else
         {

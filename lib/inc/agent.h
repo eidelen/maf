@@ -139,6 +139,7 @@ public:
      */
     virtual void move(double time);
 
+
 protected:
 
     unsigned int m_id;
