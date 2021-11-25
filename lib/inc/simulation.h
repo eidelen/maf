@@ -31,7 +31,9 @@
 #include "agent.h"
 #include "environment.h"
 
-class Simulation
+class Evaluation;
+
+class Simulation : public std::enable_shared_from_this<Simulation>
 {
 
 public:
@@ -80,6 +82,12 @@ public:
     void setEnvironmentFactory(const std::shared_ptr<EnvironmentFactory> &environmentFactory);
 
     /**
+     * Sets the evaluation class.
+     * @param eval Evaluation instance.
+     */
+    void setEvaluation(const std::shared_ptr<Evaluation>& eval);
+
+    /**
      * Inits the environment. No agents added yet.
      */
     void initEnvironment();
@@ -120,6 +128,7 @@ private:
     std::shared_ptr<AgentFactory> m_agentFactory;
     std::shared_ptr<EnvironmentFactory> m_environmentFactory;
     std::shared_ptr<Environment> m_environment;
+    std::shared_ptr<Evaluation> m_evaluation;
 };
 
 

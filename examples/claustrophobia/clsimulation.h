@@ -79,7 +79,7 @@ public:
         std::mt19937 gen{rd()};
         std::normal_distribution<> reactionDist{0.7, 0.2};
 
-        size_t sideNbr = 8;
+        size_t sideNbr = 9;
         unsigned int agentIdx = 0;
         for(size_t m = 0; m < sideNbr; m++)
         {

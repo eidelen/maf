@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "simulation.h"
+#include "evaluation.h"
 
 TEST(Simulation, Id)
 {
@@ -169,4 +170,52 @@ TEST(Simulation, RunSimulation)
     s->runSimulation(0.05, 10.0);
 
     ASSERT_NEAR(s->getSimulationRunningTime(), 10.0, 0.0001);
+}
+
+// Acculates overall agent living time
+class MySumAgentEvaluation: public Evaluation
+{
+public:
+    MySumAgentEvaluation(): Evaluation() { m_sumAgentsLivingtime = 0.0; }
+    virtual ~MySumAgentEvaluation() {}
+    void evaluate(std::shared_ptr<Simulation> env, double timeStep) override
+    {
+        m_sumAgentsLivingtime += env->getEnvironment()->getAgents().size() * timeStep;
+    }
+
+    std::string getResult() override
+    {
+        return std::to_string(m_sumAgentsLivingtime);
+    }
+
+    double m_sumAgentsLivingtime;
+};
+
+TEST(Simulation, Evaluation)
+{
+    auto s = Simulation::createSimulation(4);
+    s->setAgentFactory(std::shared_ptr<MyBoringAgentFactory>(new MyBoringAgentFactory()));
+    s->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
+
+    auto eval = std::shared_ptr<MySumAgentEvaluation>(new MySumAgentEvaluation());
+    s->setEvaluation(eval);
+
+    s->initEnvironment();
+    s->initAgents();
+
+    // the agent factory creates 2 agents
+
+    // at beginning, the overall living time is 0
+    ASSERT_NEAR(eval->m_sumAgentsLivingtime, 0.0, 0.00001);
+    ASSERT_EQ(eval->getResult(), std::to_string(0.0));
+
+    // after 1s -> 2s
+    s->doTimeStep(1.0);
+    ASSERT_NEAR(eval->m_sumAgentsLivingtime, 2.0, 0.00001);
+    ASSERT_EQ(eval->getResult(), std::to_string(2.0));
+
+    // 4 -> 8
+    s->doTimeStep(3.0);
+    ASSERT_NEAR(eval->m_sumAgentsLivingtime, 8.0, 0.00001);
+    ASSERT_EQ(eval->getResult(), std::to_string(8.0));
 }

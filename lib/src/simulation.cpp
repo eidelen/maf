@@ -22,6 +22,7 @@
 *****************************************************************************/
 
 #include "simulation.h"
+#include "evaluation.h"
 
 std::shared_ptr<Simulation> Simulation::createSimulation(unsigned int id)
 {
@@ -30,7 +31,8 @@ std::shared_ptr<Simulation> Simulation::createSimulation(unsigned int id)
 
 Simulation::Simulation(unsigned int id): m_id(id), m_simulationRunningTime(0.0)
 {
-
+    // set default dummy evaluation
+    m_evaluation = std::shared_ptr<Evaluation>(new Evaluation());
 }
 
 Simulation::~Simulation()
@@ -63,6 +65,11 @@ void Simulation::setEnvironmentFactory(const std::shared_ptr<EnvironmentFactory>
     m_environmentFactory = environmentFactory;
 }
 
+void Simulation::setEvaluation(const std::shared_ptr<Evaluation>& eval)
+{
+    m_evaluation = eval;
+}
+
 void Simulation::initEnvironment()
 {
     m_environment = m_environmentFactory->createEnvironment();
@@ -82,6 +89,7 @@ void Simulation::doTimeStep(double time)
 {
     m_simulationRunningTime += time;
     m_environment->update(time);
+    m_evaluation->evaluate(shared_from_this(), time);
 }
 
 std::shared_ptr<Environment> Simulation::getEnvironment()
