@@ -25,6 +25,7 @@
 #define CL_SIM_H
 
 #include <iostream>
+#include <iomanip>
 #include <random>
 #include <Eigen/Dense>
 
@@ -32,6 +33,7 @@
 #include "human.h"
 #include "soldier.h"
 #include "simulation.h"
+#include "evaluation.h"
 
 /**
  * @brief Trivial environment with circle 10m radius and center at 0/0
@@ -112,6 +114,54 @@ public:
 
         return agents;
     }
+};
+
+// Acculates overall stress
+class StressAccumulatorEvaluation: public Evaluation
+{
+public:
+    StressAccumulatorEvaluation(): Evaluation()
+    {
+        m_stressSeconds = 0.0;
+        m_currentTime = 0.0;
+        m_currentStress = 0.0;
+    }
+
+    virtual ~StressAccumulatorEvaluation()
+    {
+    }
+
+    void evaluate(std::shared_ptr<Simulation> sim, double timeStep) override
+    {
+        auto agents = sim->getEnvironment()->getAgents();
+        double avgStress = 0.0;
+        int cntAgents = 0;
+        std::for_each(agents.begin(), agents.end(), [&avgStress, &cntAgents](const auto& a) {
+            Human* h = (Human*)a.get();
+            double stress = h->getStressLevel();
+            avgStress += stress;
+            cntAgents++;
+        });
+
+        avgStress = avgStress / std::max(1, cntAgents);
+        m_stressSeconds += timeStep * avgStress;
+        m_currentStress = avgStress;
+
+        m_currentTime = sim->getSimulationRunningTime();
+    }
+
+    std::string getResult() override
+    {
+        std::ostringstream s;
+        s << std::fixed << std::setprecision( 3 ) << std::setfill( '0' ) <<
+        "Time: " << m_currentTime << ", Current Stress: " << m_currentStress << ", AccumStress: " <<
+        m_stressSeconds;
+        return s.str();
+    }
+
+    double m_stressSeconds;
+    double m_currentTime;
+    double m_currentStress;
 };
 
 

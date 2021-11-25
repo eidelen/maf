@@ -40,11 +40,13 @@ public:
 
     void restart()
     {
-        m_stressSeconds = 0.0;
-
         m_sim = Simulation::createSimulation(4);
         m_sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory()));
         m_sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
+
+        m_eval = std::shared_ptr<StressAccumulatorEvaluation>(new StressAccumulatorEvaluation());
+        m_sim->setEvaluation(m_eval);
+
         m_sim->initEnvironment();
         m_sim->initAgents();
     }
@@ -79,17 +81,12 @@ public:
 
         // draw agents
         auto agents = m_sim->getEnvironment()->getAgents();
-        double avgStress = 0.0;
-        size_t cntAgents = 0;
-        std::for_each(agents.begin(), agents.end(), [=, &painter, &avgStress, &cntAgents](const auto& a) {
+        std::for_each(agents.begin(), agents.end(), [=, &painter](const auto& a) {
 
             // cast from hell :)
             Human* h = (Human*)a.get();
 
             double stress = h->getStressLevel();
-
-            avgStress += stress;
-            cntAgents++;
 
             QColor agentColor( (int)(stress*255.0), 255-(int)(stress*255.0), 0.0 );
             painter.setBrush(agentColor);
@@ -105,15 +102,10 @@ public:
                 painter.setFont(sfont);
                 painter.setPen(Qt::black);
                 painter.drawText(sim2WidTrans(h->getPosition())+QPointF(-5,5), "S");
-
-                QString stat;
-                stat.sprintf("Time: %.3f, Stress: %.3f, AccStress: %.3f", m_sim->getSimulationRunningTime(), avgStress, m_stressSeconds);
-                painter.drawText(QPoint(30,30), stat);
             }
         });
 
-        avgStress = avgStress / cntAgents;
-        m_stressSeconds += m_timeStep * avgStress;
+
 
         // draw text
         QFont font = painter.font();
@@ -121,15 +113,13 @@ public:
         painter.setFont(font);
         painter.setPen(QColor(255,255,255));
 
-        QString stat;
-        stat.sprintf("Time: %.3f, Stress: %.3f, AccStress: %.3f", m_sim->getSimulationRunningTime(), avgStress, m_stressSeconds);
-        painter.drawText(QPoint(30,30), stat);
+        painter.drawText(QPoint(30,30), QString::fromStdString(m_eval->getResult()));
     }
 
 private:
     double m_timeStep;
-    double m_stressSeconds;
     std::shared_ptr<Simulation> m_sim;
+    std::shared_ptr<StressAccumulatorEvaluation> m_eval;
 };
 
 
