@@ -70,6 +70,11 @@ void Simulation::setEvaluation(const std::shared_ptr<Evaluation>& eval)
     m_evaluation = eval;
 }
 
+std::shared_ptr<Evaluation> Simulation::getEvaluation()
+{
+    return m_evaluation;
+}
+
 void Simulation::initEnvironment()
 {
     m_environment = m_environmentFactory->createEnvironment();

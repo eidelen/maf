@@ -25,6 +25,7 @@
 #include <algorithm>
 
 #include "parallel.h"
+#include "evaluation.h"
 
 std::shared_ptr<Parallel> Parallel::createParallel(size_t nThreads)
 {
@@ -77,6 +78,9 @@ void Parallel::doWork()
             sim->initEnvironment();
             sim->initAgents();
             sim->runSimulation(ts, dur);
+
+            std::cout << sim->id() << "::: " << sim->getEvaluation()->getResult() << std::endl;
+
             m_nbrOfFinishedSimulations++;
         }
     }

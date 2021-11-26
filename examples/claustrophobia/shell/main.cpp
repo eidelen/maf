@@ -35,13 +35,17 @@ int main(int argc, char *argv[])
 
     size_t nSims = 20;
     double tStep = 0.2;
-    double simDur = 10.0;
+    double simDur = 20.0;
 
     for(unsigned int k = 0; k < nSims; k++ )
     {
-        auto sim = Simulation::createSimulation(4);
+        auto sim = Simulation::createSimulation(k);
         sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory()));
         sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
+
+        auto eval = std::shared_ptr<StressAccumulatorEvaluation>(new StressAccumulatorEvaluation());
+        sim->setEvaluation(eval);
+
         p->addSimulation(sim, tStep, simDur);
     }
 

@@ -88,6 +88,12 @@ public:
     void setEvaluation(const std::shared_ptr<Evaluation>& eval);
 
     /**
+     * Get evaluation.
+     * @return evaluation
+     */
+    std::shared_ptr<Evaluation> getEvaluation();
+
+    /**
      * Inits the environment. No agents added yet.
      */
     void initEnvironment();

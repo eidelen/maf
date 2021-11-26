@@ -25,6 +25,7 @@
 #define EVALUATION_H
 
 #include <memory>
+#include <string>
 
 class Simulation;
 
