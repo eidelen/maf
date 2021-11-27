@@ -79,7 +79,8 @@ void Parallel::doWork()
             sim->initAgents();
             sim->runSimulation(ts, dur);
 
-            std::cout << sim->id() << "::: " << sim->getEvaluation()->getResult() << std::endl;
+            std::cout << "id: " << sim->id() << ", " << sim->description() << ", " <<
+                    sim->getEvaluation()->getResult() << std::endl;
 
             m_nbrOfFinishedSimulations++;
         }

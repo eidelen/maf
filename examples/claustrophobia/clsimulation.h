@@ -71,7 +71,8 @@ public:
 class CivilianAgentFactory: public AgentFactory
 {
 public:
-    CivilianAgentFactory(double maxSpeed = 1.0): AgentFactory(), m_maxSpeed(maxSpeed) {}
+    CivilianAgentFactory(double maxSpeed = 1.0, double maxAcceleration = 1.0): AgentFactory(),
+        m_maxSpeed(maxSpeed), m_maxAcceleration(maxAcceleration) {}
     virtual ~CivilianAgentFactory() {}
     std::list<std::shared_ptr<Agent>> createAgents() override
     {
@@ -87,7 +88,7 @@ public:
         {
             for(size_t n = 0; n < sideNbr; n++)
             {
-                auto h1 = std::shared_ptr<Human>(new Human(agentIdx++, m_maxSpeed, 2.5, 1.5, reactionDist(gen)));
+                auto h1 = std::shared_ptr<Human>(new Human(agentIdx++, m_maxSpeed, m_maxAcceleration, 1.5, reactionDist(gen)));
                 h1->setPosition(Eigen::Vector2d(-3.0, -3.0) + m * Eigen::Vector2d(0.5, 0.0) + n * Eigen::Vector2d(0.0, 0.5) );
                 agents.push_back(h1);
             }
@@ -116,6 +117,7 @@ public:
     }
 
     double m_maxSpeed;
+    double m_maxAcceleration;
 };
 
 // Acculates overall stress

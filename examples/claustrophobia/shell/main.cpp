@@ -33,23 +33,31 @@ int main(int argc, char *argv[])
 
     auto p = Parallel::createParallel(std::thread::hardware_concurrency());
 
-    size_t nSims = 20;
+    size_t nSims = 0;
     double tStep = 0.2;
     double simDur = 30.0;
 
-    for(unsigned int k = 0; k < nSims; k++ )
+    for(unsigned int a = 0; a < 30; a++)
     {
-        auto sim = Simulation::createSimulation(k);
-        double maxSpeed = 0.1*k;
-        sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory(maxSpeed)));
-        sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
+        for(unsigned int v = 0; v < 30; v++ )
+        {
+            double maxSpeed = 0.1+0.1*v;
+            double maxAcceleration = 0.1+0.1*a;
 
-        auto eval = std::shared_ptr<StressAccumulatorEvaluation>(new StressAccumulatorEvaluation());
-        sim->setEvaluation(eval);
+            auto sim = Simulation::createSimulation(nSims++);
 
-        p->addSimulation(sim, tStep, simDur);
+            sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory(maxSpeed, maxAcceleration)));
+            sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
 
-        std::cout << k << "::: " << "Settings MaxSpeed = " << maxSpeed << std::endl;
+            auto eval = std::shared_ptr<StressAccumulatorEvaluation>(new StressAccumulatorEvaluation());
+            sim->setEvaluation(eval);
+
+            std::ostringstream desc;
+            desc << std::fixed << std::setprecision( 3 ) << "maxSpeed: " << maxSpeed << ", maxAcceleration: " << maxAcceleration;
+            sim->setDescription(desc.str());
+
+            p->addSimulation(sim, tStep, simDur);
+        }
     }
 
     p->run();

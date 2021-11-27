@@ -33,6 +33,7 @@ Simulation::Simulation(unsigned int id): m_id(id), m_simulationRunningTime(0.0)
 {
     // set default dummy evaluation
     m_evaluation = std::shared_ptr<Evaluation>(new Evaluation());
+    m_description = "";
 }
 
 Simulation::~Simulation()
@@ -43,6 +44,16 @@ Simulation::~Simulation()
 unsigned int Simulation::id() const
 {
     return m_id;
+}
+
+void Simulation::setDescription(const std::string &desc)
+{
+    m_description = desc;
+}
+
+std::string Simulation::description() const
+{
+    return m_description;
 }
 
 std::shared_ptr<AgentFactory> Simulation::agentFactory() const

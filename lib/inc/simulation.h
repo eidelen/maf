@@ -58,6 +58,18 @@ public:
     unsigned int id() const;
 
     /**
+     * Sets a readable description text.
+     * @param desc Description text
+     */
+    void setDescription(const std::string& desc);
+
+    /**
+     * Get the description text.
+     * @return Description text
+     */
+    std::string description() const;
+
+    /**
      * Get the agent factory.
      * @return Agent factory
      */
@@ -135,6 +147,7 @@ private:
     std::shared_ptr<EnvironmentFactory> m_environmentFactory;
     std::shared_ptr<Environment> m_environment;
     std::shared_ptr<Evaluation> m_evaluation;
+    std::string m_description;
 };
 
 
