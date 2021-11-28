@@ -124,11 +124,19 @@ public:
 class StressAccumulatorEvaluation: public Evaluation
 {
 public:
-    StressAccumulatorEvaluation(): Evaluation()
+    /**
+     * Passing the used simulation settings.
+     * @param maxSpeed
+     * @param maxAcceleration
+     */
+    StressAccumulatorEvaluation(double maxSpeed, double maxAcceleration): Evaluation()
     {
         m_stressSeconds = 0.0;
         m_currentTime = 0.0;
         m_currentStress = 0.0;
+
+        m_maxSpeed = maxSpeed;
+        m_maxAcceleration = maxAcceleration;
     }
 
     virtual ~StressAccumulatorEvaluation()
@@ -166,6 +174,10 @@ public:
     double m_stressSeconds;
     double m_currentTime;
     double m_currentStress;
+
+    // simulation settings
+    double m_maxSpeed;
+    double m_maxAcceleration;
 };
 
 

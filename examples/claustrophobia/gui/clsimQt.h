@@ -44,7 +44,7 @@ public:
         m_sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory()));
         m_sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
 
-        m_eval = std::shared_ptr<StressAccumulatorEvaluation>(new StressAccumulatorEvaluation());
+        m_eval = std::shared_ptr<StressAccumulatorEvaluation>(new StressAccumulatorEvaluation(0.0, 0.0));
         m_sim->setEvaluation(m_eval);
 
         m_sim->initEnvironment();

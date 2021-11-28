@@ -21,7 +21,6 @@
 **
 *****************************************************************************/
 
-#include <iostream>
 #include <algorithm>
 
 #include "parallel.h"
@@ -78,10 +77,6 @@ void Parallel::doWork()
             sim->initEnvironment();
             sim->initAgents();
             sim->runSimulation(ts, dur);
-
-            std::cout << "id: " << sim->id() << ", " << sim->description() << ", " <<
-                    sim->getEvaluation()->getResult() << std::endl;
-
             m_nbrOfFinishedSimulations++;
         }
     }

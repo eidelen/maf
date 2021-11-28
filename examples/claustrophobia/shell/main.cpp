@@ -22,6 +22,7 @@
 *****************************************************************************/
 
 #include <chrono>
+#include <vector>
 
 #include "parallel.h"
 #include "clsimulation.h"
@@ -37,9 +38,11 @@ int main(int argc, char *argv[])
     double tStep = 0.2;
     double simDur = 30.0;
 
-    for(unsigned int a = 0; a < 30; a++)
+    std::vector<std::shared_ptr<StressAccumulatorEvaluation>> results;
+
+    for(unsigned int a = 0; a < 100; a++)
     {
-        for(unsigned int v = 0; v < 30; v++ )
+        for(unsigned int v = 0; v < 100; v++ )
         {
             double maxSpeed = 0.1+0.1*v;
             double maxAcceleration = 0.1+0.1*a;
@@ -49,12 +52,9 @@ int main(int argc, char *argv[])
             sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory(maxSpeed, maxAcceleration)));
             sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
 
-            auto eval = std::shared_ptr<StressAccumulatorEvaluation>(new StressAccumulatorEvaluation());
+            auto eval = std::shared_ptr<StressAccumulatorEvaluation>(new StressAccumulatorEvaluation(maxSpeed, maxAcceleration));
             sim->setEvaluation(eval);
-
-            std::ostringstream desc;
-            desc << std::fixed << std::setprecision( 3 ) << "maxSpeed: " << maxSpeed << ", maxAcceleration: " << maxAcceleration;
-            sim->setDescription(desc.str());
+            results.push_back(eval);
 
             p->addSimulation(sim, tStep, simDur);
         }
@@ -74,6 +74,20 @@ int main(int argc, char *argv[])
     }
 
     auto end = std::chrono::high_resolution_clock::now();
+
+    // print results
+    std::sort(results.begin(), results.end(), [](std::shared_ptr<StressAccumulatorEvaluation> a,
+                std::shared_ptr<StressAccumulatorEvaluation> b)
+    {
+        return a->m_stressSeconds < b->m_stressSeconds;
+    });
+
+    std::cout << "max v, max a, stress seconds, sim time" << std::endl;
+    std::for_each(results.begin(), results.end(), [](std::shared_ptr<StressAccumulatorEvaluation> r)
+    {
+        std::cout << r->m_maxSpeed << ", " << r->m_maxAcceleration << ", "
+                  << r->m_stressSeconds << ", " << r->m_currentTime << std::endl;
+    });
 
     std::chrono::duration<double, std::milli> elapsed = end-start;
     std::cout << "Waited " << elapsed.count() << " ms" << std::endl;
