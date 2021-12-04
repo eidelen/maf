@@ -36,13 +36,13 @@ int main(int argc, char *argv[])
 
     size_t nSims = 0;
     double tStep = 0.2;
-    double simDur = 30.0;
+    double simDur = 60.0;
 
     std::vector<std::shared_ptr<StressAccumulatorEvaluation>> results;
 
-    for(unsigned int a = 0; a < 100; a++)
+    for(unsigned int a = 0; a < 200; a++)
     {
-        for(unsigned int v = 0; v < 100; v++ )
+        for(unsigned int v = 0; v < 200; v++ )
         {
             double maxSpeed = 0.1+0.1*v;
             double maxAcceleration = 0.1+0.1*a;
@@ -65,7 +65,8 @@ int main(int argc, char *argv[])
     while(true)
     {
         auto[done, queued] = p->getProgress();
-        std::cout << "[" << done << ", " << queued << "]" << std::endl;
+        double progress = done / nSims * 100.0;
+        std::cout << "[" << done << ", " << queued << "], " << progress << "%" << std::endl;
 
         if(done == nSims)
             break;
