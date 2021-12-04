@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
         if(done == nSims)
             break;
 
-        std::this_thread::sleep_for(2000ms);
+        std::this_thread::sleep_for(10000ms);
     }
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     });
 
     std::cout << "max v, max a, stress seconds, sim time" << std::endl;
-    std::for_each(results.begin(), results.end(), [](std::shared_ptr<StressAccumulatorEvaluation> r)
+    std::for_each(results.begin(), results.begin()+10, [](std::shared_ptr<StressAccumulatorEvaluation> r)
     {
         std::cout << r->m_maxSpeed << ", " << r->m_maxAcceleration << ", "
                   << r->m_stressSeconds << ", " << r->m_currentTime << std::endl;

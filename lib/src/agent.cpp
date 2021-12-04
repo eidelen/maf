@@ -104,14 +104,14 @@ void Agent::setEnvironment(std::shared_ptr<EnvironmentInterface> env)
     m_environment = env;
 }
 
-std::shared_ptr<EnvironmentInterface> Agent::getEnvironment() const
+std::weak_ptr<EnvironmentInterface> Agent::getEnvironment() const
 {
     return m_environment;
 }
 
 bool Agent::hasEnvironment() const
 {
-    return m_environment.get() != nullptr;
+    return m_environment.lock().get() != nullptr;
 }
 
 void Agent::move(double time)
@@ -121,7 +121,7 @@ void Agent::move(double time)
     // A very basic default implementation how an agent moves.
     auto[p, v] = computeMotion(time);
 
-    auto[possible, finalPos] = getEnvironment()->possibleMove(getPosition(), p);
+    auto[possible, finalPos] = m_environment.lock()->possibleMove(getPosition(), p);
 
     setPosition(finalPos);
     setVelocity(possible ? v : getVelocity()); // only update velocity when motion was possible

@@ -141,7 +141,7 @@ public:
      * Get the agent's environment.
      * @return Environment.
      */
-    std::shared_ptr<EnvironmentInterface> getEnvironment() const;
+    std::weak_ptr<EnvironmentInterface> getEnvironment() const;
 
     /**
      * Checks if the agent has an environment.
@@ -164,7 +164,7 @@ protected:
     Eigen::Vector2d m_velocity;
     Eigen::Vector2d m_acceleration;
 
-    std::shared_ptr<EnvironmentInterface> m_environment;
+    std::weak_ptr<EnvironmentInterface> m_environment;
 };
 
 

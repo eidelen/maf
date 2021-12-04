@@ -111,7 +111,7 @@ void Human::move(double time)
         react(time);
     }
 
-    computeStressLevel(getEnvironment()->getAgentDistancesToAllOtherAgents(id()));
+    computeStressLevel(m_environment.lock()->getAgentDistancesToAllOtherAgents(id()));
     performFinalMove(time);
 }
 
@@ -120,7 +120,7 @@ void Human::react(double time)
     // React on neighbours. When no neigbhours, slow down.
 
     // Compute mean direction of agents in range
-    auto[compPossible, avgAgentDir] = MafHlp::computeAvgWeightedDirectionToOtherAgents(getEnvironment()->getAgentDistancesToAllOtherAgents(id()), m_obsDistance);
+    auto[compPossible, avgAgentDir] = MafHlp::computeAvgWeightedDirectionToOtherAgents(m_environment.lock()->getAgentDistancesToAllOtherAgents(id()), m_obsDistance);
 
     if(compPossible)
     {
@@ -135,7 +135,7 @@ void Human::react(double time)
 
 void Human::performFinalMove(double time)
 {
-    auto env = getEnvironment();
+    auto env = m_environment.lock();
 
     // try to move with initial settings
     auto[pi, vi] = computeMotion(time);

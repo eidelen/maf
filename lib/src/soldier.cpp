@@ -68,7 +68,7 @@ void Soldier::react(double time)
     }
 
     // check if reacting on neigbhours
-    auto[compPossible, avgAgentDir] = MafHlp::computeAvgWeightedDirectionToOtherAgents(getEnvironment()->getAgentDistancesToAllOtherAgents(id()), m_obsDistance);
+    auto[compPossible, avgAgentDir] = MafHlp::computeAvgWeightedDirectionToOtherAgents(m_environment.lock()->getAgentDistancesToAllOtherAgents(id()), m_obsDistance);
 
     if( compPossible || hasTarget )
     {
