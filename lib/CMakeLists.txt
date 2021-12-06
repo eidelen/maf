@@ -6,12 +6,14 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Eigen3 REQUIRED NO_MODULE)
 
-INCLUDE_DIRECTORIES(inc)
-FILE(GLOB_RECURSE  MAF_INCLUDES        inc/*.h)
-FILE(GLOB_RECURSE  MAF_SOURCES         src/*.cpp)
+SET(MAF_INC_FOLDERS inc inc/agents)
+
+INCLUDE_DIRECTORIES(${MAF_INC_FOLDERS})
+FILE(GLOB  MAF_INCLUDES        inc/*.h inc/agents/*.h)
+FILE(GLOB  MAF_SOURCES         src/*.cpp src/agents/*.cpp)
 
 ADD_LIBRARY(maflib STATIC ${MAF_INCLUDES} ${MAF_SOURCES} )
-target_include_directories(maflib INTERFACE inc )
+target_include_directories(maflib INTERFACE ${MAF_INC_FOLDERS} )
 target_link_libraries(maflib Eigen3::Eigen )
 target_compile_features(maflib PRIVATE cxx_std_17 )
 
