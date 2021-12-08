@@ -124,5 +124,29 @@ void Agent::move(double time)
     auto[possible, finalPos] = m_environment.lock()->possibleMove(getPosition(), p);
 
     setPosition(finalPos);
-    setVelocity(possible ? v : getVelocity()); // only update velocity when motion was possible
+            setVelocity(possible ? v : getVelocity()); // only update velocity when motion was possible
+}
+
+void Agent::addSubAgent(std::shared_ptr<Agent> a)
+{
+    m_subAgents.push_back(a);
+}
+
+std::list<std::shared_ptr<Agent>>& Agent::getSubAgents()
+{
+                                 return m_subAgents;
+}
+
+std::list<std::shared_ptr<Agent> > Agent::getAllSubAgents()
+{
+    std::list<std::shared_ptr<Agent>> collect;
+
+    // update the agents
+    std::for_each(m_subAgents.begin(), m_subAgents.end(), [&collect](std::shared_ptr<Agent>& a)
+    {
+        collect.push_back(a);
+        collect.splice(collect.end(), a->getSubAgents());
+    });
+
+    return collect;
 }

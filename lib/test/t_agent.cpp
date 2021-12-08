@@ -180,3 +180,40 @@ TEST(Agent, MoveSpecialEnv)
     a->move(0.1);
     ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(9.5, 0.0)).isMuchSmallerThan(0.0001));
 }
+
+TEST(Agent, AddGetSubAgents)
+{
+    auto a = Agent::createAgent(1);
+    auto ac1 = Agent::createAgent(2);
+    auto ac2 = Agent::createAgent(3);
+
+    ac1->addSubAgent(Agent::createAgent(4));
+    a->addSubAgent(ac1);
+    a->addSubAgent(ac2);
+
+    ASSERT_EQ(a->id(), 1);
+
+    ASSERT_EQ(a->getSubAgents().size(), 2);
+    ASSERT_EQ(a->getSubAgents().front()->id(), 2);
+    ASSERT_EQ(a->getSubAgents().back()->id(), 3);
+
+    ASSERT_EQ(a->getSubAgents().front()->getSubAgents().size(), 1);
+    ASSERT_EQ(a->getSubAgents().front()->getSubAgents().front()->id(), 4);
+
+    ASSERT_EQ(a->getSubAgents().back()->getSubAgents().size(), 0);
+}
+
+TEST(Agent, GetAllSubAgents)
+{
+    auto a = Agent::createAgent(1);
+    auto ac1 = Agent::createAgent(2);
+    auto ac2 = Agent::createAgent(3);
+
+    ac1->addSubAgent(Agent::createAgent(4));
+    a->addSubAgent(ac1);
+    a->addSubAgent(ac2);
+
+    auto l = a->getAllSubAgents();
+
+    ASSERT_EQ(l.size(), 3);
+}

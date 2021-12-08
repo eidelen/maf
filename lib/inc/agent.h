@@ -156,6 +156,24 @@ public:
      */
     virtual void move(double time);
 
+    /**
+     * Adds a sub agent to this agent.
+     * @param a Sub agent.
+     */
+    virtual void addSubAgent(std::shared_ptr<Agent> a);
+
+    /**
+     * Get the list of direct sub agents.
+     * @return List of sub agents.
+     */
+    std::list<std::shared_ptr<Agent> > &getSubAgents();
+
+    /**
+     * Recursively gets a list of ALL sub agents.
+     * @return List of all subagents.
+     */
+    std::list<std::shared_ptr<Agent>> getAllSubAgents();
+
 protected:
 
     unsigned int m_id;
@@ -165,6 +183,8 @@ protected:
     Eigen::Vector2d m_acceleration;
 
     std::weak_ptr<EnvironmentInterface> m_environment;
+
+    std::list<std::shared_ptr<Agent>> m_subAgents;
 };
 
 

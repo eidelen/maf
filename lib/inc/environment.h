@@ -112,7 +112,7 @@ public: //Inherited from EnvironmentInterface
     virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override;
     virtual DistanceQueue getAgentDistancesToAllOtherAgents(unsigned int id) override;
 
-private:
+protected:
 
     unsigned int m_id;
     std::list<std::shared_ptr<Agent>> m_agents;
