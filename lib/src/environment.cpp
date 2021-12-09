@@ -50,7 +50,7 @@ void Environment::update(double time)
     // update the distance map -> agent move will access this map further down
     computeDistances();
 
-    // update the agents
+    // update the agents -> note: subagents are updated from their parent agent
     std::for_each(m_agents.begin(), m_agents.end(), [time](std::shared_ptr<Agent>& a)
     {
         a->update(time);
@@ -62,9 +62,19 @@ void Environment::addAgent(std::shared_ptr<Agent> a)
     m_agents.push_back(a);
 }
 
-std::list<std::shared_ptr<Agent> > &Environment::getAgents()
+std::list<std::shared_ptr<Agent> > Environment::getAgents()
 {
-    return m_agents;
+    std::list<std::shared_ptr<Agent>> collect;
+
+    // collect all agents and their subagents
+    std::for_each(m_agents.begin(), m_agents.end(), [&collect](std::shared_ptr<Agent>& a)
+    {
+        collect.push_back(a);
+        auto z = a->getAllSubAgents();
+        collect.insert(collect.end(), z.begin(), z.end());
+    });
+
+    return collect;
 }
 
 std::pair<bool, Eigen::Vector2d> Environment::possibleMove(const Eigen::Vector2d& /*origin*/, const Eigen::Vector2d& destination) const

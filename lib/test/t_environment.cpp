@@ -158,3 +158,51 @@ TEST(Environment, DistanceMap)
     compareDist(qA20.top(), {18.0, 2, Eigen::Vector2d(-18.0, 0.0)});
 }
 
+TEST(Environment, DistanceMapSubAgents)
+{
+    auto e = Environment::createEnvironment(9);
+
+    // No entries in yet
+    ASSERT_EQ(e->getAgentDistances().size(), 0);
+    e->computeDistances();
+    ASSERT_EQ(e->getAgentDistances().size(), 0);
+
+    auto a = Agent::createAgent(2);
+    a->setPosition(Eigen::Vector2d(2.0, 0.0));
+    e->addAgent(a);
+
+    // c is subagent of b!
+    auto b = Agent::createAgent(5);
+    b->setPosition(Eigen::Vector2d(5.0, 0.0));
+    auto c = Agent::createAgent(20);
+    c->setPosition(Eigen::Vector2d(20.0, 0.0));
+    b->addSubAgent(c);
+    e->addAgent(b);
+
+    e->computeDistances();
+    Environment::DistanceMap& dMap = e->getAgentDistances();
+
+    ASSERT_EQ(dMap.size(), 3);
+
+    // Check distances of Agent id = 2
+    Environment::DistanceQueue& qA2 = dMap[2];
+    ASSERT_EQ(qA2.size(), 2);
+    compareDist(qA2.top(), {3.0, 5, Eigen::Vector2d(3.0, 0.0)});
+    qA2.pop();
+    compareDist(qA2.top(), {18.0, 20, Eigen::Vector2d(18.0, 0.0)});
+
+    // Check distances of Agent id = 5
+    Environment::DistanceQueue& qA5 = dMap[5];
+    ASSERT_EQ(qA5.size(), 2);
+    compareDist(qA5.top(), {3.0, 2, Eigen::Vector2d(-3.0, 0.0)});
+    qA5.pop();
+    compareDist(qA5.top(), {15.0, 20, Eigen::Vector2d(15.0, 0.0)});
+
+    // Check distances of Agent id = 20
+    Environment::DistanceQueue& qA20 = dMap[20];
+    ASSERT_EQ(qA20.size(), 2);
+    compareDist(qA20.top(), {15.0, 5, Eigen::Vector2d(-15.0, 0.0)});
+    qA20.pop();
+    compareDist(qA20.top(), {18.0, 2, Eigen::Vector2d(-18.0, 0.0)});
+}
+

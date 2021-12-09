@@ -76,10 +76,11 @@ public:
     void addAgent(std::shared_ptr<Agent> a);
 
     /**
-     * Get a handle to all agents in the simulation.
+     * Get a handle to all agents in the simulation. Sub agents
+     * are collected as well.
      * @return List of agents.
      */
-    std::list<std::shared_ptr<Agent>>& getAgents();
+    std::list<std::shared_ptr<Agent>> getAgents();
 
     /**
      * DistanceMap holds a DistanceQueue for each agent.
