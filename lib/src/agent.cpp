@@ -114,8 +114,11 @@ bool Agent::hasEnvironment() const
     return m_environment.lock().get() != nullptr;
 }
 
-void Agent::move(double time)
+void Agent::update(double time)
 {
+    // update first sub agents
+    updateSubAgents(time);
+
     assert(hasEnvironment());
 
     // A very basic default implementation how an agent moves.
@@ -124,7 +127,15 @@ void Agent::move(double time)
     auto[possible, finalPos] = m_environment.lock()->possibleMove(getPosition(), p);
 
     setPosition(finalPos);
-            setVelocity(possible ? v : getVelocity()); // only update velocity when motion was possible
+    setVelocity(possible ? v : getVelocity()); // only update velocity when motion was possible
+}
+
+void Agent::updateSubAgents(double time)
+{
+    std::for_each(m_subAgents.begin(), m_subAgents.end(), [time](std::shared_ptr<Agent>& a)
+    {
+        a->update(time);
+    });
 }
 
 void Agent::addSubAgent(std::shared_ptr<Agent> a)
@@ -134,18 +145,20 @@ void Agent::addSubAgent(std::shared_ptr<Agent> a)
 
 std::list<std::shared_ptr<Agent>>& Agent::getSubAgents()
 {
-                                 return m_subAgents;
+    return m_subAgents;
 }
 
 std::list<std::shared_ptr<Agent> > Agent::getAllSubAgents()
 {
     std::list<std::shared_ptr<Agent>> collect;
 
-    // update the agents
+    // collect sub agents
     std::for_each(m_subAgents.begin(), m_subAgents.end(), [&collect](std::shared_ptr<Agent>& a)
     {
         collect.push_back(a);
-        collect.splice(collect.end(), a->getSubAgents());
+
+        auto z = a->getSubAgents();
+        collect.insert(collect.end(), z.begin(), z.end());
     });
 
     return collect;

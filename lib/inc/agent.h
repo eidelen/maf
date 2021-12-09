@@ -154,7 +154,7 @@ public:
      * Overwrite with specific agent behavior.
      * @param time Time step in s.
      */
-    virtual void move(double time);
+    virtual void update(double time);
 
     /**
      * Adds a sub agent to this agent.
@@ -175,6 +175,8 @@ public:
     std::list<std::shared_ptr<Agent>> getAllSubAgents();
 
 protected:
+
+    void updateSubAgents(double time);
 
     unsigned int m_id;
     double m_radius;

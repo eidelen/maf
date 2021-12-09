@@ -53,7 +53,7 @@ void Environment::update(double time)
     // update the agents
     std::for_each(m_agents.begin(), m_agents.end(), [time](std::shared_ptr<Agent>& a)
     {
-        a->move(time);
+        a->update(time);
     });
 }
 

@@ -113,14 +113,14 @@ TEST(Agent, MoveStandardImpl)
     a->setAcceleration(Eigen::Vector2d(0.0, 0.0));
     a->setVelocity(Eigen::Vector2d(0.0, 0.0));
     a->setPosition(Eigen::Vector2d(0.0, 0.0));
-    a->move(1.0);
+    a->update(1.0);
     ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
     ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
 
     a->setAcceleration(Eigen::Vector2d(1.0, 2.0));
     a->setVelocity(Eigen::Vector2d(0.0, 0.0));
     a->setPosition(Eigen::Vector2d(0.0, 0.0));
-    a->move(0.0);
+    a->update(0.0);
     ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
     ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
 
@@ -128,16 +128,16 @@ TEST(Agent, MoveStandardImpl)
     a->setAcceleration(Eigen::Vector2d(1.0, 2.0));
     a->setVelocity(Eigen::Vector2d(0.0, 0.0));
     a->setPosition(Eigen::Vector2d(0.0, 0.0));
-    a->move(1.0);
+    a->update(1.0);
     ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(1.0, 2.0)).isMuchSmallerThan(0.0001));
     ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(0.5, 1.0)).isMuchSmallerThan(0.0001));
-    a->move(1.0);
+    a->update(1.0);
     ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(2.0, 4.0)).isMuchSmallerThan(0.0001));
     ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(2.0, 4.0)).isMuchSmallerThan(0.0001));
 
     // negative acceleration
     a->setAcceleration(Eigen::Vector2d(-1.0, -2.0));
-    a->move(2.0);
+    a->update(2.0);
     ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
 }
 
@@ -171,13 +171,13 @@ TEST(Agent, MoveSpecialEnv)
     a->setPosition(Eigen::Vector2d(0.0, 0.0));
 
     // ok
-    a->move(0.9);
+    a->update(0.9);
     ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(9.0, 0.0)).isMuchSmallerThan(0.0001));
-    a->move(0.05);
+    a->update(0.05);
     ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(9.5, 0.0)).isMuchSmallerThan(0.0001));
 
     // not ok anymore -> position not changes
-    a->move(0.1);
+    a->update(0.1);
     ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(9.5, 0.0)).isMuchSmallerThan(0.0001));
 }
 
@@ -216,4 +216,36 @@ TEST(Agent, GetAllSubAgents)
     auto l = a->getAllSubAgents();
 
     ASSERT_EQ(l.size(), 3);
+}
+
+TEST(Agent, UpdateAllAgents)
+{
+    auto e = Environment::createEnvironment(9);
+
+    auto a = Agent::createAgent(1);
+    auto ac1 = Agent::createAgent(2);
+    auto ac1c1 = Agent::createAgent(4);
+    auto ac2 = Agent::createAgent(3);
+
+    ac1->addSubAgent(ac1c1);
+    a->addSubAgent(ac1);
+    a->addSubAgent(ac2);
+
+    auto l = a->getAllSubAgents();
+    l.push_back(a);
+
+    // init all agents with same position and same speed
+    std::for_each(l.begin(), l.end(), [e](auto q){
+        q->setPosition(Eigen::Vector2d(0.0, 0.0));
+        q->setVelocity(Eigen::Vector2d(2.0, 0.0));
+        q->setEnvironment(e);
+    });
+
+    a->update(2.0);
+
+    std::for_each(l.begin(), l.end(), [e](auto q){
+        ASSERT_TRUE((q->getPosition() - Eigen::Vector2d(4.0, 0.0)).isMuchSmallerThan(0.0001));
+        ASSERT_TRUE((q->getVelocity() - Eigen::Vector2d(2.0, 0.0)).isMuchSmallerThan(0.0001));
+    });
+
 }

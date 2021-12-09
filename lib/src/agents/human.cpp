@@ -93,7 +93,7 @@ void Human::setAcceleration(const Eigen::Vector2d &acceleration)
     m_acceleration = MafHlp::correctVectorScale(acceleration, m_maxAccelreation);
 }
 
-void Human::move(double time)
+void Human::update(double time)
 {
     assert(hasEnvironment());
 

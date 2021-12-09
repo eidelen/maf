@@ -36,15 +36,15 @@ TEST(Human, MaxSpeed)
     h->setVelocity(Eigen::Vector2d(0.0, 0.0));
     h->setAcceleration(Eigen::Vector2d(1.0, 0.0));
 
-    h->move(5.0);
+    h->update(5.0);
 
     ASSERT_TRUE((h->getVelocity() - Eigen::Vector2d(5.0, 0.0)).isMuchSmallerThan(0.0001));
 
-    h->move(5.0);
+    h->update(5.0);
 
     ASSERT_TRUE((h->getVelocity() - Eigen::Vector2d(10.0, 0.0)).isMuchSmallerThan(0.0001));
 
-    h->move(0.1);
+    h->update(0.1);
 
     // max speed reached -> limit to 10
     ASSERT_TRUE((h->getVelocity() - Eigen::Vector2d(10.0, 0.0)).isMuchSmallerThan(0.0001));
@@ -62,15 +62,15 @@ TEST(Human, SlowDown)
     // human gets slower, as no other agent around
     double lastSpeed = h->getVelocity().norm();
 
-    h->move(1.0);
+    h->update(1.0);
     ASSERT_GT(lastSpeed, h->getVelocity().norm());
     lastSpeed = h->getVelocity().norm();
 
-    h->move(1.0);
+    h->update(1.0);
     ASSERT_GT(lastSpeed, h->getVelocity().norm());
     lastSpeed = h->getVelocity().norm();
 
-    h->move(1.0);
+    h->update(1.0);
     ASSERT_GT(lastSpeed, h->getVelocity().norm());
 }
 
@@ -85,7 +85,7 @@ TEST(Human, LongSlowDown)
 
     for(size_t k = 0; k < 2000; k++)
     {
-        h->move(0.01);
+        h->update(0.01);
         double cSpeed = h->getVelocity().norm();
         ASSERT_TRUE(cSpeed < lastSpeed || cSpeed < 10e-5);
         lastSpeed = cSpeed;
