@@ -39,7 +39,8 @@ enum AgentType
     EAgent,
     EHuman,
     ESoldier,
-    EProxSensor
+    EProxSensor,
+    EMissile
 };
 
 

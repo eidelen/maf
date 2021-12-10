@@ -65,5 +65,3 @@ TEST(ProxSensor, AgentsInRang)
     ASSERT_EQ(2, r3.at(1).targetId);
     ASSERT_NEAR(8.0, r3.at(1).dist, 0.0001);
 }
-
-

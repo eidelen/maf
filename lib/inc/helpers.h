@@ -111,6 +111,28 @@ public:
             return {false, avgDir};
     }
 
+    /**
+     * Returns specific Distance matching the given target agent id.
+     * @param dists Distance Queue
+     * @param targetAgentId Target agent id.
+     * @return <found, Distance struct>
+     */
+    static std::pair<bool, EnvironmentInterface::Distance> getDistanceToAgent(EnvironmentInterface::DistanceQueue dists, unsigned int targetAgentId)
+    {
+        while(!dists.empty())
+        {
+            const auto& d = dists.top();
+            if(d.targetId == targetAgentId )
+            {
+                return {true, d};
+            }
+            dists.pop();
+        }
+
+        return {false, EnvironmentInterface::Distance()};
+    }
+
+
 };
 
 #endif // HELPERS_H

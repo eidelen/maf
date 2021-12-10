@@ -46,7 +46,7 @@ Agent::~Agent()
 
 std::pair<Eigen::Vector2d, Eigen::Vector2d> Agent::computeMotion(double time) const
 {
-    Eigen::Vector2d newSpeed = getVelocity() + getAcceleration()*time;
+    Eigen::Vector2d newSpeed = MafHlp::correctVectorScale(getVelocity() + getAcceleration()*time, m_maxSpeed);
     Eigen::Vector2d relevantSpeed = (getVelocity() + newSpeed)/2.0;
     Eigen::Vector2d newPos = getPosition() + relevantSpeed * time;
     return {newPos, newSpeed};

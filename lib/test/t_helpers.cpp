@@ -49,3 +49,26 @@ TEST(Helpers, WeightedAgentDir)
     auto[ok4, avg4] = MafHlp::computeAvgWeightedDirectionToOtherAgents(z, 3.0);
     ASSERT_FALSE(ok4);
 }
+
+TEST(Helpers, ReadSpecifAgentDist)
+{
+    EnvironmentInterface::DistanceQueue q;
+    q.push({1.0, 2, Eigen::Vector2d(1.0, 0.0)});
+    q.push({2.0, 3, Eigen::Vector2d(0.0, 2.0)});
+    q.push({5.0, 9, Eigen::Vector2d(0.0, 2.0)});
+
+    auto[ok1, d1] = MafHlp::getDistanceToAgent(q, 3);
+    ASSERT_TRUE(ok1);
+    ASSERT_NEAR(d1.dist, 2.0, 0.0001);
+
+    auto[ok2, d2] = MafHlp::getDistanceToAgent(q, 2);
+    ASSERT_TRUE(ok2);
+    ASSERT_NEAR(d2.dist, 1.0, 0.0001);
+
+    auto[ok3, d3] = MafHlp::getDistanceToAgent(q, 9);
+    ASSERT_TRUE(ok3);
+    ASSERT_NEAR(d3.dist, 5.0, 0.0001);
+
+    auto[ok4, d4] = MafHlp::getDistanceToAgent(q, 999);
+    ASSERT_FALSE(ok4);
+}
