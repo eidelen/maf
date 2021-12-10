@@ -75,7 +75,6 @@ public:
 
 
 private:
-    void performFinalMove(double time);
     void computeStressLevel(EnvironmentInterface::DistanceQueue otherAgents);
 
 
@@ -83,6 +82,8 @@ public: // inherited from Agent
     std::pair<Eigen::Vector2d, Eigen::Vector2d> computeMotion(double time) const override;
     void update(double time) override;
     AgentType type() const override;
+    void performMove(double time) override;
+
 
 protected:
 

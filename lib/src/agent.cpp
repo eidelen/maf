@@ -124,6 +124,11 @@ void Agent::update(double time)
 
     assert(hasEnvironment());
 
+    performMove(time);
+}
+
+void Agent::performMove(double time)
+{
     // A very basic default implementation how an agent moves.
     auto[p, v] = computeMotion(time);
 

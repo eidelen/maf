@@ -38,7 +38,8 @@ enum AgentType
 {
     EAgent,
     EHuman,
-    ESoldier
+    ESoldier,
+    EProxSensor
 };
 
 
@@ -150,11 +151,18 @@ public:
     bool hasEnvironment() const;
 
     /**
-     * Move the agent within the environment for a given time step.
+     * Update the agent within the environment for a given time step.
      * Overwrite with specific agent behavior.
      * @param time Time step in s.
      */
     virtual void update(double time);
+
+    /**
+     * Perform the actual spatial move of the agent. This
+     * function should be called at the end of update.
+     * @param time Time step in seconds.
+     */
+    virtual void performMove(double time);
 
     /**
      * Adds a sub agent to this agent.

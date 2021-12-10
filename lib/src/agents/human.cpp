@@ -86,13 +86,16 @@ std::pair<Eigen::Vector2d, Eigen::Vector2d> Human::computeMotion(double time) co
 
 void Human::update(double time)
 {
+    // update first sub agents
+    updateSubAgents(time);
+
     assert(hasEnvironment());
 
     // do not navigate in every move
     m_timeSinceLastReaction += time;
     if( m_timeSinceLastReaction < m_reactionTime )
     {
-        performFinalMove(time);
+        performMove(time);
         return;
     }
     m_timeSinceLastReaction = 0.0;
@@ -103,7 +106,7 @@ void Human::update(double time)
     }
 
     computeStressLevel(m_environment.lock()->getAgentDistancesToAllOtherAgents(id()));
-    performFinalMove(time);
+    performMove(time);
 }
 
 void Human::react(double time)
@@ -124,7 +127,7 @@ void Human::react(double time)
     }
 }
 
-void Human::performFinalMove(double time)
+void Human::performMove(double time)
 {
     auto env = m_environment.lock();
 
