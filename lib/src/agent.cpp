@@ -22,8 +22,10 @@
 *****************************************************************************/
 
 #include <iostream>
+#include <limits>
 
 #include "agent.h"
+#include "helpers.h"
 
 std::shared_ptr<Agent> Agent::createAgent(unsigned int id)
 {
@@ -31,7 +33,8 @@ std::shared_ptr<Agent> Agent::createAgent(unsigned int id)
 }
 
 Agent::Agent(unsigned int id) : m_id(id), m_radius(0.0), m_velocity(Eigen::Vector2d(0.0, 0.0)),
-    m_acceleration(Eigen::Vector2d(0.0, 0.0)), m_position(Eigen::Vector2d(0.0, 0.0))
+    m_acceleration(Eigen::Vector2d(0.0, 0.0)), m_position(Eigen::Vector2d(0.0, 0.0)),
+    m_maxAccelreation(std::numeric_limits<double>::max()), m_maxSpeed(std::numeric_limits<double>::max())
 {
 
 }
@@ -84,19 +87,19 @@ Eigen::Vector2d Agent::getVelocity() const
     return m_velocity;
 }
 
-void Agent::setVelocity(const Eigen::Vector2d &velocity)
-{
-    m_velocity = velocity;
-}
-
 Eigen::Vector2d Agent::getAcceleration() const
 {
     return m_acceleration;
 }
 
-void Agent::setAcceleration(const Eigen::Vector2d& acceleration)
+void Agent::setVelocity(const Eigen::Vector2d &velocity)
 {
-    m_acceleration = acceleration;
+    m_velocity = MafHlp::correctVectorScale(velocity, m_maxSpeed);
+}
+
+void Agent::setAcceleration(const Eigen::Vector2d &acceleration)
+{
+    m_acceleration = MafHlp::correctVectorScale(acceleration, m_maxAccelreation);
 }
 
 void Agent::setEnvironment(std::shared_ptr<EnvironmentInterface> env)
@@ -136,6 +139,26 @@ void Agent::updateSubAgents(double time)
     {
         a->update(time);
     });
+}
+
+double Agent::maxAccelreation() const
+{
+    return m_maxAccelreation;
+}
+
+void Agent::setMaxAccelreation(double newMaxAccelreation)
+{
+    m_maxAccelreation = newMaxAccelreation;
+}
+
+double Agent::maxSpeed() const
+{
+    return m_maxSpeed;
+}
+
+void Agent::setMaxSpeed(double newMaxSpeed)
+{
+    m_maxSpeed = newMaxSpeed;
 }
 
 void Agent::addSubAgent(std::shared_ptr<Agent> a)

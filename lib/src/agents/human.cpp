@@ -35,11 +35,12 @@ std::shared_ptr<Human> Human::createHuman(unsigned int id, double maxSpeed,
 }
 
 Human::Human(unsigned int id, double maxSpeed, double maxAcceleration, double obsDistance, double reactionTime) :
-    Agent(id), m_maxSpeed(maxSpeed), m_maxAccelreation(maxAcceleration), m_obsDistance(obsDistance),
+    Agent(id), m_obsDistance(obsDistance),
     m_disableReacting(false), m_reactionTime(reactionTime), m_timeSinceLastReaction(0.0), m_stressLevel(0.0)
 {
     setRadius(0.3);
-
+    m_maxSpeed = maxSpeed;
+    m_maxAccelreation = maxAcceleration;
 }
 
 Human::~Human()
@@ -81,16 +82,6 @@ std::pair<Eigen::Vector2d, Eigen::Vector2d> Human::computeMotion(double time) co
     Eigen::Vector2d newPos = getPosition() + relevantSpeed * time;
 
     return {newPos, newSpeed};
-}
-
-void Human::setVelocity(const Eigen::Vector2d &velocity)
-{
-    m_velocity = MafHlp::correctVectorScale(velocity, m_maxSpeed);
-}
-
-void Human::setAcceleration(const Eigen::Vector2d &acceleration)
-{
-    m_acceleration = MafHlp::correctVectorScale(acceleration, m_maxAccelreation);
 }
 
 void Human::update(double time)

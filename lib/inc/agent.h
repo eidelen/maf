@@ -174,6 +174,18 @@ public:
      */
     std::list<std::shared_ptr<Agent>> getAllSubAgents();
 
+    /**
+     * Set and get max speed of agent in m/s. DoubleMax at init.
+     */
+    double maxSpeed() const;
+    void setMaxSpeed(double newMaxSpeed);
+
+    /**
+     * Set and get max acceleration of agent in m/s^2. DoubleMax at init.
+     */
+    double maxAccelreation() const;
+    void setMaxAccelreation(double newMaxAccelreation);
+
 protected:
 
     void updateSubAgents(double time);
@@ -187,6 +199,9 @@ protected:
     std::weak_ptr<EnvironmentInterface> m_environment;
 
     std::list<std::shared_ptr<Agent>> m_subAgents;
+
+    double m_maxSpeed;
+    double m_maxAccelreation;
 };
 
 
