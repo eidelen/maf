@@ -21,7 +21,7 @@ TEST(Missile, BasicStateAndTarget)
     ASSERT_EQ(m->target(), 99);
 }
 
-TEST(Missile, FollowAndDetonate)
+TEST(Missile, ApproachAndDetonate)
 {
     auto e = Environment::createEnvironment(0);
 
@@ -81,4 +81,15 @@ TEST(Missile, FollowAndDetonate)
     ASSERT_TRUE((m->getPosition() - Eigen::Vector2d(17.5, 0.0)).isMuchSmallerThan(0.0001));
     ASSERT_TRUE((m->getAcceleration() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
     ASSERT_TRUE((m->getVelocity() - Eigen::Vector2d(5.0, 0.0)).isMuchSmallerThan(0.0001));
+
+    // wait till explosion
+    while(m->status() == Missile::Launched)
+    {
+        e->update(0.12);
+
+        // fail when fly by without detonation
+        ASSERT_LT(m->getPosition()(0), 102.0);
+    }
+
+    ASSERT_EQ(m->status(), Missile::Detonated);
 }

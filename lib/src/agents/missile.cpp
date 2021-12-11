@@ -66,6 +66,14 @@ void Missile::update(double time)
         {
             // magnitude is fixed in function
             setAcceleration(dist.vect);
+
+            // if target closer than missile can fly within "time" -> detonate
+            if(dist.dist < time * m_velocity.norm())
+            {
+                m_status = Detonated;
+                m_acceleration = Eigen::Vector2d(0.0, 0.0);
+                m_velocity = Eigen::Vector2d(0.0, 0.0);
+            }
         }
     }
 
