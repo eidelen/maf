@@ -72,6 +72,8 @@ public: // inherited from Agent
 protected:
     unsigned int m_target;
     Status m_status;
+    Eigen::Vector2d m_targetPosBefore;
+    bool m_targetPosBeforeAvailable;
 
 };
 

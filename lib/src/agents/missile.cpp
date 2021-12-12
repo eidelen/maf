@@ -21,12 +21,14 @@
 **
 *****************************************************************************/
 
+#include <iostream>
 #include "missile.h"
 #include "helpers.h"
 
-Missile::Missile(unsigned int id): Agent(id), m_target(0), m_status(Status::Idle)
+Missile::Missile(unsigned int id): Agent(id), m_target(0), m_status(Status::Idle),
+    m_targetPosBeforeAvailable(false)
 {
-    
+
 }
 
 Missile::~Missile()
@@ -64,11 +66,30 @@ void Missile::update(double time)
         auto[found, dist] = MafHlp::getDistanceToAgent(agentDists, m_target);
         if(found)
         {
+            Eigen::Vector2d estimatedTargetDirection = dist.vect;
+            Eigen::Vector2d currentTargetPosition = m_position + dist.vect;
+            double ownVelocity = m_velocity.norm();
+
+            // compute intersection by estimating future target position
+            if(m_targetPosBeforeAvailable)
+            {
+                Eigen::Vector2d targetVelocity = (currentTargetPosition - m_targetPosBefore) / time;
+
+                // how long to fly with current speed
+                double timeToReach = dist.dist / m_maxSpeed;
+
+                // estimate where targe will be by then
+                Eigen::Vector2d estimatedTargetPosition = currentTargetPosition + targetVelocity * timeToReach;
+                estimatedTargetDirection = estimatedTargetPosition - m_position;
+            }
+            m_targetPosBeforeAvailable = true;
+            m_targetPosBefore = currentTargetPosition;
+
             // max acceleration towards target
-            setMaxAccelerationInDirection(dist.vect);
+            setMaxAccelerationInDirection(estimatedTargetDirection);
 
             // if target closer than missile can fly within "time" -> detonate
-            if(dist.dist < time * m_velocity.norm())
+            if(dist.dist < time * ownVelocity)
             {
                 m_status = Detonated;
                 m_acceleration = Eigen::Vector2d(0.0, 0.0);

@@ -76,14 +76,14 @@ public:
 
         auto t = Agent::createAgent(6);
         t->setPosition(Eigen::Vector2d(5.0, 5.0));
-        t->setVelocity(Eigen::Vector2d(0.0, -1.0));
+        t->setVelocity(Eigen::Vector2d(0.0, -3.0));
         t->setRadius(0.5);
 
         auto m = std::shared_ptr<Missile>(new Missile(2));
         m->setPosition(Eigen::Vector2d(-9.0, 0.0));
         m->setRadius(0.5);
-        m->setVelocityLimit(2.0);
-        m->setAccelreationLimit(100.0);
+        m->setVelocityLimit(5.0);
+        m->setAccelreationLimit(10.0);
         m->fire(6);
 
         agents.push_back(t);
