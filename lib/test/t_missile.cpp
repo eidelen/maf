@@ -28,8 +28,8 @@ TEST(Missile, ApproachAndDetonate)
     // slow missile
     auto m = std::shared_ptr<Missile>(new Missile(1));
     m->setPosition(Eigen::Vector2d(0.0, 0.0));
-    m->setMaxSpeed(5.0);
-    m->setMaxAccelreation(1.0);
+    m->setVelocityLimit(5.0);
+    m->setAccelreationLimit(1.0);
     m->setEnvironment(e);
 
     // target 100m away

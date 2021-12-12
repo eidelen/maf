@@ -32,11 +32,11 @@ class Soldier: public Human
 
 public:
 
-    static std::shared_ptr<Soldier> createSoldier(unsigned int id, double maxSpeed = 1.5,
+    static std::shared_ptr<Soldier> createSoldier(unsigned int id, double velocityLimit = 1.5,
                                                     double maxAcceleration = 3.5, double obsDistance = 1.0,
                                                     double reactionTime = 0.3);
 
-    Soldier(unsigned int id, double maxSpeed, double maxAcceleration, double obsDistance, double reactionTime);
+    Soldier(unsigned int id, double velocityLimit, double maxAcceleration, double obsDistance, double reactionTime);
 
     /**
      * Destructor

@@ -254,8 +254,8 @@ TEST(Agent, MaxSpeedAccelration)
 {
     auto env = Environment::createEnvironment(3);
     auto h = Agent::createAgent(11);
-    h->setMaxSpeed(10.0);
-    h->setMaxAccelreation(1.0);
+    h->setVelocityLimit(10.0);
+    h->setAccelreationLimit(1.0);
     h->setEnvironment(env);
 
     // check set
@@ -290,4 +290,12 @@ TEST(Agent, MaxSpeedAccelration)
 
     // max speed reached -> limit to 10
     ASSERT_TRUE((h->getVelocity() - Eigen::Vector2d(10.0, 0.0)).isMuchSmallerThan(0.0001));
+}
+
+TEST(Agent, MaxAcceleration)
+{
+    auto a = Agent::createAgent(5);
+    a->setAccelreationLimit(10.0);
+    a->setMaxAccelerationInDirection(Eigen::Vector2d(1.0, 0.0));
+    ASSERT_TRUE((a->getAcceleration() - Eigen::Vector2d(10.0, 0.0)).isMuchSmallerThan(0.0001));
 }

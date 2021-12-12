@@ -51,6 +51,24 @@ public:
     }
 
     /**
+     * Given a 2D vector, this method scales the vector so that
+     * its length matches given magnitude.
+     * @param in Vector
+     * @param magnitude Wanted magnitude.
+     * @return Scaled vector.
+     */
+    static Eigen::Vector2d adjustVectorScale(const Eigen::Vector2d &in, double magnitude)
+    {
+        double inLength = in.norm();
+        if( inLength > 1.0e-10 ) // do not correct small vectors -> zero division
+        {
+            return (in / inLength) * magnitude;
+        }
+
+        return in;
+    }
+
+    /**
      * This function computes the acceleration required to stop an object of
      * a given velocity within a certain time. The resulting acceleration can,
      * however, not exceed the max. acceleration.

@@ -128,10 +128,18 @@ public:
     Eigen::Vector2d getAcceleration() const;
 
     /**
-     * Set agent's acceleration m/s^2.
+     * Set agent's acceleration m/s^2. Accelreation vector
+     * will be checked and corrected against the allowed max.
+     * acceleration.
      * @param Acceleration
      */
     virtual void setAcceleration(const Eigen::Vector2d& acceleration);
+
+    /**
+     * Sets agent's maximum acceleration towards given direction.
+     * @param accelerationDirection Acceleration direction (magnitude does not matter).
+     */
+    virtual void setMaxAccelerationInDirection(const Eigen::Vector2d& accelerationDirection);
 
     /**
      * Set the agent's environment.
@@ -186,14 +194,14 @@ public:
     /**
      * Set and get max speed of agent in m/s. DoubleMax at init.
      */
-    double maxSpeed() const;
-    void setMaxSpeed(double newMaxSpeed);
+    double velocityLimit() const;
+    void setVelocityLimit(double newMaxSpeed);
 
     /**
      * Set and get max acceleration of agent in m/s^2. DoubleMax at init.
      */
-    double maxAccelreation() const;
-    void setMaxAccelreation(double newMaxAccelreation);
+    double accelreationLimit() const;
+    void setAccelreationLimit(double newMaxAccelreation);
 
 protected:
 

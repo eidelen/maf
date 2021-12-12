@@ -102,6 +102,11 @@ void Agent::setAcceleration(const Eigen::Vector2d &acceleration)
     m_acceleration = MafHlp::correctVectorScale(acceleration, m_maxAccelreation);
 }
 
+void Agent::setMaxAccelerationInDirection(const Eigen::Vector2d& accelerationDirection)
+{
+    m_acceleration = MafHlp::adjustVectorScale(accelerationDirection, m_maxAccelreation);
+}
+
 void Agent::setEnvironment(std::shared_ptr<EnvironmentInterface> env)
 {
     m_environment = env;
@@ -146,22 +151,22 @@ void Agent::updateSubAgents(double time)
     });
 }
 
-double Agent::maxAccelreation() const
+double Agent::accelreationLimit() const
 {
     return m_maxAccelreation;
 }
 
-void Agent::setMaxAccelreation(double newMaxAccelreation)
+void Agent::setAccelreationLimit(double newMaxAccelreation)
 {
     m_maxAccelreation = newMaxAccelreation;
 }
 
-double Agent::maxSpeed() const
+double Agent::velocityLimit() const
 {
     return m_maxSpeed;
 }
 
-void Agent::setMaxSpeed(double newMaxSpeed)
+void Agent::setVelocityLimit(double newMaxSpeed)
 {
     m_maxSpeed = newMaxSpeed;
 }

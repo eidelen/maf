@@ -82,8 +82,8 @@ public:
         auto m = std::shared_ptr<Missile>(new Missile(2));
         m->setPosition(Eigen::Vector2d(-9.0, 0.0));
         m->setRadius(0.5);
-        m->setMaxSpeed(2.0);
-        m->setMaxAccelreation(100.0);
+        m->setVelocityLimit(2.0);
+        m->setAccelreationLimit(100.0);
         m->fire(6);
 
         agents.push_back(t);
