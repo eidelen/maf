@@ -64,8 +64,11 @@ void Missile::update(double time)
         auto[found, dist] = MafHlp::getDistanceToAgent(agentDists, m_target);
         if(found)
         {
-            // magnitude is fixed in function
-            setAcceleration(dist.vect);
+            // max acceleration towards target - magnitude is fixed in function
+            Eigen::Vector2d accelerationTowardsTarget = dist.vect;
+            accelerationTowardsTarget.normalize();
+            // todo: write function to set full acceleration in direction.
+            setAcceleration(accelerationTowardsTarget * m_maxAccelreation);
 
             // if target closer than missile can fly within "time" -> detonate
             if(dist.dist < time * m_velocity.norm())
