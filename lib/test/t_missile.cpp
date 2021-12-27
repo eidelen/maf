@@ -29,7 +29,6 @@ TEST(Missile, ApproachAndDetonate)
     auto m = std::shared_ptr<Missile>(new Missile(1));
     m->setPosition(Eigen::Vector2d(0.0, 0.0));
     m->setVelocityLimit(5.0);
-    m->setAccelreationLimit(1.0);
     m->setEnvironment(e);
 
     // target 100m away
@@ -48,38 +47,16 @@ TEST(Missile, ApproachAndDetonate)
     ASSERT_TRUE((m->getAcceleration() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
     ASSERT_TRUE((m->getVelocity() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
 
-    // fire
+    // fire: missile is at full speed from very beginning -> acceleration does not matter
     m->fire(2);
     e->update(1.0);
     ASSERT_EQ(m->status(), Missile::Launched);
-    ASSERT_TRUE((m->getPosition() - Eigen::Vector2d(0.5, 0.0)).isMuchSmallerThan(0.0001));
-    ASSERT_TRUE((m->getAcceleration() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
-    ASSERT_TRUE((m->getVelocity() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
-
-    e->update(1.0);
-    ASSERT_EQ(m->status(), Missile::Launched);
-    ASSERT_TRUE((m->getPosition() - Eigen::Vector2d(2.0, 0.0)).isMuchSmallerThan(0.0001));
-    ASSERT_TRUE((m->getAcceleration() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
-    ASSERT_TRUE((m->getVelocity() - Eigen::Vector2d(2.0, 0.0)).isMuchSmallerThan(0.0001));
-
-    e->update(1.0);
-    ASSERT_EQ(m->status(), Missile::Launched);
-    ASSERT_TRUE((m->getPosition() - Eigen::Vector2d(4.5, 0.0)).isMuchSmallerThan(0.0001));
-    ASSERT_TRUE((m->getAcceleration() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
-    ASSERT_TRUE((m->getVelocity() - Eigen::Vector2d(3.0, 0.0)).isMuchSmallerThan(0.0001));
-
-    e->update(2.0);
-    ASSERT_EQ(m->status(), Missile::Launched);
-    ASSERT_TRUE((m->getPosition() - Eigen::Vector2d(12.5, 0.0)).isMuchSmallerThan(0.0001));
-    ASSERT_TRUE((m->getAcceleration() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
+    ASSERT_TRUE((m->getPosition() - Eigen::Vector2d(5.0, 0.0)).isMuchSmallerThan(0.0001));
     ASSERT_TRUE((m->getVelocity() - Eigen::Vector2d(5.0, 0.0)).isMuchSmallerThan(0.0001));
 
-    // max speed reached
-
     e->update(1.0);
     ASSERT_EQ(m->status(), Missile::Launched);
-    ASSERT_TRUE((m->getPosition() - Eigen::Vector2d(17.5, 0.0)).isMuchSmallerThan(0.0001));
-    ASSERT_TRUE((m->getAcceleration() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
+    ASSERT_TRUE((m->getPosition() - Eigen::Vector2d(10.0, 0.0)).isMuchSmallerThan(0.0001));
     ASSERT_TRUE((m->getVelocity() - Eigen::Vector2d(5.0, 0.0)).isMuchSmallerThan(0.0001));
 
     // wait till explosion

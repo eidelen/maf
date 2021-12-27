@@ -68,7 +68,6 @@ void Missile::update(double time)
         {
             Eigen::Vector2d estimatedTargetDirection = dist.vect;
             Eigen::Vector2d currentTargetPosition = m_position + dist.vect;
-            double ownVelocity = m_velocity.norm();
 
             // compute intersection by estimating future target position
             if(m_targetPosBeforeAvailable)
@@ -86,10 +85,10 @@ void Missile::update(double time)
             m_targetPosBefore = currentTargetPosition;
 
             // max acceleration towards target
-            setMaxAccelerationInDirection(estimatedTargetDirection);
+            setMaxVelocityInDirection(estimatedTargetDirection);
 
             // if target closer than missile can fly within "time" -> detonate
-            if(dist.dist < time * ownVelocity)
+            if(dist.dist < time * m_maxSpeed)
             {
                 m_status = Detonated;
                 m_acceleration = Eigen::Vector2d(0.0, 0.0);
