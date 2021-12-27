@@ -299,3 +299,11 @@ TEST(Agent, MaxAcceleration)
     a->setMaxAccelerationInDirection(Eigen::Vector2d(1.0, 0.0));
     ASSERT_TRUE((a->getAcceleration() - Eigen::Vector2d(10.0, 0.0)).isMuchSmallerThan(0.0001));
 }
+
+TEST(Agent, MaxVelocity)
+{
+    auto a = Agent::createAgent(5);
+    a->setVelocityLimit(15.0);
+    a->setMaxVelocityInDirection(Eigen::Vector2d(0.0, 1.0));
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(0.0, 15.0)).isMuchSmallerThan(0.0001));
+}

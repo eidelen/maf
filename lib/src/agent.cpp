@@ -33,8 +33,8 @@ std::shared_ptr<Agent> Agent::createAgent(unsigned int id)
 }
 
 Agent::Agent(unsigned int id) : m_id(id), m_radius(0.0), m_velocity(Eigen::Vector2d(0.0, 0.0)),
-    m_acceleration(Eigen::Vector2d(0.0, 0.0)), m_position(Eigen::Vector2d(0.0, 0.0)),
-    m_maxAccelreation(std::numeric_limits<double>::max()), m_maxSpeed(std::numeric_limits<double>::max())
+    m_position(Eigen::Vector2d(0.0, 0.0)), m_acceleration(Eigen::Vector2d(0.0, 0.0)),
+    m_maxSpeed(std::numeric_limits<double>::max()), m_maxAccelreation(std::numeric_limits<double>::max())
 {
 
 }
@@ -105,6 +105,11 @@ void Agent::setAcceleration(const Eigen::Vector2d &acceleration)
 void Agent::setMaxAccelerationInDirection(const Eigen::Vector2d& accelerationDirection)
 {
     m_acceleration = MafHlp::adjustVectorScale(accelerationDirection, m_maxAccelreation);
+}
+
+void Agent::setMaxVelocityInDirection(const Eigen::Vector2d& velocityDirection)
+{
+    m_velocity = MafHlp::adjustVectorScale(velocityDirection, m_maxSpeed);
 }
 
 void Agent::setEnvironment(std::shared_ptr<EnvironmentInterface> env)

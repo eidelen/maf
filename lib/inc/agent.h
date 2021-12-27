@@ -142,6 +142,12 @@ public:
     virtual void setMaxAccelerationInDirection(const Eigen::Vector2d& accelerationDirection);
 
     /**
+     * Sets agent's maximum velocity towards given direction.
+     * @param velocityDirection Velocity direction (magnitude does not matter).
+     */
+    virtual void setMaxVelocityInDirection(const Eigen::Vector2d& velocityDirection);
+
+    /**
      * Set the agent's environment.
      * @param env Environment.
      */

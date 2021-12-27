@@ -77,6 +77,7 @@ public:
         auto t = Agent::createAgent(6);
         t->setPosition(Eigen::Vector2d(5.0, 5.0));
         t->setVelocity(Eigen::Vector2d(0.0, -3.0));
+        t->setAcceleration(Eigen::Vector2d(-1.0, 0.0));
         t->setRadius(0.5);
 
         auto m = std::shared_ptr<Missile>(new Missile(2));
