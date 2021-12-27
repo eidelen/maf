@@ -52,7 +52,10 @@ void ProximitySensor::update(double time)
     while(!q.empty())
     {
         const auto& d = q.top();
-        if( d.dist < m_range )
+
+        // if target is not on ignore list and target is in range
+        if( m_ignoreAgentIds.find(d.targetId) == m_ignoreAgentIds.end() &&
+                d.dist < m_range )
         {
             m_agentsInRange.push_back(d);
             q.pop();
@@ -85,5 +88,10 @@ void ProximitySensor::setRange(double newRange)
 std::vector<EnvironmentInterface::Distance> ProximitySensor::getAgentsInSensorRange() const
 {
     return m_agentsInRange;
+}
+
+void ProximitySensor::addIgnoreAgentId(unsigned int agentId)
+{
+    m_ignoreAgentIds.insert(agentId);
 }
 

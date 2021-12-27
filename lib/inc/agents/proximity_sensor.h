@@ -25,6 +25,7 @@
 #define POXIMITY_SENS_H
 
 #include <vector>
+#include <set>
 
 #include "agent.h"
 
@@ -69,6 +70,11 @@ public:
      */
     std::vector<EnvironmentInterface::Distance> getAgentsInSensorRange() const;
 
+    /**
+     * Ignore this agent when coming into the sensor's range.
+     * @param agentId Agent id.
+     */
+    void addIgnoreAgentId(unsigned int agentId);
 
 
 public: // inherited from Agent
@@ -79,9 +85,8 @@ public: // inherited from Agent
 protected:
     double m_range;
     std::vector<EnvironmentInterface::Distance> m_agentsInRange;
+    std::set<unsigned int> m_ignoreAgentIds;
 
 };
-
-
 
 #endif // POXIMITY_SENS_H
