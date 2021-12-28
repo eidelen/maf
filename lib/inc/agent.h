@@ -152,7 +152,7 @@ public:
      * Set the agent's environment.
      * @param env Environment.
      */
-    void setEnvironment(std::shared_ptr<EnvironmentInterface> env);
+    virtual void setEnvironment(std::shared_ptr<EnvironmentInterface> env);
 
     /**
      * Get the agent's environment.

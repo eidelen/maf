@@ -68,6 +68,7 @@ public:
 public: // inherited from Agent
     void update(double time) override;
     AgentType type() const override;
+    void setEnvironment(std::shared_ptr<EnvironmentInterface> env) override;
 
 protected:
     std::set<unsigned int> m_targets;

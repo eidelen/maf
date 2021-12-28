@@ -59,10 +59,39 @@ MissileStation::Status MissileStation::status() const
 
 void MissileStation::update(double time)
 {
+    // update first sub agents
+    updateSubAgents(time);
 
+    assert(hasEnvironment());
+
+    auto agentsInRange = m_sensor->getAgentsInSensorRange();
+    for(auto agent: agentsInRange)
+    {
+        // check if new target and station operational
+        if(m_targets.find(agent.targetId) == m_targets.end() &&
+                status() == Operate )
+        {
+            // setup a missile and fire towards agent.
+            auto missile = m_missiles.front();
+            m_missiles.pop();
+            missile->fire(agent.targetId);
+            m_targets.insert(agent.targetId);
+        }
+    }
 }
 
 AgentType MissileStation::type() const
 {
     return AgentType::EMissileStation;
+}
+
+void MissileStation::setEnvironment(std::shared_ptr<EnvironmentInterface> env)
+{
+    m_environment = env;
+
+    // set environment also to all local generated subagents
+    for(auto suba: getSubAgents())
+    {
+        suba->setEnvironment(env);
+    }
 }
