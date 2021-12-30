@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "missile_station.h"
+#include "environment.h"
 
 TEST(MissileStation, TypeAndId)
 {
@@ -36,4 +37,40 @@ TEST(MissileStation, Status)
 
     ASSERT_EQ(empty->status(), MissileStation::Empty);
     ASSERT_EQ(loaded->status(), MissileStation::Operate);
+}
+
+TEST(MissileStation, Fire)
+{
+    auto e = Environment::createEnvironment(0);
+    auto s = std::shared_ptr<MissileStation>(new MissileStation(2000, 1, 5.0));
+    s->setEnvironment(e);
+    s->setPosition(Eigen::Vector2d(0.0, 0.0));
+    e->addAgent(s);
+
+    //TODO: addAgent needs to add also subagents
+    //NOTE: update calls subagents -> therefore subagents would be updated twice
+    //Note: proximity detects itself now :(
+
+    auto a = Agent::createAgent(1);
+    a->setPosition(Eigen::Vector2d(0.0, 6.0));
+    a->setEnvironment(e);
+    e->addAgent(a);
+
+    for(auto q: e->getAgents())
+    {
+        std::cout << q->id() << std::endl;
+    }
+
+    e->update(0.1);
+
+    // the only single rocket NOT fired yet
+    ASSERT_EQ(s->status(), MissileStation::Operate);
+
+    a->setPosition(Eigen::Vector2d(0.0, 4.0));
+
+
+
+    // the single rocket was fired -> no rocket left
+    ASSERT_EQ(s->status(), MissileStation::Empty);
+
 }

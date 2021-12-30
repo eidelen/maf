@@ -21,6 +21,7 @@
 **
 *****************************************************************************/
 
+#include <iostream>
 #include "proximity_sensor.h"
 
 
@@ -46,6 +47,8 @@ void ProximitySensor::update(double time)
 
     assert(hasEnvironment());
 
+    std::cout << "ProximitySensor::update" << std::endl;
+
     // update agents in range
     m_agentsInRange.clear();
     EnvironmentInterface::DistanceQueue q = m_environment.lock()->getAgentDistancesToAllOtherAgents(id());
@@ -53,11 +56,16 @@ void ProximitySensor::update(double time)
     {
         const auto& d = q.top();
 
+        std::cout << "ProximitySensor::update: dist = " << d.dist << ", id=" << d.targetId << std::endl;
+
         // if target is not on ignore list and target is in range
-        if( m_ignoreAgentIds.find(d.targetId) == m_ignoreAgentIds.end() &&
-                d.dist < m_range )
+        if( d.dist < m_range )
         {
-            m_agentsInRange.push_back(d);
+            if( m_ignoreAgentIds.find(d.targetId) == m_ignoreAgentIds.end() )
+            {
+                m_agentsInRange.push_back(d);
+            }
+
             q.pop();
         }
         else

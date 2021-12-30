@@ -21,6 +21,7 @@
 **
 *****************************************************************************/
 
+#include <iostream>
 #include "missile_station.h"
 
 MissileStation::MissileStation(unsigned int id, size_t nMissiles, double detectionRange): Agent(id)
@@ -64,9 +65,13 @@ void MissileStation::update(double time)
 
     assert(hasEnvironment());
 
+    std::cout << "MissileStation::update" << std::endl;
+
     auto agentsInRange = m_sensor->getAgentsInSensorRange();
     for(auto agent: agentsInRange)
     {
+        std::cout << "MissileStation::update: agent in range: " << agent.targetId << std::endl;
+
         // check if new target and station operational
         if(m_targets.find(agent.targetId) == m_targets.end() &&
                 status() == Operate )
@@ -76,6 +81,8 @@ void MissileStation::update(double time)
             m_missiles.pop();
             missile->fire(agent.targetId);
             m_targets.insert(agent.targetId);
+
+            std::cout << "FIRE Id:" << agent.targetId << std::endl;
         }
     }
 }
