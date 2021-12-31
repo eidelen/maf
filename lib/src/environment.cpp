@@ -60,12 +60,6 @@ void Environment::update(double time)
 void Environment::addAgent(std::shared_ptr<Agent> a)
 {
     m_agents.push_back(a);
-
-    // add all subagents
-    for(auto sa: a->getSubAgents())
-    {
-        addAgent(sa);
-    }
 }
 
 std::list<std::shared_ptr<Agent> > Environment::getAgents()
@@ -118,8 +112,6 @@ void Environment::computeDistances()
             // extend matrix with distances in both direction
             m_agentDistanceMap[agentA->id()].push({vLength, agentB->id(), vDiff});
             m_agentDistanceMap[agentB->id()].push({vLength, agentA->id(), -vDiff});
-
-            std::cout << agentA->id() << ", " << agentB->id() << ", " << vLength << std::endl;
         }
     }
 }

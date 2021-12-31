@@ -21,9 +21,7 @@
 **
 *****************************************************************************/
 
-#include <iostream>
 #include "proximity_sensor.h"
-
 
 std::shared_ptr<ProximitySensor> ProximitySensor::createProxSensor(unsigned int id, double range)
 {
@@ -47,16 +45,12 @@ void ProximitySensor::update(double time)
 
     assert(hasEnvironment());
 
-    std::cout << "ProximitySensor::update" << std::endl;
-
     // update agents in range
     m_agentsInRange.clear();
     EnvironmentInterface::DistanceQueue q = m_environment.lock()->getAgentDistancesToAllOtherAgents(id());
     while(!q.empty())
     {
         const auto& d = q.top();
-
-        std::cout << "ProximitySensor::update: dist = " << d.dist << ", id=" << d.targetId << std::endl;
 
         // if target is not on ignore list and target is in range
         if( d.dist < m_range )

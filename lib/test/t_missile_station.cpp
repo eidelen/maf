@@ -47,19 +47,10 @@ TEST(MissileStation, Fire)
     s->setPosition(Eigen::Vector2d(0.0, 0.0));
     e->addAgent(s);
 
-    //TODO: addAgent needs to add also subagents
-    //NOTE: update calls subagents -> therefore subagents would be updated twice
-    //Note: proximity detects itself now :(
-
     auto a = Agent::createAgent(1);
     a->setPosition(Eigen::Vector2d(0.0, 6.0));
     a->setEnvironment(e);
     e->addAgent(a);
-
-    for(auto q: e->getAgents())
-    {
-        std::cout << q->id() << std::endl;
-    }
 
     e->update(0.1);
 
@@ -68,9 +59,78 @@ TEST(MissileStation, Fire)
 
     a->setPosition(Eigen::Vector2d(0.0, 4.0));
 
-
+    e->update(0.1);
 
     // the single rocket was fired -> no rocket left
     ASSERT_EQ(s->status(), MissileStation::Empty);
-
 }
+
+TEST(MissileStation, MultipleFire)
+{
+    auto e = Environment::createEnvironment(0);
+    auto s = std::shared_ptr<MissileStation>(new MissileStation(2000, 2, 5.0));
+    s->setEnvironment(e);
+    s->setPosition(Eigen::Vector2d(0.0, 0.0));
+    e->addAgent(s);
+
+    auto a = Agent::createAgent(1);
+    a->setPosition(Eigen::Vector2d(0.0, 6.0));
+    a->setEnvironment(e);
+    e->addAgent(a);
+
+    auto b = Agent::createAgent(2);
+    b->setPosition(Eigen::Vector2d(0.0, 6.0));
+    b->setEnvironment(e);
+    e->addAgent(b);
+
+    e->update(0.1);
+
+    // no rocket fired yet
+    ASSERT_EQ(s->status(), MissileStation::Operate);
+
+    // first rocket fired
+    a->setPosition(Eigen::Vector2d(0.0, 4.0));
+    e->update(0.1);
+    ASSERT_EQ(s->status(), MissileStation::Operate);
+
+    // do not fire a second time on same agent
+    a->setPosition(Eigen::Vector2d(0.0, 2.0));
+    e->update(0.1);
+    ASSERT_EQ(s->status(), MissileStation::Operate);
+
+
+    // second and last rocket fired too
+    b->setPosition(Eigen::Vector2d(0.0, -4.0));
+    e->update(0.1);
+    ASSERT_EQ(s->status(), MissileStation::Empty);
+}
+
+TEST(MissileStation, FlyBy)
+{
+    auto e = Environment::createEnvironment(0);
+    auto s = std::shared_ptr<MissileStation>(new MissileStation(2000, 10, 1.0));
+    s->setEnvironment(e);
+    s->setPosition(Eigen::Vector2d(0.0, 0.0));
+    e->addAgent(s);
+
+    for(unsigned int k = 0; k < 10; k++)
+    {
+        // agent will fly over rocket station
+        auto a = Agent::createAgent(k);
+        a->setPosition(Eigen::Vector2d(-10.0-k, 0.0));
+        a->setVelocity(Eigen::Vector2d(1.0, 0.0));
+        a->setEnvironment(e);
+        e->addAgent(a);
+    }
+
+    ASSERT_EQ(s->status(), MissileStation::Operate);
+
+    // after about 20 seconds, all missiles were fired
+    for(int t = 0; t < 50; t++)
+    {
+        e->update(0.5);
+    }
+
+    ASSERT_EQ(s->status(), MissileStation::Empty);
+}
+
