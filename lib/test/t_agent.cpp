@@ -307,3 +307,21 @@ TEST(Agent, MaxVelocity)
     a->setMaxVelocityInDirection(Eigen::Vector2d(0.0, 1.0));
     ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(0.0, 15.0)).isMuchSmallerThan(0.0001));
 }
+
+TEST(Agent, UpdatePosSubAgents)
+{
+    auto a = Agent::createAgent(1);
+    auto ac1 = Agent::createAgent(2);
+    a->addSubAgent(ac1);
+
+    a->setPosition(Eigen::Vector2d(1.0, 0.0));
+    ac1->setPosition(Eigen::Vector2d(0.0, 1.0));
+
+    // sub agent pos not changed
+    a->setPosition(Eigen::Vector2d(2.0, 0.0));
+    ASSERT_TRUE((ac1->getPosition() - Eigen::Vector2d(0.0, 1.0)).isMuchSmallerThan(0.0001));
+
+    // sub agent pos changed
+    a->setPosition(Eigen::Vector2d(2.0, 0.0), true);
+    ASSERT_TRUE((ac1->getPosition() - Eigen::Vector2d(2.0, 0.0)).isMuchSmallerThan(0.0001));
+}

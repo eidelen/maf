@@ -67,9 +67,17 @@ double Agent::getRadius() const
     return m_radius;
 }
 
-void Agent::setRadius(double radius)
+void Agent::setRadius(double radius, bool includeSubAgents)
 {
     m_radius = radius;
+
+    if(includeSubAgents)
+    {
+        for(auto sa: getSubAgents())
+        {
+            sa->setRadius(radius);
+        }
+    }
 }
 
 Eigen::Vector2d Agent::getPosition() const
@@ -77,9 +85,17 @@ Eigen::Vector2d Agent::getPosition() const
     return m_position;
 }
 
-void Agent::setPosition(const Eigen::Vector2d &position)
+void Agent::setPosition(const Eigen::Vector2d &position, bool includeSubAgents)
 {
     m_position = position;
+
+    if(includeSubAgents)
+    {
+        for(auto sa: getSubAgents())
+        {
+            sa->setPosition(position);
+        }
+    }
 }
 
 Eigen::Vector2d Agent::getVelocity() const

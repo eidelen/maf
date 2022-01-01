@@ -29,7 +29,7 @@
 #include <Eigen/Dense>
 
 #include "environment.h"
-#include "missile.h"
+#include "missile_station.h"
 
 
 /**
@@ -75,17 +75,13 @@ public:
         std::list<std::shared_ptr<Agent>> agents;
 
         auto t = Agent::createAgent(6);
-        t->setPosition(Eigen::Vector2d(5.0, 5.0));
-        t->setVelocity(Eigen::Vector2d(0.0, -3.0));
-        t->setAcceleration(Eigen::Vector2d(0.0, 1.0));
-        t->setRadius(0.5);
+        t->setPosition(Eigen::Vector2d(3.0, 7.0));
+        t->setVelocity(Eigen::Vector2d(0.0, -2.0));
+        t->setRadius(0.3);
 
-        auto m = std::shared_ptr<Missile>(new Missile(2));
-        m->setPosition(Eigen::Vector2d(-9.0, 0.0));
-        m->setRadius(0.5);
-        m->setVelocityLimit(5.0);
-        m->setAccelreationLimit(10.0);
-        m->fire(6);
+        auto m = std::shared_ptr<MissileStation>(new MissileStation(2000, 1, 4.01, 2.4));
+        m->setPosition(Eigen::Vector2d(-1.0, 0.0), true);
+        m->setRadius(0.2, true);
 
         agents.push_back(t);
         agents.push_back(m);

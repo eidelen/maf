@@ -95,8 +95,9 @@ public:
     /**
      * Set the radius of the agent.
      * @param The radius of the agent in m.
+     * @param includeSubAgents If true, subagents are updated too.
      */
-    void setRadius(double radius);
+    void setRadius(double radius, bool includeSubAgents = false);
 
     /**
      * Get agent's position.
@@ -107,8 +108,9 @@ public:
     /**
      * Set agent's position.
      * @param position Position in m.
+     * @param includeSubAgents If true, subagents are updated too.
      */
-    void setPosition(const Eigen::Vector2d &position);
+    void setPosition(const Eigen::Vector2d &position, bool includeSubAgents = false);
 
     /**
      * Get velocity vector in m/s.

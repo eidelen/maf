@@ -24,7 +24,7 @@
 #include <iostream>
 #include "missile_station.h"
 
-MissileStation::MissileStation(unsigned int id, size_t nMissiles, double detectionRange): Agent(id)
+MissileStation::MissileStation(unsigned int id, size_t nMissiles, double detectionRange, double missileVelocity): Agent(id)
 {
     // create sensor
     m_sensor.reset(new ProximitySensor(++id, detectionRange));
@@ -35,6 +35,7 @@ MissileStation::MissileStation(unsigned int id, size_t nMissiles, double detecti
     for(size_t k = 0; k < nMissiles; k++)
     {
         auto missile = std::shared_ptr<Missile>(new Missile(++id));
+        missile->setVelocityLimit(missileVelocity);
         m_missiles.push(missile);
         m_sensor->addIgnoreAgentId(missile->id());
         addSubAgent(missile);

@@ -44,8 +44,9 @@ public:
      * @param id Missile station id.
      * @param nMissiles Number of missiles.
      * @param detectionRange Distance in which an object is detected.
+     * @param missileVelocity Missile velocity.
      */
-    MissileStation(unsigned int id, size_t nMissiles, double detectionRange);
+    MissileStation(unsigned int id, size_t nMissiles, double detectionRange, double missileVelocity);
 
     /**
      * Destructor

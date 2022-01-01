@@ -5,14 +5,14 @@
 
 TEST(MissileStation, TypeAndId)
 {
-    auto m = std::shared_ptr<MissileStation>(new MissileStation(4,2,3.0));
+    auto m = std::shared_ptr<MissileStation>(new MissileStation(4,2,3.0, 1.0));
     ASSERT_EQ(m->type(), AgentType::EMissileStation);
     ASSERT_EQ(m->id(), 4);
 }
 
 TEST(MissileStation, CheckComponents)
 {
-    auto m = std::shared_ptr<MissileStation>(new MissileStation(4, 2, 3.0));
+    auto m = std::shared_ptr<MissileStation>(new MissileStation(4, 2, 3.0, 1.0));
 
     auto agents = m->getSubAgents();
 
@@ -32,8 +32,8 @@ TEST(MissileStation, CheckComponents)
 
 TEST(MissileStation, Status)
 {
-    auto empty = std::shared_ptr<MissileStation>(new MissileStation(4, 0, 3.0));
-    auto loaded = std::shared_ptr<MissileStation>(new MissileStation(4, 1, 3.0));
+    auto empty = std::shared_ptr<MissileStation>(new MissileStation(4, 0, 3.0, 1.0));
+    auto loaded = std::shared_ptr<MissileStation>(new MissileStation(4, 1, 3.0, 1.0));
 
     ASSERT_EQ(empty->status(), MissileStation::Empty);
     ASSERT_EQ(loaded->status(), MissileStation::Operate);
@@ -42,7 +42,7 @@ TEST(MissileStation, Status)
 TEST(MissileStation, Fire)
 {
     auto e = Environment::createEnvironment(0);
-    auto s = std::shared_ptr<MissileStation>(new MissileStation(2000, 1, 5.0));
+    auto s = std::shared_ptr<MissileStation>(new MissileStation(2000, 1, 5.0, 1.0));
     s->setEnvironment(e);
     s->setPosition(Eigen::Vector2d(0.0, 0.0));
     e->addAgent(s);
@@ -68,7 +68,7 @@ TEST(MissileStation, Fire)
 TEST(MissileStation, MultipleFire)
 {
     auto e = Environment::createEnvironment(0);
-    auto s = std::shared_ptr<MissileStation>(new MissileStation(2000, 2, 5.0));
+    auto s = std::shared_ptr<MissileStation>(new MissileStation(2000, 2, 5.0, 1.0));
     s->setEnvironment(e);
     s->setPosition(Eigen::Vector2d(0.0, 0.0));
     e->addAgent(s);
@@ -108,7 +108,7 @@ TEST(MissileStation, MultipleFire)
 TEST(MissileStation, FlyBy)
 {
     auto e = Environment::createEnvironment(0);
-    auto s = std::shared_ptr<MissileStation>(new MissileStation(2000, 10, 1.0));
+    auto s = std::shared_ptr<MissileStation>(new MissileStation(2000, 10, 1.0, 1.0));
     s->setEnvironment(e);
     s->setPosition(Eigen::Vector2d(0.0, 0.0));
     e->addAgent(s);

@@ -90,6 +90,8 @@ void Missile::update(double time)
             // if target closer than missile can fly within "time" -> detonate
             if(dist.dist < time * m_maxSpeed)
             {
+                std::cout << "Missile " << id() << " detonated: Target " << m_target << std::endl;
+
                 m_status = Detonated;
                 m_acceleration = Eigen::Vector2d(0.0, 0.0);
                 m_velocity = Eigen::Vector2d(0.0, 0.0);
