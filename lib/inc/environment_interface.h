@@ -28,6 +28,8 @@
 #include <queue>
 #include <Eigen/Dense>
 
+#include "message.h"
+
 /**
  * @brief The EnvironmentInterface class is an interface the
  * agents can use to access their einvironment. The agents should
@@ -81,6 +83,25 @@ public:
      * @return Queue with closest agent first
      */
     virtual DistanceQueue getAgentDistancesToAllOtherAgents(unsigned int id) = 0;
+
+    /**
+     * MessageQueue contains the messages for a specific agent.
+     */
+    using MessageQueue = std::queue<std::shared_ptr<Message>>;
+
+    /**
+     * Get the messages for a specific agent. Note: Processing
+     * this messages pops these from the queue permanently.
+     * @param receiverAgendId Receiver agent id.
+     * @return Message Queue
+     */
+    virtual MessageQueue& getMessages(unsigned int receiverAgendId) = 0;
+
+    /**
+     * Send a message.
+     * @param aMessage A message.
+     */
+    virtual void sendMessage(std::shared_ptr<Message> aMessage) = 0;
 };
 
 #endif // ENVIRONMENTINTERFACE_H

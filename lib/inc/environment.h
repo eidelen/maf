@@ -107,17 +107,24 @@ public:
      */
     static Eigen::Vector2d computeDistance(const std::shared_ptr<Agent>& a, const std::shared_ptr<Agent>& b);
 
+    /**
+     * Holds the messages for each client.
+     */
+    using MessagesMap = std::unordered_map<unsigned int, MessageQueue>;
 
 public: //Inherited from EnvironmentInterface
 
     virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override;
     virtual DistanceQueue getAgentDistancesToAllOtherAgents(unsigned int id) override;
+    virtual MessageQueue& getMessages(unsigned int receiverAgendId) override;
+    virtual void sendMessage(std::shared_ptr<Message> aMessage) override;
 
 protected:
 
     unsigned int m_id;
     std::list<std::shared_ptr<Agent>> m_agents;
     DistanceMap m_agentDistanceMap;
+    MessagesMap m_msgMap;
 };
 
 

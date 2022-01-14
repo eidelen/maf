@@ -121,3 +121,12 @@ Eigen::Vector2d Environment::computeDistance(const std::shared_ptr<Agent> &a, co
     return b->getPosition() - a->getPosition();
 }
 
+EnvironmentInterface::MessageQueue &Environment::getMessages(unsigned int receiverAgendId)
+{
+    return m_msgMap[receiverAgendId];
+}
+
+void Environment::sendMessage(std::shared_ptr<Message> aMessage)
+{
+    m_msgMap[aMessage->receiverId()].push(aMessage);
+}

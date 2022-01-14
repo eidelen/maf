@@ -206,3 +206,31 @@ TEST(Environment, DistanceMapSubAgents)
     compareDist(qA20.top(), {18.0, 2, Eigen::Vector2d(-18.0, 0.0)});
 }
 
+TEST(Environment, SendReceiveMessages)
+{
+    auto e = Environment::createEnvironment(9);
+
+    // no messages yet
+    ASSERT_EQ(e->getMessages(1).size(), 0);
+
+    // 2 messages for 1
+    std::shared_ptr<Message> a(new Message(0, 1, Message::Disable));
+    std::shared_ptr<Message> b(new Message(0, 1, Message::Enable));
+    e->sendMessage(a);
+    e->sendMessage(b);
+    ASSERT_EQ(e->getMessages(1).size(), 2);
+
+    // reading messages removes them
+    auto ra = e->getMessages(1).front();
+    e->getMessages(1).pop();
+    ASSERT_EQ(ra->senderId(), 0);
+    ASSERT_EQ(ra->receiverId(), 1);
+    ASSERT_EQ(ra->subject(), Message::Disable);
+    auto rb = e->getMessages(1).front();
+    e->getMessages(1).pop();
+    ASSERT_EQ(rb->senderId(), 0);
+    ASSERT_EQ(rb->receiverId(), 1);
+    ASSERT_EQ(rb->subject(), Message::Enable);
+    ASSERT_EQ(e->getMessages(1).size(), 0);
+}
+
