@@ -25,6 +25,7 @@
 #define CL_SIM_QT_H
 
 #include <QPainter>
+#include "agent.h"
 #include "airdefencesim.h"
 #include "simulation.h"
 
@@ -74,6 +75,8 @@ public:
     void drawSim(QPainter& painter)
     {
         // draw circle
+        double symbolWidht = 60;
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
         painter.setBrush(Qt::white);
         painter.drawEllipse(sim2WidTrans(Eigen::Vector2d(0.0, 0.0)), sim2WidScale(10.0), sim2WidScale(10.0));
 
@@ -81,11 +84,28 @@ public:
         auto agents = m_sim->getEnvironment()->getAgents();
         std::for_each(agents.begin(), agents.end(), [=, &painter](const auto& a) {
 
-            painter.setBrush(Qt::black);
-            painter.drawEllipse(sim2WidTrans(a->getPosition()), sim2WidScale(a->getRadius()), sim2WidScale(a->getRadius()));
+            if(a->type() == AgentType::EMissileStation)
+            {
+                MissileStation* ms = (MissileStation*)a.get();
 
-            painter.setPen(QPen(Qt::black, 1, Qt::SolidLine));
-            painter.drawLine(sim2WidTrans(a->getPosition()), sim2WidTrans(a->getPosition() + (a->getAcceleration()/2.0)));
+                // draw detection area
+                painter.setBrush(QColor(0,0,255, 40));
+                painter.drawEllipse(sim2WidTrans(a->getPosition()),
+                                    sim2WidScale(ms->detectionRange()), sim2WidScale(ms->detectionRange()));
+
+                // draw rocket launcher symbol
+                QPixmap rocketLauncherSymbol("://symbols/rocketlauncher.png");
+                QPixmap scaledRocketLauncherSymbol = rocketLauncherSymbol.scaled(symbolWidht, symbolWidht, Qt::KeepAspectRatio);
+                painter.drawPixmap( sim2WidTrans(ms->getPosition()) - QPointF(scaledRocketLauncherSymbol.width()/2, scaledRocketLauncherSymbol.height()/2),
+                                    scaledRocketLauncherSymbol);
+            }
+            else
+            {
+
+                painter.setBrush(Qt::black);
+                painter.drawEllipse(sim2WidTrans(a->getPosition()), sim2WidScale(a->getRadius()), sim2WidScale(a->getRadius()));
+            }
+
         });
 
 

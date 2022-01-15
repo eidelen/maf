@@ -1,5 +1,5 @@
-<!DOCTYPE RCC><RCC version="1.0">
-    <qresource>
-        <file>tracks/track1.png</file>
+<RCC>
+    <qresource prefix="/">
+        <file>symbols/rocketlauncher.png</file>
     </qresource>
 </RCC>

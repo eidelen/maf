@@ -24,7 +24,8 @@
 #include <iostream>
 #include "missile_station.h"
 
-MissileStation::MissileStation(unsigned int id, size_t nMissiles, double detectionRange, double missileVelocity): Agent(id)
+MissileStation::MissileStation(unsigned int id, size_t nMissiles, double detectionRange, double missileVelocity): Agent(id),
+    m_detectionRange(detectionRange)
 {
     // create sensor
     m_sensor.reset(new ProximitySensor(++id, detectionRange));
@@ -98,4 +99,9 @@ void MissileStation::setEnvironment(std::shared_ptr<EnvironmentInterface> env)
     {
         suba->setEnvironment(env);
     }
+}
+
+double MissileStation::detectionRange() const
+{
+    return m_detectionRange;
 }

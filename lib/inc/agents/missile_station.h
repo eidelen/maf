@@ -65,6 +65,12 @@ public:
      */
     Status status() const;
 
+    /**
+     * Get the detection range in m.
+     * @return Detection range in m.
+     */
+    double detectionRange() const;
+
 
 public: // inherited from Agent
     void update(double time) override;
@@ -75,6 +81,7 @@ protected:
     std::set<unsigned int> m_targets;
     std::queue<std::shared_ptr<Missile>> m_missiles;
     std::shared_ptr<ProximitySensor> m_sensor;
+    double m_detectionRange;
 };
 
 #endif // MISSILE_STATION_H
