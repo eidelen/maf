@@ -206,7 +206,7 @@ TEST(Environment, DistanceMapSubAgents)
     compareDist(qA20.top(), {18.0, 2, Eigen::Vector2d(-18.0, 0.0)});
 }
 
-TEST(Environment, SendReceiveMessages)
+TEST(Environment, MessagesContainer)
 {
     auto e = Environment::createEnvironment(9);
 
@@ -232,5 +232,47 @@ TEST(Environment, SendReceiveMessages)
     ASSERT_EQ(rb->receiverId(), 1);
     ASSERT_EQ(rb->subject(), Message::Enable);
     ASSERT_EQ(e->getMessages(1).size(), 0);
+}
+
+
+TEST(Environment, SendAndReceiveMessages)
+{
+    auto e = Environment::createEnvironment(9);
+    auto a1 = Agent::createAgent(10);
+    auto a2 = Agent::createAgent(20);
+    a1->setEnvironment(e);
+    a2->setEnvironment(e);
+    e->addAgent(a1);
+    e->addAgent(a2);
+
+    // both enabled at start
+    e->update(10);
+    ASSERT_TRUE(a1->getEnabled());
+    ASSERT_TRUE(a2->getEnabled());
+
+    // send disable to wrong address
+    a1->sendMessage(99, Message::Disable);
+    e->update(10);
+    ASSERT_TRUE(a1->getEnabled());
+    ASSERT_TRUE(a2->getEnabled());
+
+    // send disable to agent a2
+    a1->sendMessage(20, Message::Disable);
+    e->update(10);
+    ASSERT_TRUE(a1->getEnabled());
+    ASSERT_FALSE(a2->getEnabled());
+
+    // send disable to agent a1 too
+    a2->sendMessage(10, Message::Disable);
+    e->update(10);
+    ASSERT_FALSE(a1->getEnabled());
+    ASSERT_FALSE(a2->getEnabled());
+
+    // enable both again
+    a2->sendMessage(10, Message::Enable);
+    a1->sendMessage(20, Message::Enable);
+    e->update(10);
+    ASSERT_TRUE(a1->getEnabled());
+    ASSERT_TRUE(a2->getEnabled());
 }
 

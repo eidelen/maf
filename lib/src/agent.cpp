@@ -34,7 +34,8 @@ std::shared_ptr<Agent> Agent::createAgent(unsigned int id)
 
 Agent::Agent(unsigned int id) : m_id(id), m_radius(0.0), m_velocity(Eigen::Vector2d(0.0, 0.0)),
     m_position(Eigen::Vector2d(0.0, 0.0)), m_acceleration(Eigen::Vector2d(0.0, 0.0)),
-    m_maxSpeed(std::numeric_limits<double>::max()), m_maxAccelreation(std::numeric_limits<double>::max())
+    m_maxSpeed(std::numeric_limits<double>::max()), m_maxAccelreation(std::numeric_limits<double>::max()),
+    m_enabled(true)
 {
 
 }
@@ -150,7 +151,12 @@ void Agent::update(double time)
 
     assert(hasEnvironment());
 
-    performMove(time);
+    processMessages();
+
+    if(m_enabled)
+    {
+        performMove(time);
+    }
 }
 
 void Agent::performMove(double time)
@@ -172,6 +178,16 @@ void Agent::updateSubAgents(double time)
     });
 }
 
+bool Agent::getEnabled() const
+{
+    return m_enabled;
+}
+
+void Agent::setEnabled(bool enabled)
+{
+    m_enabled = enabled;
+}
+
 double Agent::accelreationLimit() const
 {
     return m_maxAccelreation;
@@ -180,6 +196,41 @@ double Agent::accelreationLimit() const
 void Agent::setAccelreationLimit(double newMaxAccelreation)
 {
     m_maxAccelreation = newMaxAccelreation;
+}
+
+void Agent::processMessages()
+{
+    // Basic agents handles disable and enable messages.
+    auto& messages = m_environment.lock()->getMessages(id());
+
+    while (!messages.empty())
+    {
+        auto m = messages.front();
+
+        switch(m->subject())
+        {
+            case Message::Enable:
+                std::cout << "Enable Agent " << id() << " (" << m->senderId() << ")" << std::endl;
+                setEnabled(true);
+                break;
+
+            case Message::Disable:
+                std::cout << "Disable Agent " << id() << " (" << m->senderId() << ")" << std::endl;
+                setEnabled(false);
+                break;
+
+            default:
+                break;
+        }
+
+        messages.pop();
+    }
+}
+
+void Agent::sendMessage(unsigned int receiverId, Message::Subject subject, const std::string &textParam, const std::vector<double> &vecDoubleParam, const std::vector<int> &vecIntParam)
+{
+    auto m = std::shared_ptr<Message>(new Message(id(), receiverId, subject, textParam, vecDoubleParam, vecIntParam));
+    m_environment.lock()->sendMessage(m);
 }
 
 double Agent::velocityLimit() const

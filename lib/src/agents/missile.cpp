@@ -92,6 +92,8 @@ void Missile::update(double time)
             {
                 std::cout << "Missile " << id() << " detonated: Target " << m_target << std::endl;
 
+                sendMessage(m_target, Message::Disable);
+
                 m_status = Detonated;
                 m_acceleration = Eigen::Vector2d(0.0, 0.0);
                 m_velocity = Eigen::Vector2d(0.0, 0.0);

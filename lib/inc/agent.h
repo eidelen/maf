@@ -212,6 +212,35 @@ public:
     double accelreationLimit() const;
     void setAccelreationLimit(double newMaxAccelreation);
 
+    /**
+     * Handle messages from environment. Overwrite function
+     * for specific beahviour.
+     */
+    virtual void processMessages();
+
+    /**
+     * Sends a message to given recepient
+     * @param receiverId Receiver agent id
+     * @param subject Message subject.
+     * @param textParam Text parameter
+     * @param vecDoubleParam Vector of double parameter.
+     * @param vecIntParam Vector of Int parameter.
+     */
+    void sendMessage(unsigned int receiverId, Message::Subject subject, const std::string& textParam = "",
+                     const std::vector<double>& vecDoubleParam = std::vector<double>(),
+                     const std::vector<int>& vecIntParam = std::vector<int>());
+
+    /**
+     * @return Agent disabled or enabled.
+     */
+    bool getEnabled() const;
+
+    /**
+     * Enable or disable the agent.
+     * @param enabled
+     */
+    void setEnabled(bool enabled);
+
 protected:
 
     void updateSubAgents(double time);
@@ -228,6 +257,8 @@ protected:
 
     double m_maxSpeed;
     double m_maxAccelreation;
+
+    double m_enabled;
 };
 
 
