@@ -210,12 +210,10 @@ void Agent::processMessages()
         switch(m->subject())
         {
             case Message::Enable:
-                std::cout << "Enable Agent " << id() << " (" << m->senderId() << ")" << std::endl;
                 setEnabled(true);
                 break;
 
             case Message::Disable:
-                std::cout << "Disable Agent " << id() << " (" << m->senderId() << ")" << std::endl;
                 setEnabled(false);
                 break;
 
