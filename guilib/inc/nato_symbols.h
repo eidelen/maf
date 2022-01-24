@@ -50,6 +50,24 @@ public:
      */
     QPixmap& getSymbol(Symbol sym);
 
+    /**
+     * Get the symbol as scaled
+     * QPixmap
+     * @param sym Symbol identifier.
+     * @param width pixel width
+     * @return Image as QPixmap
+     */
+    QPixmap getSymbolScaled(Symbol sym, int width);
+
+    /**
+     * Draw symbol at position with specific widht.
+     * @param sym Symobol id.
+     * @param width Image width.
+     * @param painter Widget painter.
+     * @param pos symbol position.
+     */
+    void drawSymbolAt(Symbol sym, int width, QPainter& painter, QPointF pos);
+
 private:
     void init();
 

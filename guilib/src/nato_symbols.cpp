@@ -39,6 +39,18 @@ QPixmap& NatoSymbols::getSymbol(NatoSymbols::Symbol sym)
     return m_symbols[sym];
 }
 
+QPixmap NatoSymbols::getSymbolScaled(NatoSymbols::Symbol sym, int width)
+{
+    return getSymbol(sym).scaled(width, width, Qt::KeepAspectRatio);
+}
+
+void NatoSymbols::drawSymbolAt(NatoSymbols::Symbol sym, int width, QPainter &painter, QPointF pos)
+{
+    QPixmap scaledRocketLauncherSymbol = getSymbolScaled(NatoSymbols::RocketLauncher, width);
+    painter.drawPixmap( pos - QPointF(scaledRocketLauncherSymbol.width()/2, scaledRocketLauncherSymbol.height()/2),
+                        scaledRocketLauncherSymbol);
+}
+
 void NatoSymbols::init()
 {
     QPixmap rocketLauncherSymbol("://symbols/rocketlauncher.png");

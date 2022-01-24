@@ -96,10 +96,7 @@ public:
                                     sim2WidScale(ms->detectionRange()), sim2WidScale(ms->detectionRange()));
 
                 // draw rocket launcher symbol
-                QPixmap rocketLauncherSymbol = m_symbols->getSymbol(NatoSymbols::RocketLauncher);
-                QPixmap scaledRocketLauncherSymbol = rocketLauncherSymbol.scaled(symbolWidht, symbolWidht, Qt::KeepAspectRatio);
-                painter.drawPixmap( sim2WidTrans(ms->getPosition()) - QPointF(scaledRocketLauncherSymbol.width()/2, scaledRocketLauncherSymbol.height()/2),
-                                    scaledRocketLauncherSymbol);
+                m_symbols->drawSymbolAt(NatoSymbols::RocketLauncher, symbolWidht, painter, sim2WidTrans(ms->getPosition()));
             }
             else
             {
