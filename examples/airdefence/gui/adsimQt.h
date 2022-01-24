@@ -28,6 +28,7 @@
 #include "agent.h"
 #include "airdefencesim.h"
 #include "simulation.h"
+#include "nato_symbols.h"
 
 
 class HumanoidAgentQtSim
@@ -35,13 +36,14 @@ class HumanoidAgentQtSim
 public:
     HumanoidAgentQtSim()
     {
+        m_symbols = std::shared_ptr<NatoSymbols>(new NatoSymbols());
         restart();
     }
 
     virtual ~HumanoidAgentQtSim() {}
 
     void restart()
-    {
+    {  
         m_sim = Simulation::createSimulation(4);
         m_sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory()));
         m_sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
@@ -94,7 +96,7 @@ public:
                                     sim2WidScale(ms->detectionRange()), sim2WidScale(ms->detectionRange()));
 
                 // draw rocket launcher symbol
-                QPixmap rocketLauncherSymbol("://symbols/rocketlauncher.png");
+                QPixmap rocketLauncherSymbol = m_symbols->getSymbol(NatoSymbols::RocketLauncher);
                 QPixmap scaledRocketLauncherSymbol = rocketLauncherSymbol.scaled(symbolWidht, symbolWidht, Qt::KeepAspectRatio);
                 painter.drawPixmap( sim2WidTrans(ms->getPosition()) - QPointF(scaledRocketLauncherSymbol.width()/2, scaledRocketLauncherSymbol.height()/2),
                                     scaledRocketLauncherSymbol);
@@ -122,6 +124,7 @@ public:
 private:
     double m_timeStep;
     std::shared_ptr<Simulation> m_sim;
+    std::shared_ptr<NatoSymbols> m_symbols;
 };
 
 
