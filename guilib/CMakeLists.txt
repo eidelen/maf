@@ -18,7 +18,7 @@ IF(${GUIENABLE})
 
     ADD_LIBRARY(guilib STATIC ${GUILIB_INCLUDES} ${GUILIB_SOURCES} ${GUILIB_RSC} )
     target_include_directories(guilib INTERFACE inc )
-    target_link_libraries(guilib Qt5::Widgets )
+    target_link_libraries(guilib Qt5::Widgets maflib)
     target_compile_features(guilib PRIVATE cxx_std_17 )
 
 ENDIF()

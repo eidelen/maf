@@ -21,45 +21,29 @@
 **
 *****************************************************************************/
 
-#include "glwidget.h"
+#ifndef DRAW_SCENE_H
+#define DRAW_SCENE_H
 
 #include <QPainter>
-#include <QTimer>
-#include <QPaintEvent>
-#include <QRgb>
+#include "environment.h"
+#include "nato_symbols.h"
 
-#include <iostream>
-
-GLWidget::GLWidget(QWidget *parent): QOpenGLWidget(parent)
+class EnvironmentDrawer
 {
-    setFixedSize(1200, 800);
-    setAutoFillBackground(false);
-}
+public:
+    EnvironmentDrawer(std::shared_ptr<Environment> env, Eigen::Vector2d center, double scale);
+    ~EnvironmentDrawer();
 
-void GLWidget::setQtSimulation(std::shared_ptr<HumanoidAgentQtSim> sim)
-{
-    m_sim = sim;
-}
+    void drawScene(QPainter& painter);
 
-void GLWidget::animate()
-{
-    m_sim->update();
-    update();
-}
+private:
+    double sim2WidScale(double simLength);
+    QPointF sim2WidTrans(const Eigen::Vector2d& simCoord);
 
-void GLWidget::paintEvent(QPaintEvent *event)
-{
-    // draw the simulation
+    std::shared_ptr<Environment> m_env;
+    std::shared_ptr<NatoSymbols> m_symbols;
+    Eigen::Vector2d m_center;
+    double m_scale;
+};
 
-    QPainter painter;
-    painter.begin(this);
-
-    // draw background
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.fillRect(event->rect(), QBrush(QColor(235, 235, 255)));
-
-    // draw scene
-    m_sim->drawSim(painter);
-
-    painter.end();
-}
+#endif //DRAW_SCENE_H

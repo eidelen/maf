@@ -33,43 +33,37 @@
 #include "plane.h"
 
 /**
- * @brief Trivial environment with circle 10m radius and center at 0/0
+ * @brief Open space environment
  */
-class CircEnv: public Environment
+class PlaneEnv: public Environment
 {
 public:
-    CircEnv(unsigned int id): Environment(id) {}
-    virtual ~CircEnv() {}
+    PlaneEnv(unsigned int id): Environment(id) {}
+    virtual ~PlaneEnv() {}
     virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override
     {
-        // Circular environmet with radius 10m. If move not possible, return
-        // previous position.
-        double radius = 10.0;
-        if(destination.norm() < radius)
-            return {true, destination};
-        else
-            return {false, origin};
+        return {true, destination};
     }
 };
 
-class CircEnvFactory: public EnvironmentFactory
+class PlaneEnvFactory: public EnvironmentFactory
 {
 public:
-    CircEnvFactory(): EnvironmentFactory() {}
-    virtual ~CircEnvFactory() {}
+    PlaneEnvFactory(): EnvironmentFactory() {}
+    virtual ~PlaneEnvFactory() {}
 
     virtual std::shared_ptr<Environment> createEnvironment() override
     {
-        return std::shared_ptr<CircEnv>(new CircEnv(99));
+        return std::shared_ptr<PlaneEnv>(new PlaneEnv(99));
     }
 };
 
 
-class CivilianAgentFactory: public AgentFactory
+class AirdefenceAgentFactory: public AgentFactory
 {
 public:
-    CivilianAgentFactory(): AgentFactory() {}
-    virtual ~CivilianAgentFactory() {}
+    AirdefenceAgentFactory(): AgentFactory() {}
+    virtual ~AirdefenceAgentFactory() {}
     std::list<std::shared_ptr<Agent>> createAgents() override
     {
         std::list<std::shared_ptr<Agent>> agents;
