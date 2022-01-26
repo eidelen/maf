@@ -74,7 +74,7 @@ public:
     {
         std::list<std::shared_ptr<Agent>> agents;
 
-        auto t = Agent::createAgent(6);
+        auto t = Agent::createAgent(10000);
         t->setPosition(Eigen::Vector2d(3.0, 7.0));
         t->setVelocity(Eigen::Vector2d(0.0, -2.0));
         t->setRadius(0.3);

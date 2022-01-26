@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>symbols/rocketlauncher.png</file>
+        <file>symbols/planehostile.png</file>
     </qresource>
 </RCC>

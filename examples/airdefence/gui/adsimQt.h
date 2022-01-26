@@ -82,6 +82,8 @@ public:
         painter.setBrush(Qt::white);
         painter.drawEllipse(sim2WidTrans(Eigen::Vector2d(0.0, 0.0)), sim2WidScale(10.0), sim2WidScale(10.0));
 
+
+
         // draw agents
         auto agents = m_sim->getEnvironment()->getAgents();
         std::for_each(agents.begin(), agents.end(), [=, &painter](const auto& a) {
@@ -98,6 +100,10 @@ public:
                 // draw rocket launcher symbol
                 m_symbols->drawSymbolAt(NatoSymbols::RocketLauncher, symbolWidht, painter, sim2WidTrans(ms->getPosition()));
             }
+            else if(a->id() >= 10000 )
+            {
+                m_symbols->drawSymbolAt(NatoSymbols::PlaneHostile, symbolWidht/2, painter, sim2WidTrans(a->getPosition()));
+            }
             else
             {
 
@@ -106,8 +112,6 @@ public:
             }
 
         });
-
-
 
         // draw text
         QFont font = painter.font();

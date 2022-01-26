@@ -37,7 +37,8 @@ class NatoSymbols
 {
 public:
     enum Symbol{
-        RocketLauncher
+        RocketLauncher,
+        PlaneHostile
     };
 
     NatoSymbols();
@@ -57,7 +58,7 @@ public:
      * @param width pixel width
      * @return Image as QPixmap
      */
-    QPixmap getSymbolScaled(Symbol sym, int width);
+    QPixmap& getSymbolScaled(Symbol sym, int width);
 
     /**
      * Draw symbol at position with specific widht.
@@ -73,6 +74,7 @@ private:
 
 private:
     std::map<Symbol, QPixmap> m_symbols;
+    std::map<std::pair<Symbol, int>, QPixmap> m_scaledSymbols;
 
 };
 

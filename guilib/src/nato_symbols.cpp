@@ -39,20 +39,30 @@ QPixmap& NatoSymbols::getSymbol(NatoSymbols::Symbol sym)
     return m_symbols[sym];
 }
 
-QPixmap NatoSymbols::getSymbolScaled(NatoSymbols::Symbol sym, int width)
+QPixmap& NatoSymbols::getSymbolScaled(NatoSymbols::Symbol sym, int width)
 {
-    return getSymbol(sym).scaled(width, width, Qt::KeepAspectRatio);
+    // check if already scaled
+    std::pair<NatoSymbols::Symbol, int> key(sym, width);
+    if(m_scaledSymbols.find(key) == m_scaledSymbols.end())
+    {
+        m_scaledSymbols[key] = getSymbol(sym).scaled(width, width, Qt::KeepAspectRatio);
+    }
+
+    return m_scaledSymbols[key];
 }
 
-void NatoSymbols::drawSymbolAt(NatoSymbols::Symbol sym, int width, QPainter &painter, QPointF pos)
+void NatoSymbols::drawSymbolAt(NatoSymbols::Symbol sym, int width, QPainter& painter, QPointF pos)
 {
-    QPixmap scaledRocketLauncherSymbol = getSymbolScaled(NatoSymbols::RocketLauncher, width);
-    painter.drawPixmap( pos - QPointF(scaledRocketLauncherSymbol.width()/2, scaledRocketLauncherSymbol.height()/2),
-                        scaledRocketLauncherSymbol);
+    QPixmap& scaledImg = getSymbolScaled(sym, width);
+    painter.drawPixmap( pos - QPointF(scaledImg.width()/2, scaledImg.height()/2),
+                        scaledImg);
 }
 
 void NatoSymbols::init()
 {
     QPixmap rocketLauncherSymbol("://symbols/rocketlauncher.png");
     m_symbols[NatoSymbols::RocketLauncher] = rocketLauncherSymbol;
+
+    QPixmap planeHostile("://symbols/planehostile.png");
+    m_symbols[NatoSymbols::PlaneHostile] = planeHostile;
 }
