@@ -79,12 +79,19 @@ public:
         p->setVelocity(Eigen::Vector2d(0.0, -2.0));
         p->setRadius(0.3);
 
-        auto m = std::shared_ptr<MissileStation>(new MissileStation(2000, 1, 4.01, 2.4));
+        auto b = std::shared_ptr<Plane>(new Plane(10001));
+        b->setPosition(Eigen::Vector2d(2.0, 7.0));
+        b->setVelocity(Eigen::Vector2d(-1.5, -1.1));
+        b->setRadius(0.3);
+
+        auto m = std::shared_ptr<MissileStation>(new MissileStation(2000, 2, 4.01, 2.4));
         m->setPosition(Eigen::Vector2d(-1.0, 0.0), true);
         m->setRadius(0.2, true);
 
-        agents.push_back(p);
         agents.push_back(m);
+        agents.push_back(p);
+        agents.push_back(b);
+
 
         return agents;
     }

@@ -45,7 +45,7 @@ QPixmap& NatoSymbols::getSymbolScaled(NatoSymbols::Symbol sym, int width)
     std::pair<NatoSymbols::Symbol, int> key(sym, width);
     if(m_scaledSymbols.find(key) == m_scaledSymbols.end())
     {
-        m_scaledSymbols[key] = getSymbol(sym).scaled(width, width, Qt::KeepAspectRatio);
+        m_scaledSymbols[key] = getSymbol(sym).scaled(width, width, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     }
 
     return m_scaledSymbols[key];
