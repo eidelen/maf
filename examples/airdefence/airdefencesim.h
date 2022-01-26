@@ -30,7 +30,7 @@
 
 #include "environment.h"
 #include "missile_station.h"
-
+#include "plane.h"
 
 /**
  * @brief Trivial environment with circle 10m radius and center at 0/0
@@ -74,16 +74,16 @@ public:
     {
         std::list<std::shared_ptr<Agent>> agents;
 
-        auto t = Agent::createAgent(10000);
-        t->setPosition(Eigen::Vector2d(3.0, 7.0));
-        t->setVelocity(Eigen::Vector2d(0.0, -2.0));
-        t->setRadius(0.3);
+        auto p = std::shared_ptr<Plane>(new Plane(10000));
+        p->setPosition(Eigen::Vector2d(3.0, 7.0));
+        p->setVelocity(Eigen::Vector2d(0.0, -2.0));
+        p->setRadius(0.3);
 
         auto m = std::shared_ptr<MissileStation>(new MissileStation(2000, 1, 4.01, 2.4));
         m->setPosition(Eigen::Vector2d(-1.0, 0.0), true);
         m->setRadius(0.2, true);
 
-        agents.push_back(t);
+        agents.push_back(p);
         agents.push_back(m);
 
         return agents;

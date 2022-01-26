@@ -41,7 +41,8 @@ enum AgentType
     ESoldier,
     EProxSensor,
     EMissile,
-    EMissileStation
+    EMissileStation,
+    EPlane
 };
 
 

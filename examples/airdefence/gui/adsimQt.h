@@ -100,13 +100,12 @@ public:
                 // draw rocket launcher symbol
                 m_symbols->drawSymbolAt(NatoSymbols::RocketLauncher, symbolWidht, painter, sim2WidTrans(ms->getPosition()));
             }
-            else if(a->id() >= 10000 )
+            else if(a->type() == AgentType::EPlane)
             {
                 m_symbols->drawSymbolAt(NatoSymbols::PlaneHostile, symbolWidht/2, painter, sim2WidTrans(a->getPosition()));
             }
             else
             {
-
                 painter.setBrush(Qt::black);
                 painter.drawEllipse(sim2WidTrans(a->getPosition()), sim2WidScale(a->getRadius()), sim2WidScale(a->getRadius()));
             }
