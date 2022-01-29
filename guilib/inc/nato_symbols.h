@@ -38,7 +38,8 @@ class NatoSymbols
 public:
     enum Symbol{
         RocketLauncher,
-        PlaneHostile
+        PlaneHostile,
+        PlaneHostileDisabled
     };
 
     NatoSymbols();

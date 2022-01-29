@@ -65,4 +65,7 @@ void NatoSymbols::init()
 
     QPixmap planeHostile("://symbols/planehostile.png");
     m_symbols[NatoSymbols::PlaneHostile] = planeHostile;
+
+    QPixmap planeHostileDisabled("://symbols/planehostile_disabled.png");
+    m_symbols[NatoSymbols::PlaneHostileDisabled] = planeHostileDisabled;
 }

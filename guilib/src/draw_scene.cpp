@@ -71,8 +71,8 @@ void EnvironmentDrawer::drawScene(QPainter &painter)
         }
         else
         {
-            painter.setBrush(Qt::black);
-            //painter.drawEllipse(sim2WidTrans(a->getPosition()), m_symbolWidht/8, m_symbolWidht/8);
+            painter.setBrush(Qt::blue);
+            painter.drawEllipse(sim2WidTrans(a->getPosition()), m_symbolWidht/8, m_symbolWidht/8);
         }
 
     });
@@ -102,5 +102,12 @@ void EnvironmentDrawer::drawMissile(QPainter &painter, Missile *missile)
 
 void EnvironmentDrawer::drawHostilePlane(QPainter &painter, HostilePlane* plane)
 {
-    m_symbols->drawSymbolAt(NatoSymbols::PlaneHostile, m_symbolWidht/2, painter, sim2WidTrans(plane->getPosition()));
+    if(plane->getEnabled())
+    {
+        m_symbols->drawSymbolAt(NatoSymbols::PlaneHostile, m_symbolWidht/2, painter, sim2WidTrans(plane->getPosition()));
+    }
+    else
+    {
+        m_symbols->drawSymbolAt(NatoSymbols::PlaneHostileDisabled, m_symbolWidht/2, painter, sim2WidTrans(plane->getPosition()));
+    }
 }
