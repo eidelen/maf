@@ -51,4 +51,23 @@ public: // inherited from Agent
     AgentType type() const override;
 };
 
+class HostilePlane: public Plane
+{
+public:
+    /**
+     * Hostile plane
+     * @param id Id of the agent
+     */
+    HostilePlane(unsigned int id);
+
+    /**
+     * Destructor
+     */
+    virtual ~HostilePlane();
+
+public: // inherited from Agent
+    AgentType type() const override;
+
+};
+
 #endif // PLANE_H

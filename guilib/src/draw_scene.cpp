@@ -22,8 +22,6 @@
 *****************************************************************************/
 
 #include "draw_scene.h"
-#include "missile_station.h"
-#include "plane.h"
 
 EnvironmentDrawer::EnvironmentDrawer(std::shared_ptr<Environment> env, Eigen::Vector2d center, double scale)
     : m_env(env), m_center(center), m_scale(scale)
@@ -49,7 +47,6 @@ QPointF EnvironmentDrawer::sim2WidTrans(const Eigen::Vector2d& simCoord)
 
 void EnvironmentDrawer::drawScene(QPainter &painter)
 {
-    double symbolWidht = 60;
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
     // draw agents
@@ -58,25 +55,52 @@ void EnvironmentDrawer::drawScene(QPainter &painter)
 
         if(a->type() == AgentType::EMissileStation)
         {
-            MissileStation* ms = (MissileStation*)a.get();
-
-            // draw detection area
-            painter.setBrush(QColor(0,0,255, 40));
-            painter.drawEllipse(sim2WidTrans(a->getPosition()),
-                                sim2WidScale(ms->detectionRange()), sim2WidScale(ms->detectionRange()));
-
-            // draw rocket launcher symbol
-            m_symbols->drawSymbolAt(NatoSymbols::RocketLauncher, symbolWidht, painter, sim2WidTrans(ms->getPosition()));
+            drawMissileStation(painter, (MissileStation*)a.get());
         }
-        else if(a->type() == AgentType::EPlane)
+        else if(a->type() == AgentType::EMissile)
         {
-            m_symbols->drawSymbolAt(NatoSymbols::PlaneHostile, symbolWidht/2, painter, sim2WidTrans(a->getPosition()));
+            drawMissile(painter, (Missile*)a.get());
+        }
+        else if(a->type() == AgentType::EProxSensor)
+        {
+            drawProximitySensor(painter, (ProximitySensor*)a.get());
+        }
+        else if(a->type() == AgentType::EPlaneHostile)
+        {
+            drawHostilePlane(painter, (HostilePlane*)a.get());
         }
         else
         {
             painter.setBrush(Qt::black);
-            painter.drawEllipse(sim2WidTrans(a->getPosition()), sim2WidScale(a->getRadius()), sim2WidScale(a->getRadius()));
+            //painter.drawEllipse(sim2WidTrans(a->getPosition()), m_symbolWidht/8, m_symbolWidht/8);
         }
 
     });
+}
+
+void EnvironmentDrawer::drawMissileStation(QPainter &painter, MissileStation* station)
+{
+    // draw rocket launcher symbol
+    m_symbols->drawSymbolAt(NatoSymbols::RocketLauncher, m_symbolWidht, painter, sim2WidTrans(station->getPosition()));
+}
+
+void EnvironmentDrawer::drawProximitySensor(QPainter &painter, ProximitySensor *sensor)
+{
+    painter.setBrush(QColor(0,0,255, 40));
+    painter.drawEllipse(sim2WidTrans(sensor->getPosition()),
+                        sim2WidScale(sensor->range()), sim2WidScale(sensor->range()));
+}
+
+void EnvironmentDrawer::drawMissile(QPainter &painter, Missile *missile)
+{
+    if(missile->status() == Missile::Launched)
+    {
+        painter.setBrush(Qt::black);
+        painter.drawEllipse(sim2WidTrans(missile->getPosition()), m_symbolWidht/10, m_symbolWidht/10);
+    }
+}
+
+void EnvironmentDrawer::drawHostilePlane(QPainter &painter, HostilePlane* plane)
+{
+    m_symbols->drawSymbolAt(NatoSymbols::PlaneHostile, m_symbolWidht/2, painter, sim2WidTrans(plane->getPosition()));
 }

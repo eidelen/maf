@@ -68,12 +68,12 @@ public:
     {
         std::list<std::shared_ptr<Agent>> agents;
 
-        auto p = std::shared_ptr<Plane>(new Plane(10000));
+        auto p = std::shared_ptr<HostilePlane>(new HostilePlane(10000));
         p->setPosition(Eigen::Vector2d(3.0, 7.0));
         p->setVelocity(Eigen::Vector2d(0.0, -2.0));
         p->setRadius(0.3);
 
-        auto b = std::shared_ptr<Plane>(new Plane(10001));
+        auto b = std::shared_ptr<HostilePlane>(new HostilePlane(10001));
         b->setPosition(Eigen::Vector2d(2.0, 7.0));
         b->setVelocity(Eigen::Vector2d(-1.5, -1.1));
         b->setRadius(0.3);

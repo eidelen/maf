@@ -37,3 +37,22 @@ AgentType Plane::type() const
 {
     return AgentType::EPlane;
 }
+
+
+
+// Hostile plane
+
+HostilePlane::HostilePlane(unsigned int id): Plane(id)
+{
+
+}
+
+HostilePlane::~HostilePlane()
+{
+
+}
+
+AgentType HostilePlane::type() const
+{
+    return AgentType::EPlaneHostile;
+}
