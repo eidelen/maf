@@ -3,5 +3,6 @@
         <file>symbols/rocketlauncher.png</file>
         <file>symbols/planehostile.png</file>
         <file>symbols/planehostile_disabled.png</file>
+        <file>symbols/swissmap.png</file>
     </qresource>
 </RCC>

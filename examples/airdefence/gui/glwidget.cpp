@@ -56,7 +56,11 @@ void GLWidget::paintEvent(QPaintEvent *event)
 
     // draw background
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.fillRect(event->rect(), QBrush(QColor(235, 235, 255)));
+    //painter.fillRect(event->rect(), QBrush(QColor(235, 235, 255)));
+
+    QPixmap swissmap("://symbols/swissmap.png");
+    painter.drawPixmap(QPointF(0.0, 0.0),
+                        swissmap);
 
     // draw scene
     m_sim->drawSim(painter);
