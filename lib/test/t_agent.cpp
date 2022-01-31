@@ -325,3 +325,33 @@ TEST(Agent, UpdatePosSubAgents)
     a->setPosition(Eigen::Vector2d(2.0, 0.0), true);
     ASSERT_TRUE((ac1->getPosition() - Eigen::Vector2d(2.0, 0.0)).isMuchSmallerThan(0.0001));
 }
+
+TEST(Agent, TowardsTarget)
+{
+    auto env = Environment::createEnvironment(3);
+
+    auto a = Agent::createAgent(3);
+    a->setEnvironment(env);
+
+    a->setPosition(Eigen::Vector2d(10.0, 20.0));
+    a->setMovingTowardsTarget(Eigen::Vector2d(0, 20.0), 1.0);
+
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(10.0, 20.0)).isMuchSmallerThan(0.0001));
+
+    a->update(1.0);
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(9.0, 20.0)).isMuchSmallerThan(0.0001));
+
+    a->update(1.0);
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(8.0, 20.0)).isMuchSmallerThan(0.0001));
+
+    a->update(4.0);
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(4.0, 20.0)).isMuchSmallerThan(0.0001));
+
+    a->update(4.0);
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(0.0, 20.0)).isMuchSmallerThan(0.0001));
+
+    a->update(10.0);
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(-10.0, 20.0)).isMuchSmallerThan(0.0001));
+
+}
+

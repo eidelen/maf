@@ -129,6 +129,12 @@ void Agent::setMaxVelocityInDirection(const Eigen::Vector2d& velocityDirection)
     m_velocity = MafHlp::adjustVectorScale(velocityDirection, m_maxSpeed);
 }
 
+void Agent::setMovingTowardsTarget(const Eigen::Vector2d &target, double velocity)
+{
+    Eigen::Vector2d diffVect = target - m_position;
+    m_velocity = MafHlp::adjustVectorScale(diffVect, std::min(m_maxSpeed, velocity));
+}
+
 void Agent::setEnvironment(std::shared_ptr<EnvironmentInterface> env)
 {
     m_environment = env;

@@ -153,6 +153,13 @@ public:
     virtual void setMaxVelocityInDirection(const Eigen::Vector2d& velocityDirection);
 
     /**
+     * Moves at a given speed towards given target.
+     * @param target Target position.
+     * @param velocity Speed m/s
+     */
+    virtual void setMovingTowardsTarget(const Eigen::Vector2d& target, double velocity);
+
+    /**
      * Set the agent's environment.
      * @param env Environment.
      */
