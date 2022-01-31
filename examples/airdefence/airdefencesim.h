@@ -69,24 +69,33 @@ public:
         std::list<std::shared_ptr<Agent>> agents;
 
         Eigen::Vector2d target(20000, 20000);
-        double planeDist = 250000;
+        double planeDist = 150000;
+        int nPlanes = 14;
 
+        for(int i = 0; i < nPlanes; i++)
+        {
+            double angle = (3.14 * 2.0 / nPlanes) * i;
+            Eigen::Vector2d originPos(planeDist, 0.0);
+            Eigen::Rotation2Dd t(angle);
+            Eigen::Vector2d planePos = (t.toRotationMatrix() * originPos) + target;
 
-        auto p = std::shared_ptr<HostilePlane>(new HostilePlane(10000));
-        p->setPosition(Eigen::Vector2d(0.0, -100000));
-        p->setVelocity(Eigen::Vector2d(-10.0, 200.0));
+            auto hp = std::shared_ptr<HostilePlane>(new HostilePlane(20000+i));
+            hp->setPosition(planePos);
+            hp->setMovingTowardsTarget(target, 400.0);
+            agents.push_back(hp);
+        }
 
-        auto b = std::shared_ptr<HostilePlane>(new HostilePlane(10001));
-        b->setPosition(Eigen::Vector2d(0.0, 100000));
-        b->setVelocity(Eigen::Vector2d(20.0, -200.0));
-
-        auto m = std::shared_ptr<MissileStation>(new MissileStation(2000, 5, 50000, 400));
-        m->setPosition(Eigen::Vector2d(0.0, 0.0), true);
-
+        auto m = std::shared_ptr<MissileStation>(new MissileStation(2000, 8, 50000, 500));
+        m->setPosition(Eigen::Vector2d(-70000.0, 0.0), true);
         agents.push_back(m);
-        agents.push_back(p);
-        agents.push_back(b);
 
+        auto n = std::shared_ptr<MissileStation>(new MissileStation(3000, 8, 50000, 500));
+        n->setPosition(Eigen::Vector2d(60000.0, -60000.0), true);
+        agents.push_back(n);
+
+        auto r = std::shared_ptr<MissileStation>(new MissileStation(4000, 8, 50000, 500));
+        r->setPosition(Eigen::Vector2d(20000.0, 80000.0), true);
+        agents.push_back(r);
 
         return agents;
     }
