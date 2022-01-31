@@ -35,7 +35,8 @@ Window::Window()
     GLWidget *openGL = new GLWidget(this);
 
     // create simulation and pass and instance to GL_Widget
-    double timeStep = 0.05; //25ms
+    double fastForwardFactor = 40.0;
+    double timeStep = 1.0; //10s
     m_hSim = std::shared_ptr<HumanoidAgentQtSim>(new HumanoidAgentQtSim());
     m_hSim->setTimeStep(timeStep);
     openGL->setQtSimulation(m_hSim);
@@ -56,7 +57,7 @@ Window::Window()
 
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, openGL, &GLWidget::animate);
-    timer->start(static_cast<int>(timeStep*1000));
+    timer->start(static_cast<int>((timeStep*1000)/fastForwardFactor));
 
     connect(resetBtn, SIGNAL (released()),this, SLOT(resetSimulation()));
 }

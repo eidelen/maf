@@ -32,7 +32,7 @@
 
 GLWidget::GLWidget(QWidget *parent): QOpenGLWidget(parent)
 {
-    setFixedSize(1200, 800);
+    setFixedSize(1500, 1000);
     setAutoFillBackground(false);
 }
 
@@ -53,14 +53,6 @@ void GLWidget::paintEvent(QPaintEvent *event)
 
     QPainter painter;
     painter.begin(this);
-
-    // draw background
-    painter.setRenderHint(QPainter::Antialiasing);
-    //painter.fillRect(event->rect(), QBrush(QColor(235, 235, 255)));
-
-    QPixmap swissmap("://symbols/swissmap.png");
-    painter.drawPixmap(QPointF(0.0, 0.0),
-                        swissmap);
 
     // draw scene
     m_sim->drawSim(painter);

@@ -68,19 +68,20 @@ public:
     {
         std::list<std::shared_ptr<Agent>> agents;
 
+        Eigen::Vector2d target(20000, 20000);
+        double planeDist = 250000;
+
+
         auto p = std::shared_ptr<HostilePlane>(new HostilePlane(10000));
-        p->setPosition(Eigen::Vector2d(3.0, 7.0));
-        p->setVelocity(Eigen::Vector2d(0.0, -2.0));
-        p->setRadius(0.3);
+        p->setPosition(Eigen::Vector2d(0.0, -100000));
+        p->setVelocity(Eigen::Vector2d(-10.0, 200.0));
 
         auto b = std::shared_ptr<HostilePlane>(new HostilePlane(10001));
-        b->setPosition(Eigen::Vector2d(2.0, 7.0));
-        b->setVelocity(Eigen::Vector2d(-1.5, -1.1));
-        b->setRadius(0.3);
+        b->setPosition(Eigen::Vector2d(0.0, 100000));
+        b->setVelocity(Eigen::Vector2d(20.0, -200.0));
 
-        auto m = std::shared_ptr<MissileStation>(new MissileStation(2000, 2, 4.01, 2.4));
-        m->setPosition(Eigen::Vector2d(-1.0, 0.0), true);
-        m->setRadius(0.2, true);
+        auto m = std::shared_ptr<MissileStation>(new MissileStation(2000, 5, 50000, 400));
+        m->setPosition(Eigen::Vector2d(0.0, 0.0), true);
 
         agents.push_back(m);
         agents.push_back(p);

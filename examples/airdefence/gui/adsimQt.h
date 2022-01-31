@@ -42,7 +42,11 @@ public:
     virtual ~HumanoidAgentQtSim() {}
 
     void restart()
-    {  
+    {
+        // load background
+        QPixmap swissmap("://symbols/swissmap.png");
+        m_background = swissmap.scaled(1500, 1500, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
         m_sim = Simulation::createSimulation(4);
         m_sim->setAgentFactory(std::shared_ptr<AirdefenceAgentFactory>(new AirdefenceAgentFactory()));
         m_sim->setEnvironmentFactory(std::shared_ptr<PlaneEnvFactory>(new PlaneEnvFactory()));
@@ -51,7 +55,7 @@ public:
         m_sim->initAgents();
 
         m_drawer = std::shared_ptr<EnvironmentDrawer>(new EnvironmentDrawer(m_sim->getEnvironment(),
-                                                                            Eigen::Vector2d(500.0, 400.0), 30.0));
+                                                                            Eigen::Vector2d(504.0, 423.0), 0.004));
     }
 
     void setTimeStep(double ts)
@@ -66,6 +70,10 @@ public:
 
     void drawSim(QPainter& painter)
     {
+        // draw background
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.drawPixmap(QPointF(0.0, 0.0), m_background);
+
         m_drawer->drawScene(painter);
     }
 
@@ -73,6 +81,7 @@ private:
     double m_timeStep;
     std::shared_ptr<Simulation> m_sim;
     std::shared_ptr<EnvironmentDrawer> m_drawer;
+    QPixmap m_background;
 };
 
 
