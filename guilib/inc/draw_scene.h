@@ -30,6 +30,7 @@
 #include "missile_station.h"
 #include "proximity_sensor.h"
 #include "plane.h"
+#include "target.h"
 
 class EnvironmentDrawer
 {
@@ -42,6 +43,7 @@ public:
     virtual void drawProximitySensor(QPainter& painter, ProximitySensor* sensor);
     virtual void drawHostilePlane(QPainter& painter, HostilePlane* plane);
     virtual void drawMissile(QPainter& painter, Missile* missile);
+    virtual void drawTarget(QPainter& painter, Target* target);
 
 private:
     double sim2WidScale(double simLength);

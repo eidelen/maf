@@ -69,6 +69,10 @@ void EnvironmentDrawer::drawScene(QPainter &painter)
         {
             drawHostilePlane(painter, (HostilePlane*)a.get());
         }
+        else if(a->type() == AgentType::ETarget)
+        {
+            drawTarget(painter, (Target*)a.get());
+        }
         else
         {
             painter.setBrush(Qt::blue);
@@ -98,6 +102,14 @@ void EnvironmentDrawer::drawMissile(QPainter &painter, Missile *missile)
         painter.setBrush(Qt::black);
         painter.drawEllipse(sim2WidTrans(missile->getPosition()), m_symbolWidht/10, m_symbolWidht/10);
     }
+}
+
+void EnvironmentDrawer::drawTarget(QPainter &painter, Target *target)
+{
+    QColor usedColor = target->getAgentsInSensorRange().size() > 0 ? QColor(255,0,0,120) : QColor(0,255,0,120);
+    painter.setBrush(usedColor);
+    painter.drawEllipse(sim2WidTrans(target->getPosition()),
+                        sim2WidScale(target->range()), sim2WidScale(target->range()));
 }
 
 void EnvironmentDrawer::drawHostilePlane(QPainter &painter, HostilePlane* plane)

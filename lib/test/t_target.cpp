@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "target.h".h"
+#include "target.h"
 #include "environment.h"
 
 TEST(Target, TypeAndIdAndPosAndRange)
