@@ -43,7 +43,8 @@ enum AgentType
     EMissile,
     EMissileStation,
     EPlane,
-    EPlaneHostile
+    EPlaneHostile,
+    ETarget
 };
 
 
