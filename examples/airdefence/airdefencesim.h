@@ -70,7 +70,7 @@ public:
         std::list<std::shared_ptr<Agent>> agents;
 
         Eigen::Vector2d target(15000, 20000);
-        double planeDist = 150000;
+        double planeDist = 200000;
         int nPlanes = 14;
 
         for(int i = 0; i < nPlanes; i++)
@@ -95,8 +95,12 @@ public:
         agents.push_back(n);
 
         auto r = std::shared_ptr<MissileStation>(new MissileStation(4000, 8, 50000, 500));
-        r->setPosition(Eigen::Vector2d(25000.0, 75000.0), true);
+        r->setPosition(Eigen::Vector2d(18000.0, 75000.0), true);
         agents.push_back(r);
+
+        auto l = std::shared_ptr<MissileStation>(new MissileStation(5000, 8, 50000, 500));
+        l->setPosition(Eigen::Vector2d(170000, 0.0), true);
+        agents.push_back(l);
 
         auto trg = Target::createTarget(102, target, 6000.0);
         agents.push_back(trg);
