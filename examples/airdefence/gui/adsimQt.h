@@ -51,11 +51,13 @@ public:
         m_sim->setAgentFactory(std::shared_ptr<AirdefenceAgentFactory>(new AirdefenceAgentFactory()));
         m_sim->setEnvironmentFactory(std::shared_ptr<PlaneEnvFactory>(new PlaneEnvFactory()));
 
+        m_eval = std::shared_ptr<ReachEvaluation>(new ReachEvaluation());
+        m_sim->setEvaluation(m_eval);
+
         m_sim->initEnvironment();
         m_sim->initAgents();
 
-        m_drawer = std::shared_ptr<EnvironmentDrawer>(new EnvironmentDrawer(m_sim->getEnvironment(),
-                                                                            Eigen::Vector2d(504.0, 423.0), 0.004));
+        m_drawer = std::shared_ptr<SimulationDrawer>(new SimulationDrawer(m_sim, Eigen::Vector2d(504.0, 423.0), 0.004));
     }
 
     void setTimeStep(double ts)
@@ -80,8 +82,9 @@ public:
 private:
     double m_timeStep;
     std::shared_ptr<Simulation> m_sim;
-    std::shared_ptr<EnvironmentDrawer> m_drawer;
+    std::shared_ptr<SimulationDrawer> m_drawer;
     QPixmap m_background;
+    std::shared_ptr<ReachEvaluation> m_eval;
 };
 
 

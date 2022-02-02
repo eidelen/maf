@@ -25,18 +25,18 @@
 #define DRAW_SCENE_H
 
 #include <QPainter>
-#include "environment.h"
+#include "simulation.h"
 #include "nato_symbols.h"
 #include "missile_station.h"
 #include "proximity_sensor.h"
 #include "plane.h"
 #include "target.h"
 
-class EnvironmentDrawer
+class SimulationDrawer
 {
 public:
-    EnvironmentDrawer(std::shared_ptr<Environment> env, Eigen::Vector2d center, double scale);
-    ~EnvironmentDrawer();
+    SimulationDrawer(std::shared_ptr<Simulation> sim, Eigen::Vector2d center, double scale);
+    ~SimulationDrawer();
 
     virtual void drawScene(QPainter& painter);
     virtual void drawMissileStation(QPainter& painter, MissileStation* station);
@@ -49,7 +49,7 @@ private:
     double sim2WidScale(double simLength);
     QPointF sim2WidTrans(const Eigen::Vector2d& simCoord);
 
-    std::shared_ptr<Environment> m_env;
+    std::shared_ptr<Simulation> m_sim;
     std::shared_ptr<NatoSymbols> m_symbols;
     Eigen::Vector2d m_center;
     double m_scale;

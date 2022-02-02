@@ -22,35 +22,36 @@
 *****************************************************************************/
 
 #include "draw_scene.h"
+#include "evaluation.h"
 
-EnvironmentDrawer::EnvironmentDrawer(std::shared_ptr<Environment> env, Eigen::Vector2d center, double scale)
-    : m_env(env), m_center(center), m_scale(scale)
+SimulationDrawer::SimulationDrawer(std::shared_ptr<Simulation> sim, Eigen::Vector2d center, double scale)
+    : m_sim(sim), m_center(center), m_scale(scale)
 {
     m_symbols = std::shared_ptr<NatoSymbols>(new NatoSymbols());
 }
 
-EnvironmentDrawer::~EnvironmentDrawer()
+SimulationDrawer::~SimulationDrawer()
 {
 
 }
 
-double EnvironmentDrawer::sim2WidScale(double simLength)
+double SimulationDrawer::sim2WidScale(double simLength)
 {
     return simLength * m_scale;
 }
 
-QPointF EnvironmentDrawer::sim2WidTrans(const Eigen::Vector2d& simCoord)
+QPointF SimulationDrawer::sim2WidTrans(const Eigen::Vector2d& simCoord)
 {
     Eigen::Vector2d widCoord = (simCoord * sim2WidScale(1.0)) + m_center;
     return QPointF(widCoord(0), widCoord(1));
 }
 
-void EnvironmentDrawer::drawScene(QPainter &painter)
+void SimulationDrawer::drawScene(QPainter &painter)
 {
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
     // draw agents
-    auto agents = m_env->getAgents();
+    auto agents = m_sim->getEnvironment()->getAgents();
     std::for_each(agents.begin(), agents.end(), [=, &painter](const auto& a) {
 
         if(a->type() == AgentType::EMissileStation)
@@ -80,22 +81,29 @@ void EnvironmentDrawer::drawScene(QPainter &painter)
         }
 
     });
+
+    // draw result text
+    QFont font = painter.font();
+    font.setPointSize(18);
+    painter.setFont(font);
+    painter.setPen(QColor(0,0,0));
+    painter.drawText(QPoint(30,30), QString::fromStdString(m_sim->getEvaluation()->getResult()));
 }
 
-void EnvironmentDrawer::drawMissileStation(QPainter &painter, MissileStation* station)
+void SimulationDrawer::drawMissileStation(QPainter &painter, MissileStation* station)
 {
     // draw rocket launcher symbol
     m_symbols->drawSymbolAt(NatoSymbols::RocketLauncher, m_symbolWidht, painter, sim2WidTrans(station->getPosition()));
 }
 
-void EnvironmentDrawer::drawProximitySensor(QPainter &painter, ProximitySensor *sensor)
+void SimulationDrawer::drawProximitySensor(QPainter &painter, ProximitySensor *sensor)
 {
     painter.setBrush(QColor(0,0,255, 40));
     painter.drawEllipse(sim2WidTrans(sensor->getPosition()),
                         sim2WidScale(sensor->range()), sim2WidScale(sensor->range()));
 }
 
-void EnvironmentDrawer::drawMissile(QPainter &painter, Missile *missile)
+void SimulationDrawer::drawMissile(QPainter &painter, Missile *missile)
 {
     if(missile->status() == Missile::Launched)
     {
@@ -104,7 +112,7 @@ void EnvironmentDrawer::drawMissile(QPainter &painter, Missile *missile)
     }
 }
 
-void EnvironmentDrawer::drawTarget(QPainter &painter, Target *target)
+void SimulationDrawer::drawTarget(QPainter &painter, Target *target)
 {
     QColor usedColor = target->getAgentsInSensorRange().size() > 0 ? QColor(255,0,0,120) : QColor(0,255,0,120);
     painter.setBrush(usedColor);
@@ -112,7 +120,7 @@ void EnvironmentDrawer::drawTarget(QPainter &painter, Target *target)
                         sim2WidScale(target->range()), sim2WidScale(target->range()));
 }
 
-void EnvironmentDrawer::drawHostilePlane(QPainter &painter, HostilePlane* plane)
+void SimulationDrawer::drawHostilePlane(QPainter &painter, HostilePlane* plane)
 {
     if(plane->getEnabled())
     {

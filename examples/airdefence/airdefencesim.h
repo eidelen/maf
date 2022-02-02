@@ -25,6 +25,7 @@
 #define AD_SIM_H
 
 #include <iostream>
+#include <set>
 #include <iomanip>
 #include <Eigen/Dense>
 
@@ -32,6 +33,8 @@
 #include "missile_station.h"
 #include "plane.h"
 #include "target.h"
+#include "evaluation.h"
+#include "simulation.h"
 
 /**
  * @brief Open space environment
@@ -76,7 +79,7 @@ public:
         for(int i = 0; i < nPlanes; i++)
         {
             double angle = (3.14 * 2.0 / nPlanes) * i;
-            Eigen::Vector2d originPos(planeDist, 0.0);
+            Eigen::Vector2d originPos(planeDist + i*5000, 0.0);
             Eigen::Rotation2Dd t(angle);
             Eigen::Vector2d planePos = (t.toRotationMatrix() * originPos) + target;
 
@@ -107,6 +110,63 @@ public:
 
         return agents;
     }
+};
+
+// How many planes reached the target area
+class ReachEvaluation: public Evaluation
+{
+public:
+
+    /**
+     * @brief ReachEvaluation
+     */
+    ReachEvaluation(): Evaluation()
+    {
+        m_currentTime = 0.0;
+    }
+
+    virtual ~ReachEvaluation()
+    {
+    }
+
+    void evaluate(std::shared_ptr<Simulation> sim, double timeStep) override
+    {
+        auto agents = sim->getEnvironment()->getAgents();
+
+        for(const auto& a : agents)
+        {
+            if( a->id() == 102)
+            {
+                Target* t = (Target*)a.get();
+                auto agentsInRange = t->getAgentsInSensorRange();
+                for(const auto& ar : agentsInRange )
+                {
+                    // only consider hostile planes
+                    if(ar.targetId >= 20000)
+                    {
+                        // set doesnt care about multiple insertions
+                        m_agentsReachedId.insert(ar.targetId);
+                    }
+                }
+
+                break;
+            }
+        }
+
+        m_currentTime = sim->getSimulationRunningTime();
+    }
+
+    std::string getResult() override
+    {
+        std::ostringstream s;
+        s << std::fixed << std::setprecision( 3 ) << std::setfill( '0' ) <<
+        "Time: " << m_currentTime << "s,  Target Hits: " << m_agentsReachedId.size();
+        return s.str();
+    }
+
+    std::set<unsigned long> m_agentsReachedId;
+    double m_currentTime;
+
 };
 
 #endif //AD_SIM_H
