@@ -24,6 +24,7 @@
 #ifndef DRAW_SCENE_H
 #define DRAW_SCENE_H
 
+#include <deque>
 #include <QPainter>
 #include "simulation.h"
 #include "nato_symbols.h"
@@ -54,6 +55,10 @@ private:
     Eigen::Vector2d m_center;
     double m_scale;
     double m_symbolWidht = 60;
+    size_t m_nbrLastMessages = 5;
+    std::deque<std::string> m_lastMessages;
+
+
 };
 
 #endif //DRAW_SCENE_H

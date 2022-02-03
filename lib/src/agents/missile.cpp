@@ -69,15 +69,18 @@ void Missile::update(double time)
             Eigen::Vector2d estimatedTargetDirection = dist.vect;
             Eigen::Vector2d currentTargetPosition = m_position + dist.vect;
 
-            // compute intersection by estimating future target position
+            // compute intersection by predicting future target position
             if(m_targetPosBeforeAvailable)
             {
                 Eigen::Vector2d targetVelocity = (currentTargetPosition - m_targetPosBefore) / time;
 
-                // how long to fly with current speed
+
+                //todo: Lousy target prediction. Prob. there exists something iterative. Ask Peter Näf.
+
+                // how long the missile flies to hit current target position
                 double timeToReach = dist.dist / m_maxSpeed;
 
-                // estimate where targe will be by then
+                // estimate where target will be by then (problem: distance will have changed)
                 Eigen::Vector2d estimatedTargetPosition = currentTargetPosition + targetVelocity * timeToReach;
                 estimatedTargetDirection = estimatedTargetPosition - m_position;
             }
