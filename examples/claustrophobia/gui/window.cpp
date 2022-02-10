@@ -65,3 +65,5 @@ void Window::resetSimulation()
 {
     m_hSim->restart();
 }
+
+

@@ -26,6 +26,7 @@
 
 
 #include <QWidget>
+#include <QSlider>
 
 #include "adsimQt.h"
 
@@ -38,10 +39,14 @@ public:
 
 public slots:
     void resetSimulation();
-
+    void adjustFastForwardSpeed();
 
 private:
     std::shared_ptr<HumanoidAgentQtSim> m_hSim;
+    QTimer* m_timer;
+    QSlider* m_ffSlider;
+    double m_timeStep;
+
 };
 
 

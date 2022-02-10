@@ -73,7 +73,7 @@ public:
         std::list<std::shared_ptr<Agent>> agents;
 
         Eigen::Vector2d target(15000, 20000);
-        double planeDist = 200000;
+        double planeDist = 300000;
         int nPlanes = 14;
 
         for(int i = 0; i < nPlanes; i++)

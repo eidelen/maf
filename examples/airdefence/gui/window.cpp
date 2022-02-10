@@ -28,6 +28,8 @@
 #include <QTimer>
 #include <QPushButton>
 
+
+
 Window::Window()
 {
     setWindowTitle(tr("maf"));
@@ -35,16 +37,20 @@ Window::Window()
     GLWidget *openGL = new GLWidget(this);
 
     // create simulation and pass and instance to GL_Widget
-    double fastForwardFactor = 40.0;
-    double timeStep = 1.0; //10s
+    m_timeStep = 1.0; //1s
     m_hSim = std::shared_ptr<HumanoidAgentQtSim>(new HumanoidAgentQtSim());
-    m_hSim->setTimeStep(timeStep);
+    m_hSim->setTimeStep(m_timeStep);
     openGL->setQtSimulation(m_hSim);
 
-    QPushButton* resetBtn = new QPushButton("Restart");
+
+    m_ffSlider = new QSlider(Qt::Orientation::Horizontal);
+    m_ffSlider->setMinimum(1); m_ffSlider->setMaximum(100); m_ffSlider->setValue(40);
+
+    QPushButton* restartBtn = new QPushButton("Restart");
 
     QHBoxLayout* btnLayout = new QHBoxLayout();
-    btnLayout->addWidget(resetBtn);
+    btnLayout->addWidget(m_ffSlider);
+    btnLayout->addWidget(restartBtn);
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addLayout(btnLayout);
@@ -55,14 +61,24 @@ Window::Window()
 
     // connections
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, openGL, &GLWidget::animate);
-    timer->start(static_cast<int>((timeStep*1000)/fastForwardFactor));
+    m_timer = new QTimer(this);
+    connect(m_timer, &QTimer::timeout, openGL, &GLWidget::animate);
 
-    connect(resetBtn, SIGNAL (released()),this, SLOT(resetSimulation()));
+    connect(restartBtn, SIGNAL (released()),this, SLOT(resetSimulation()));
+    connect(m_ffSlider, SIGNAL (valueChanged(int)),this, SLOT(adjustFastForwardSpeed()));
+
+    adjustFastForwardSpeed();
 }
 
 void Window::resetSimulation()
 {
     m_hSim->restart();
+}
+
+void Window::adjustFastForwardSpeed()
+{
+    m_timer->stop();
+
+    double ffVal = (double)m_ffSlider->value();
+    m_timer->start(static_cast<int>((m_timeStep*1000)/ffVal));
 }
