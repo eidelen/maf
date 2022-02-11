@@ -42,7 +42,7 @@ public slots:
     void adjustFastForwardSpeed();
 
 private:
-    std::shared_ptr<HumanoidAgentQtSim> m_hSim;
+    std::shared_ptr<AirDefenceQtSim> m_hSim;
     QTimer* m_timer;
     QSlider* m_ffSlider;
     double m_timeStep;

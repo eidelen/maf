@@ -31,15 +31,15 @@
 #include "draw_scene.h"
 
 
-class HumanoidAgentQtSim
+class AirDefenceQtSim
 {
 public:
-    HumanoidAgentQtSim()
+    AirDefenceQtSim()
     {
         restart();
     }
 
-    virtual ~HumanoidAgentQtSim() {}
+    virtual ~AirDefenceQtSim() {}
 
     void restart()
     {

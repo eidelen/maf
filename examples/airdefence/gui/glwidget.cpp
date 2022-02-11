@@ -36,7 +36,7 @@ GLWidget::GLWidget(QWidget *parent): QOpenGLWidget(parent)
     setAutoFillBackground(false);
 }
 
-void GLWidget::setQtSimulation(std::shared_ptr<HumanoidAgentQtSim> sim)
+void GLWidget::setQtSimulation(std::shared_ptr<AirDefenceQtSim> sim)
 {
     m_sim = sim;
 }

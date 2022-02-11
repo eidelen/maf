@@ -32,8 +32,8 @@
 
 GLWidget::GLWidget(QWidget *parent): QOpenGLWidget(parent)
 {
-    setFixedSize(1200, 800);
-    setAutoFillBackground(false);
+    setFixedSize(1500, 1000);
+    setAutoFillBackground(true);
 }
 
 void GLWidget::setQtSimulation(std::shared_ptr<HumanoidAgentQtSim> sim)
@@ -54,7 +54,6 @@ void GLWidget::paintEvent(QPaintEvent *event)
     QPainter painter;
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.fillRect(event->rect(), QBrush(QColor(64, 32, 64)));
 
     m_sim->drawSim(painter);
 

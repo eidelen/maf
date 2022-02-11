@@ -35,7 +35,7 @@ Q_OBJECT
 
 public:
     GLWidget(QWidget *parent);
-    void setQtSimulation(std::shared_ptr<HumanoidAgentQtSim> sim);
+    void setQtSimulation(std::shared_ptr<AirDefenceQtSim> sim);
 
 public slots:
     void animate();
@@ -44,7 +44,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    std::shared_ptr<HumanoidAgentQtSim> m_sim;
+    std::shared_ptr<AirDefenceQtSim> m_sim;
 
 };
 
