@@ -25,23 +25,24 @@
 #define CL_SIM_QT_H
 
 #include <QPainter>
+#include "simQt.h"
 #include "agent.h"
 #include "airdefencesim.h"
 #include "simulation.h"
 #include "draw_scene.h"
 
 
-class AirDefenceQtSim
+class AirDefenceQtSim: public SimQt
 {
 public:
-    AirDefenceQtSim()
+    AirDefenceQtSim(): SimQt()
     {
         restart();
     }
 
     virtual ~AirDefenceQtSim() {}
 
-    void restart()
+    void restart() override
     {
         // load background
         QPixmap swissmap("://symbols/swissmap.png");
@@ -60,17 +61,7 @@ public:
         m_drawer = std::shared_ptr<SimulationDrawer>(new SimulationDrawer(m_sim, Eigen::Vector2d(504.0, 423.0), 0.004));
     }
 
-    void setTimeStep(double ts)
-    {
-        m_timeStep = ts;
-    }
-
-    void update()
-    {
-        m_sim->doTimeStep(m_timeStep);
-    }
-
-    void drawSim(QPainter& painter)
+    void drawSim(QPainter& painter) override
     {
         // draw background
         painter.setRenderHint(QPainter::Antialiasing);
@@ -80,8 +71,6 @@ public:
     }
 
 private:
-    double m_timeStep;
-    std::shared_ptr<Simulation> m_sim;
     std::shared_ptr<SimulationDrawer> m_drawer;
     QPixmap m_background;
     std::shared_ptr<ReachEvaluation> m_eval;

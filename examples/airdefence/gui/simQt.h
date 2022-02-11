@@ -21,41 +21,37 @@
 **
 *****************************************************************************/
 
-#include "glwidget.h"
+#ifndef SIM_QT_H
+#define SIM_QT_H
 
 #include <QPainter>
-#include <QTimer>
-#include <QPaintEvent>
-#include <QRgb>
+#include "simulation.h"
 
-#include <iostream>
-
-GLWidget::GLWidget(QWidget *parent): QOpenGLWidget(parent)
+class SimQt
 {
-    setFixedSize(1500, 1000);
-    setAutoFillBackground(false);
-}
+public:
 
-void GLWidget::setQtSimulation(std::shared_ptr<SimQt> sim)
-{
-    m_sim = sim;
-}
+    SimQt(){}
 
-void GLWidget::animate()
-{
-    m_sim->update();
-    update();
-}
+    virtual ~SimQt() {}
 
-void GLWidget::paintEvent(QPaintEvent *event)
-{
-    // draw the simulation
+    virtual void restart() = 0;
+    virtual void drawSim(QPainter& painter) = 0;
 
-    QPainter painter;
-    painter.begin(this);
+    virtual void setTimeStep(double ts)
+    {
+        m_timeStep = ts;
+    }
 
-    // draw scene
-    m_sim->drawSim(painter);
+    virtual void update()
+    {
+        m_sim->doTimeStep(m_timeStep);
+    }
 
-    painter.end();
-}
+protected:
+    double m_timeStep;
+    std::shared_ptr<Simulation> m_sim;
+};
+
+
+#endif //SIM_QT_H

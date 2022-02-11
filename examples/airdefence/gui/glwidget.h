@@ -27,7 +27,7 @@
 #include <QOpenGLWidget>
 #include <QTime>
 
-#include "adsimQt.h"
+#include "simQt.h"
 
 class GLWidget : public QOpenGLWidget
 {
@@ -35,7 +35,7 @@ Q_OBJECT
 
 public:
     GLWidget(QWidget *parent);
-    void setQtSimulation(std::shared_ptr<AirDefenceQtSim> sim);
+    void setQtSimulation(std::shared_ptr<SimQt> sim);
 
 public slots:
     void animate();
@@ -44,7 +44,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    std::shared_ptr<AirDefenceQtSim> m_sim;
+    std::shared_ptr<SimQt> m_sim;
 
 };
 
