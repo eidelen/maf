@@ -74,12 +74,13 @@ public:
 
         Eigen::Vector2d target(0, 0);
         double planeDist = 300000;
-        int nPlanes = 14;
+        int nPlanes = 40;
+        double missileSpeed = 500.0;
 
         for(int i = 0; i < nPlanes; i++)
         {
             double angle = (3.14 * 2.0 / nPlanes) * i;
-            Eigen::Vector2d originPos(planeDist + i*5000, 0.0);
+            Eigen::Vector2d originPos(planeDist + i*1000, 0.0);
             Eigen::Rotation2Dd t(angle);
             Eigen::Vector2d planePos = (t.toRotationMatrix() * originPos) + target;
 
@@ -89,19 +90,19 @@ public:
             agents.push_back(hp);
         }
 
-        auto m = std::shared_ptr<MissileStation>(new MissileStation(2000, 8, 50000, 500));
+        auto m = std::shared_ptr<MissileStation>(new MissileStation(2000, nPlanes, 50000, missileSpeed));
         m->setPosition(Eigen::Vector2d(-70000.0, 0.0), true);
         agents.push_back(m);
 
-        auto n = std::shared_ptr<MissileStation>(new MissileStation(3000, 8, 50000, 500));
+        auto n = std::shared_ptr<MissileStation>(new MissileStation(3000, nPlanes, 50000, missileSpeed));
         n->setPosition(Eigen::Vector2d(60000.0, -60000.0), true);
         agents.push_back(n);
 
-        auto r = std::shared_ptr<MissileStation>(new MissileStation(4000, 8, 50000, 500));
+        auto r = std::shared_ptr<MissileStation>(new MissileStation(4000, nPlanes, 50000, missileSpeed));
         r->setPosition(Eigen::Vector2d(18000.0, 75000.0), true);
         agents.push_back(r);
 
-        auto l = std::shared_ptr<MissileStation>(new MissileStation(5000, 8, 50000, 500));
+        auto l = std::shared_ptr<MissileStation>(new MissileStation(5000, nPlanes, 50000, missileSpeed));
         l->setPosition(Eigen::Vector2d(170000, 0.0), true);
         agents.push_back(l);
 

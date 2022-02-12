@@ -37,7 +37,7 @@ Window::Window()
     m_OpenGL = new GLWidget(this);
 
     // Default sim
-    startCLSim();
+    startAirDefenceSim();
 
     m_ffSlider = new QSlider(Qt::Orientation::Horizontal);
     m_ffSlider->setMinimum(1); m_ffSlider->setMaximum(100); m_ffSlider->setValue(40);
