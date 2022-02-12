@@ -22,39 +22,39 @@
 *****************************************************************************/
 
 #include "window.h"
-#include "glwidget.h"
 
 #include <QLayout>
 #include <QTimer>
 #include <QPushButton>
 
-
+#include "adsimQt.h"
+#include "clsimQt.h"
 
 Window::Window()
 {
-    setWindowTitle(tr("maf"));
+    setWindowTitle(tr("Multi Agent Framework"));
 
-    GLWidget *openGL = new GLWidget(this);
+    m_OpenGL = new GLWidget(this);
 
-    // create simulation and pass and instance to GL_Widget
-    m_timeStep = 1.0; //1s
-    m_hSim = std::shared_ptr<AirDefenceQtSim>(new AirDefenceQtSim());
-    m_hSim->setTimeStep(m_timeStep);
-    openGL->setQtSimulation(m_hSim);
-
+    // Default sim
+    startCLSim();
 
     m_ffSlider = new QSlider(Qt::Orientation::Horizontal);
     m_ffSlider->setMinimum(1); m_ffSlider->setMaximum(100); m_ffSlider->setValue(40);
 
     QPushButton* restartBtn = new QPushButton("Restart");
+    QPushButton* airDefBtn = new QPushButton("Air Defence");
+    QPushButton* clBtn = new QPushButton("Claustrophobia");
 
     QHBoxLayout* btnLayout = new QHBoxLayout();
     btnLayout->addWidget(m_ffSlider);
+    btnLayout->addWidget(airDefBtn);
+    btnLayout->addWidget(clBtn);
     btnLayout->addWidget(restartBtn);
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addLayout(btnLayout);
-    layout->addWidget(openGL);
+    layout->addWidget(m_OpenGL);
 
     setLayout(layout);
 
@@ -62,17 +62,36 @@ Window::Window()
     // connections
 
     m_timer = new QTimer(this);
-    connect(m_timer, &QTimer::timeout, openGL, &GLWidget::animate);
+    connect(m_timer, &QTimer::timeout, m_OpenGL, &GLWidget::animate);
 
     connect(restartBtn, SIGNAL (released()),this, SLOT(resetSimulation()));
+    connect(airDefBtn, SIGNAL (released()),this, SLOT(startAirDefenceSim()));
+    connect(clBtn, SIGNAL (released()),this, SLOT(startCLSim()));
     connect(m_ffSlider, SIGNAL (valueChanged(int)),this, SLOT(adjustFastForwardSpeed()));
+
 
     adjustFastForwardSpeed();
 }
 
 void Window::resetSimulation()
 {
-    m_hSim->restart();
+    m_Sim->restart();
+}
+
+void Window::startAirDefenceSim()
+{
+    m_timeStep = 1.0; //1s
+    m_Sim = std::shared_ptr<AirDefenceQtSim>(new AirDefenceQtSim());
+    m_Sim->setTimeStep(m_timeStep);
+    m_OpenGL->setQtSimulation(m_Sim);
+}
+
+void Window::startCLSim()
+{
+    m_timeStep = 0.05; //50ms
+    m_Sim = std::shared_ptr<HumanoidAgentQtSim>(new HumanoidAgentQtSim());
+    m_Sim->setTimeStep(m_timeStep);
+    m_OpenGL->setQtSimulation(m_Sim);
 }
 
 void Window::adjustFastForwardSpeed()
@@ -80,5 +99,5 @@ void Window::adjustFastForwardSpeed()
     m_timer->stop();
 
     double ffVal = (double)m_ffSlider->value();
-    m_timer->start(static_cast<int>((m_timeStep*1000)/ffVal));
+    m_timer->start(static_cast<int>((m_timeStep*1000.0)/ffVal));
 }

@@ -72,7 +72,7 @@ public:
     {
         std::list<std::shared_ptr<Agent>> agents;
 
-        Eigen::Vector2d target(60000, -20000);
+        Eigen::Vector2d target(0, 0);
         double planeDist = 300000;
         int nPlanes = 14;
 
@@ -105,7 +105,7 @@ public:
         l->setPosition(Eigen::Vector2d(170000, 0.0), true);
         agents.push_back(l);
 
-        auto trg = Target::createTarget(102, target, 50000.0);
+        auto trg = Target::createTarget(102, target, 25000.0);
         agents.push_back(trg);
 
         return agents;

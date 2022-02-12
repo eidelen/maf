@@ -25,20 +25,21 @@
 #define CL_SIM_QT_H
 
 #include <QPainter>
+#include "simQt.h"
 #include "clsimulation.h"
 
 
-class HumanoidAgentQtSim
+class HumanoidAgentQtSim: public SimQt
 {
 public:
-    HumanoidAgentQtSim()
+    HumanoidAgentQtSim(): SimQt()
     {
         restart();
     }
 
     virtual ~HumanoidAgentQtSim() {}
 
-    void restart()
+    void restart() override
     {
         m_sim = Simulation::createSimulation(4);
         m_sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory()));
@@ -49,16 +50,6 @@ public:
 
         m_sim->initEnvironment();
         m_sim->initAgents();
-    }
-
-    void setTimeStep(double ts)
-    {
-        m_timeStep = ts;
-    }
-
-    void update()
-    {
-        m_sim->doTimeStep(m_timeStep);
     }
 
     QPointF sim2WidTrans(const Eigen::Vector2d& simCoord)
@@ -73,7 +64,7 @@ public:
         return simLength * 30.0;
     }
 
-    void drawSim(QPainter& painter)
+    void drawSim(QPainter& painter) override
     {
         // draw circle
         painter.setBrush(Qt::white);
@@ -117,8 +108,6 @@ public:
     }
 
 private:
-    double m_timeStep;
-    std::shared_ptr<Simulation> m_sim;
     std::shared_ptr<StressAccumulatorEvaluation> m_eval;
 };
 

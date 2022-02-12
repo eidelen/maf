@@ -28,7 +28,8 @@
 #include <QWidget>
 #include <QSlider>
 
-#include "adsimQt.h"
+#include "glwidget.h"
+#include "simQt.h"
 
 class Window : public QWidget
 {
@@ -39,14 +40,17 @@ public:
 
 public slots:
     void resetSimulation();
+    void startAirDefenceSim();
+    void startCLSim();
     void adjustFastForwardSpeed();
 
 private:
-    std::shared_ptr<AirDefenceQtSim> m_hSim;
+
+    GLWidget* m_OpenGL;
+    std::shared_ptr<SimQt> m_Sim;
     QTimer* m_timer;
     QSlider* m_ffSlider;
     double m_timeStep;
-
 };
 
 

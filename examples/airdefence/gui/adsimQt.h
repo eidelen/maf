@@ -21,8 +21,8 @@
 **
 *****************************************************************************/
 
-#ifndef CL_SIM_QT_H
-#define CL_SIM_QT_H
+#ifndef AD_SIM_QT_H
+#define AD_SIM_QT_H
 
 #include <QPainter>
 #include "simQt.h"
@@ -77,4 +77,4 @@ private:
 };
 
 
-#endif //CL_SIM_QT_H
+#endif //AD_SIM_QT_H
