@@ -42,8 +42,18 @@ double SimulationDrawer::sim2WidScale(double simLength)
 
 QPointF SimulationDrawer::sim2WidTrans(const Eigen::Vector2d& simCoord)
 {
-    Eigen::Vector2d widCoord = (simCoord * sim2WidScale(1.0)) + m_center;
-    return QPointF(widCoord(0), widCoord(1));
+    Eigen::Vector2d widCoord = sim2WidTransE(simCoord);
+    return toQPointF(widCoord);
+}
+
+Eigen::Vector2d SimulationDrawer::sim2WidTransE(const Eigen::Vector2d& simCoord)
+{
+    return (simCoord * sim2WidScale(1.0)) + m_center;
+}
+
+QPointF SimulationDrawer::toQPointF(const Eigen::Vector2d& coord)
+{
+    return QPointF(coord(0), coord(1));
 }
 
 void SimulationDrawer::drawScene(QPainter &painter)
@@ -73,6 +83,10 @@ void SimulationDrawer::drawScene(QPainter &painter)
         else if(a->type() == AgentType::ETarget)
         {
             drawTarget(painter, (Target*)a.get());
+        }
+        else if(a->type() == AgentType::EHuman)
+        {
+            drawHuman(painter, (Human*)a.get());
         }
         else
         {
@@ -118,6 +132,21 @@ void SimulationDrawer::drawTarget(QPainter &painter, Target *target)
     painter.setBrush(usedColor);
     painter.drawEllipse(sim2WidTrans(target->getPosition()),
                         sim2WidScale(target->range()), sim2WidScale(target->range()));
+}
+
+void SimulationDrawer::drawHuman(QPainter &painter, Human* human)
+{
+    // Color indicates stress
+    double stress = human->getStressLevel();
+    QColor agentColor( (int)(stress*255.0), 255-(int)(stress*255.0), 0.0 );
+    painter.setBrush(agentColor);
+    painter.drawEllipse(sim2WidTrans(human->getPosition()), m_symbolWidht/10, m_symbolWidht/10);
+
+    // Acceleration direction
+    Eigen::Vector2d posAgentScreen = sim2WidTransE(human->getPosition());
+    Eigen::Vector2d lengthAccScreen = human->getAcceleration().normalized() * 10.0;
+    painter.setPen(QPen(Qt::black, 1, Qt::SolidLine));
+    painter.drawLine(toQPointF(posAgentScreen), QPointF(posAgentScreen(0)+lengthAccScreen(0), posAgentScreen(1)+lengthAccScreen(1)));
 }
 
 void SimulationDrawer::drawHostilePlane(QPainter &painter, HostilePlane* plane)

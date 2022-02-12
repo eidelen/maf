@@ -29,8 +29,6 @@
 #include "agent.h"
 #include "airdefencesim.h"
 #include "simulation.h"
-#include "draw_scene.h"
-
 
 class AirDefenceQtSim: public SimQt
 {
@@ -63,7 +61,7 @@ public:
 
     void drawSim(QPainter& painter) override
     {
-        // draw background
+        // draw background / environment
         painter.setRenderHint(QPainter::Antialiasing);
         painter.drawPixmap(QPointF(0.0, 0.0), m_background);
 
@@ -71,7 +69,6 @@ public:
     }
 
 private:
-    std::shared_ptr<SimulationDrawer> m_drawer;
     QPixmap m_background;
     std::shared_ptr<ReachEvaluation> m_eval;
 };

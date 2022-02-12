@@ -26,6 +26,7 @@
 
 #include <QPainter>
 #include "simulation.h"
+#include "draw_scene.h"
 
 class SimQt
 {
@@ -51,6 +52,7 @@ public:
 protected:
     double m_timeStep;
     std::shared_ptr<Simulation> m_sim;
+    std::shared_ptr<SimulationDrawer> m_drawer;
 };
 
 

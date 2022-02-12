@@ -32,6 +32,7 @@
 #include "proximity_sensor.h"
 #include "plane.h"
 #include "target.h"
+#include "human.h"
 
 class SimulationDrawer
 {
@@ -45,10 +46,15 @@ public:
     virtual void drawHostilePlane(QPainter& painter, HostilePlane* plane);
     virtual void drawMissile(QPainter& painter, Missile* missile);
     virtual void drawTarget(QPainter& painter, Target* target);
+    virtual void drawHuman(QPainter& painter, Human* human);
 
-private:
     double sim2WidScale(double simLength);
     QPointF sim2WidTrans(const Eigen::Vector2d& simCoord);
+    Eigen::Vector2d sim2WidTransE(const Eigen::Vector2d& simCoord);
+
+    static QPointF toQPointF(const Eigen::Vector2d& coord);
+
+private:
 
     std::shared_ptr<Simulation> m_sim;
     std::shared_ptr<NatoSymbols> m_symbols;

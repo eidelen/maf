@@ -33,7 +33,7 @@
 GLWidget::GLWidget(QWidget *parent): QOpenGLWidget(parent)
 {
     setFixedSize(1500, 1000);
-    setAutoFillBackground(false);
+    setAutoFillBackground(true);
 }
 
 void GLWidget::setQtSimulation(std::shared_ptr<SimQt> sim)
