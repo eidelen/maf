@@ -8,4 +8,5 @@ message("my cmake version " ${CMAKE_VERSION})
 #---------------------------------------------------------------------
 add_subdirectory(lib)
 add_subdirectory(guilib)
-add_subdirectory(examples/airdefence)
+add_subdirectory(examples/guiexamples)
+add_subdirectory(examples/constructive_sims)
