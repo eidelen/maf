@@ -140,6 +140,13 @@ public:
      */
     void runSimulation(double timeStep, double simulationDuration);
 
+    /**
+     * Used computation time in ms for
+     * one time step.
+     * @return ms.
+     */
+    int getComputationTime() const;
+
 private:
     unsigned int m_id;
     double m_simulationRunningTime;
@@ -148,6 +155,8 @@ private:
     std::shared_ptr<Environment> m_environment;
     std::shared_ptr<Evaluation> m_evaluation;
     std::string m_description;
+    int m_computationTime = 0;
+
 };
 
 

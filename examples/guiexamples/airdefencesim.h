@@ -133,6 +133,7 @@ public:
     void evaluate(std::shared_ptr<Simulation> sim, double timeStep) override
     {
         auto agents = sim->getEnvironment()->getAgents();
+        m_computationTime = sim->getComputationTime();
 
         for(const auto& a : agents)
         {
@@ -161,12 +162,15 @@ public:
     {
         std::ostringstream s;
         s << std::fixed << std::setprecision( 3 ) << std::setfill( '0' ) <<
-        "Time: " << m_currentTime << "s,  Target Hits: " << m_agentsReachedId.size();
+        "Time: " << m_currentTime << " s" << std::endl <<
+             "Computation Time: " << m_computationTime << " ms" << std::endl <<
+                "Target Hits: " << m_agentsReachedId.size();
         return s.str();
     }
 
     std::set<unsigned long> m_agentsReachedId;
     double m_currentTime;
+    int m_computationTime = 0;
 
 };
 

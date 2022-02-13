@@ -146,6 +146,8 @@ public:
     void evaluate(std::shared_ptr<Simulation> sim, double timeStep) override
     {
         auto agents = sim->getEnvironment()->getAgents();
+        m_computationTime = sim->getComputationTime();
+
         double avgStress = 0.0;
         int cntAgents = 0;
         std::for_each(agents.begin(), agents.end(), [&avgStress, &cntAgents](const auto& a) {
@@ -166,8 +168,10 @@ public:
     {
         std::ostringstream s;
         s << std::fixed << std::setprecision( 3 ) << std::setfill( '0' ) <<
-        "Time: " << m_currentTime << ", Current Stress: " << m_currentStress << ", AccumStress: " <<
-        m_stressSeconds;
+        "Time: " << m_currentTime << " s" << std::endl <<
+             "Computation Time: " << m_computationTime << " ms" << std::endl <<
+                "Current Stress: " << m_currentStress << std::endl <<
+                    "AccumStress: " << m_stressSeconds;
         return s.str();
     }
 
@@ -178,6 +182,8 @@ public:
     // simulation settings
     double m_maxSpeed;
     double m_maxAcceleration;
+
+    int m_computationTime = 0;
 };
 
 

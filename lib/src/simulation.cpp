@@ -22,6 +22,8 @@
 *****************************************************************************/
 
 #include <iostream>
+#include <chrono>
+using namespace std::chrono_literals;
 
 #include "simulation.h"
 #include "evaluation.h"
@@ -105,9 +107,17 @@ void Simulation::initAgents()
 
 void Simulation::doTimeStep(double time)
 {
-    m_simulationRunningTime += time;
-    m_environment->update(time);
-    m_evaluation->evaluate(shared_from_this(), time);
+    auto start = std::chrono::high_resolution_clock::now();
+
+    {
+        m_simulationRunningTime += time;
+        m_environment->update(time);
+        m_evaluation->evaluate(shared_from_this(), time);
+    }
+
+    // compute used simulation computation time
+    std::chrono::duration<double, std::milli> elapsed = std::chrono::high_resolution_clock::now()-start;
+    m_computationTime = elapsed.count();
 }
 
 std::shared_ptr<Environment> Simulation::getEnvironment()
@@ -126,4 +136,9 @@ void Simulation::runSimulation(double timeStep, double simulationDuration)
     {
         doTimeStep(timeStep);
     }
+}
+
+int Simulation::getComputationTime() const
+{
+    return m_computationTime;
 }
