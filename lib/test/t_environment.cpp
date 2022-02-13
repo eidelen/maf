@@ -276,3 +276,37 @@ TEST(Environment, SendAndReceiveMessages)
     ASSERT_TRUE(a2->getEnabled());
 }
 
+TEST(Environment, DistanceMapDisabledAgents)
+{
+    auto e = Environment::createEnvironment(9);
+
+    auto a = Agent::createAgent(2);
+    a->setPosition(Eigen::Vector2d(2.0, 0.0));
+    e->addAgent(a);
+
+    auto b = Agent::createAgent(5);
+    b->setPosition(Eigen::Vector2d(5.0, 0.0));
+    e->addAgent(b);
+
+    auto c = Agent::createAgent(20);
+    c->setPosition(Eigen::Vector2d(20.0, 0.0));
+    e->addAgent(c);
+
+    e->computeDistances();
+    Environment::DistanceMap& dMap = e->getAgentDistances();
+
+    ASSERT_EQ(dMap.size(), 3);
+
+    // disable agent c
+    c->setEnabled(false);
+
+    e->computeDistances();
+    Environment::DistanceMap& dMapReduced = e->getAgentDistances();
+
+    ASSERT_EQ(dMapReduced.size(), 2);
+
+    // not available
+    Environment::DistanceQueue& qA3 = dMapReduced[3];
+    ASSERT_EQ(qA3.size(), 0);
+}
+
