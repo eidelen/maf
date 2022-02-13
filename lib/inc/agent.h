@@ -243,7 +243,7 @@ public:
     /**
      * @return Agent disabled or enabled.
      */
-    bool getEnabled() const;
+    virtual bool getEnabled() const;
 
     /**
      * Enable or disable the agent.

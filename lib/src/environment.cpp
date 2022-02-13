@@ -103,15 +103,22 @@ void Environment::computeDistances()
     {
         const auto& agentA = *fromA;
 
-        for(auto toA = std::next(fromA,1); toA != agents.end(); toA++)
+        if(agentA->getEnabled()) // Only consider enabled agents
         {
-            const auto& agentB = *toA;
-            Eigen::Vector2d vDiff = Environment::computeDistance(agentA, agentB);
-            double vLength = vDiff.norm();
+            for(auto toA = std::next(fromA,1); toA != agents.end(); toA++)
+            {
+                const auto& agentB = *toA;
 
-            // extend matrix with distances in both direction
-            m_agentDistanceMap[agentA->id()].push({vLength, agentB->id(), vDiff});
-            m_agentDistanceMap[agentB->id()].push({vLength, agentA->id(), -vDiff});
+                if(agentB->getEnabled())
+                {
+                    Eigen::Vector2d vDiff = Environment::computeDistance(agentA, agentB);
+                    double vLength = vDiff.norm();
+
+                    // extend matrix with distances in both direction
+                    m_agentDistanceMap[agentA->id()].push({vLength, agentB->id(), vDiff});
+                    m_agentDistanceMap[agentB->id()].push({vLength, agentA->id(), -vDiff});
+                }
+            }
         }
     }
 }

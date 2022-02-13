@@ -111,3 +111,9 @@ AgentType Missile::type() const
 {
     return AgentType::EMissile;
 }
+
+// only enabled when launched -> not part of distance map otherwise
+bool Missile::getEnabled() const
+{
+    return (m_status == Launched);
+}

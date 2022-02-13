@@ -68,6 +68,7 @@ public:
 public: // inherited from Agent
     void update(double time) override;
     AgentType type() const override;
+    bool getEnabled() const override;
 
 protected:
     unsigned int m_target;
