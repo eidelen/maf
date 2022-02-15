@@ -1,5 +1,6 @@
 
 #include <gtest/gtest.h>
+#include <iostream>
 #include "missile.h"
 #include "environment.h"
 
@@ -69,4 +70,72 @@ TEST(Missile, ApproachAndDetonate)
     }
 
     ASSERT_EQ(m->status(), Missile::Detonated);
+}
+
+TEST(Missile, TargetTowardsMissile)
+{
+    auto e = Environment::createEnvironment(0);
+
+    // slow missile
+    auto m = std::shared_ptr<Missile>(new Missile(1));
+    m->setPosition(Eigen::Vector2d(0.0, 0.0));
+    m->setVelocityLimit(1.0);
+    m->setEnvironment(e);
+
+    // target moving towards missile
+    auto t = Agent::createAgent(2);
+    t->setPosition(Eigen::Vector2d(10.0, 0.0));
+    t->setVelocity(Eigen::Vector2d(-1.0, 0.0));
+    t->setEnvironment(e);
+
+    e->addAgent(m);
+    e->addAgent(t);
+
+    m->fire(2);
+
+    e->update(0.1);
+
+    ASSERT_TRUE(m->status() == Missile::Launched);
+
+    for(int k = 0; k < 100; k++)
+    {
+        e->update(0.1);
+    }
+
+    // missile exploded in between
+    ASSERT_EQ(m->status(), Missile::Detonated);
+    ASSERT_GT(m->getPosition()(0), 0.0);
+    ASSERT_LT(m->getPosition()(0), 10.0);
+}
+
+TEST(Missile, TargetAwayFromMissile)
+{
+    auto e = Environment::createEnvironment(0);
+
+    // slow missile
+    auto m = std::shared_ptr<Missile>(new Missile(1));
+    m->setPosition(Eigen::Vector2d(0.0, 0.0));
+    m->setVelocityLimit(2.0);
+    m->setEnvironment(e);
+
+    // target moving away from missile
+    auto t = Agent::createAgent(2);
+    t->setPosition(Eigen::Vector2d(10.0, 0.0));
+    t->setVelocity(Eigen::Vector2d(1.0, 0.0));
+    t->setEnvironment(e);
+
+    e->addAgent(m);
+    e->addAgent(t);
+
+    m->fire(2);
+
+    for(int k = 0; k < 120; k++)
+    {
+        e->update(0.1);
+    }
+
+    // missile exploded in between
+    ASSERT_EQ(m->status(), Missile::Detonated);
+    ASSERT_GT(m->getPosition()(0), 19.7);
+    ASSERT_LT(m->getPosition()(0), 20.3);
 }
