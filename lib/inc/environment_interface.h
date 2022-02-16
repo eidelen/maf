@@ -102,6 +102,12 @@ public:
      * @param aMessage A message.
      */
     virtual void sendMessage(std::shared_ptr<Message> aMessage) = 0;
+
+    /**
+     * Log a message to the std out.
+     * @param logMsg log message.
+     */
+    virtual void log(const std::string& logMsg) = 0;
 };
 
 #endif // ENVIRONMENTINTERFACE_H

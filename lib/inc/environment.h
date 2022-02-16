@@ -112,12 +112,19 @@ public:
      */
     using MessagesMap = std::unordered_map<unsigned int, MessageQueue>;
 
+    /**
+     * Sets enable log messages.
+     * @param enable If enable, log messages printed to std out. Otherwise not.
+     */
+    void setEnableLogMessages(bool enable);
+
 public: //Inherited from EnvironmentInterface
 
     virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override;
     virtual DistanceQueue getAgentDistancesToAllOtherAgents(unsigned int id) override;
     virtual MessageQueue& getMessages(unsigned int receiverAgendId) override;
     virtual void sendMessage(std::shared_ptr<Message> aMessage) override;
+    virtual void log(const std::string &logMsg) override;
 
 protected:
 
@@ -125,6 +132,7 @@ protected:
     std::list<std::shared_ptr<Agent>> m_agents;
     DistanceMap m_agentDistanceMap;
     MessagesMap m_msgMap;
+    bool m_enableLogMessages;
 };
 
 

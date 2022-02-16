@@ -92,7 +92,9 @@ void Missile::update(double time)
             // if target closer than missile can fly within "time" -> detonate
             if(dist.dist < time * m_maxSpeed)
             {
-                std::cout << "Missile " << id() << " detonated: Target " << m_target << std::endl;
+                std::ostringstream s;
+                s << "Missile " << id() << " detonated: Target " << m_target;
+                m_environment.lock()->log(s.str());
 
                 sendMessage(m_target, Message::Disable);
 

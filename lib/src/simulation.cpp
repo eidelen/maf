@@ -93,6 +93,7 @@ std::shared_ptr<Evaluation> Simulation::getEvaluation()
 void Simulation::initEnvironment()
 {
     m_environment = m_environmentFactory->createEnvironment();
+    m_environment->setEnableLogMessages(m_enableLogMessages);
 }
 
 void Simulation::initAgents()
@@ -141,4 +142,9 @@ void Simulation::runSimulation(double timeStep, double simulationDuration)
 int Simulation::getComputationTime() const
 {
     return m_computationTime;
+}
+
+void Simulation::setEnableLogMessages(bool enable)
+{
+    m_enableLogMessages = enable;
 }

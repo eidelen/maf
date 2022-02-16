@@ -40,17 +40,18 @@ int main(int argc, char *argv[])
 
     std::vector<std::shared_ptr<ReachEvaluation>> results;
 
-    for(unsigned int a = 0; a < 2; a++)
+    for(unsigned int a = 0; a < 30; a++)
     {
-        for(unsigned int v = 0; v < 2; v++ )
+        for(unsigned int v = 0; v < 30; v++ )
         {
-            double missileSpeed = 500.0 + a * 100.0;
-            double planeSpeed = 500.0 + v * 100.0;
+            double missileSpeed = 500.0 + a * 50.0;
+            double planeSpeed = 500.0 + v * 50.0;
 
             auto sim = Simulation::createSimulation(nSims++);
 
             sim->setAgentFactory(std::shared_ptr<AirdefenceAgentFactory>(new AirdefenceAgentFactory(planeSpeed, missileSpeed)));
             sim->setEnvironmentFactory(std::shared_ptr<PlaneEnvFactory>(new PlaneEnvFactory()));
+            sim->setEnableLogMessages(false);
 
             auto eval = std::shared_ptr<ReachEvaluation>(new ReachEvaluation(planeSpeed, missileSpeed));
             sim->setEvaluation(eval);

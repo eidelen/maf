@@ -30,7 +30,7 @@ std::shared_ptr<Environment> Environment::createEnvironment(unsigned int id)
     return std::shared_ptr<Environment>(new Environment(id));
 }
 
-Environment::Environment(unsigned int id) : m_id(id)
+Environment::Environment(unsigned int id) : m_id(id), m_enableLogMessages(true)
 {
 
 }
@@ -128,6 +128,11 @@ Eigen::Vector2d Environment::computeDistance(const std::shared_ptr<Agent> &a, co
     return b->getPosition() - a->getPosition();
 }
 
+void Environment::setEnableLogMessages(bool enable)
+{
+    m_enableLogMessages = enable;
+}
+
 EnvironmentInterface::MessageQueue &Environment::getMessages(unsigned int receiverAgendId)
 {
     return m_msgMap[receiverAgendId];
@@ -136,4 +141,12 @@ EnvironmentInterface::MessageQueue &Environment::getMessages(unsigned int receiv
 void Environment::sendMessage(std::shared_ptr<Message> aMessage)
 {
     m_msgMap[aMessage->receiverId()].push(aMessage);
+}
+
+void Environment::log(const std::string &logMsg)
+{
+    if(m_enableLogMessages)
+    {
+        std::cout << logMsg << std::endl;
+    }
 }

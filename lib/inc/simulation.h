@@ -147,6 +147,12 @@ public:
      */
     int getComputationTime() const;
 
+    /**
+     * Sets enable log messages.
+     * @param enable If enable, log messages printed to std out. Otherwise not.
+     */
+    void setEnableLogMessages(bool enable);
+
 private:
     unsigned int m_id;
     double m_simulationRunningTime;
@@ -156,6 +162,7 @@ private:
     std::shared_ptr<Evaluation> m_evaluation;
     std::string m_description;
     int m_computationTime = 0;
+    bool m_enableLogMessages = true;
 
 };
 

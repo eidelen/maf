@@ -80,7 +80,9 @@ void MissileStation::update(double time)
             missile->fire(agent.targetId);
             m_targets.insert(agent.targetId);
 
-            std::cout << "FIRE: from " << id() << " at " << agent.targetId << std::endl;
+            std::ostringstream s;
+            s << "FIRE: from " << id() << " at " << agent.targetId;
+            m_environment.lock()->log(s.str());
         }
     }
 }
