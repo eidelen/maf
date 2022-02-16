@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 PROJECT(claustrophobiarunner)
 
-MESSAGE(STATUS "Claustrophobia constuctive simulation activated")
+MESSAGE(STATUS "Claustrophobia constructive simulation activated")
 
 include_directories( . ../../guiexamples/ )
 

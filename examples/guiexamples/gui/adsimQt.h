@@ -47,10 +47,10 @@ public:
         m_background = swissmap.scaled(1500, 1500, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         m_sim = Simulation::createSimulation(4);
-        m_sim->setAgentFactory(std::shared_ptr<AirdefenceAgentFactory>(new AirdefenceAgentFactory()));
+        m_sim->setAgentFactory(std::shared_ptr<AirdefenceAgentFactory>(new AirdefenceAgentFactory(500.0, 550.0)));
         m_sim->setEnvironmentFactory(std::shared_ptr<PlaneEnvFactory>(new PlaneEnvFactory()));
 
-        m_eval = std::shared_ptr<ReachEvaluation>(new ReachEvaluation());
+        m_eval = std::shared_ptr<ReachEvaluation>(new ReachEvaluation(500.0, 550.0));
         m_sim->setEvaluation(m_eval);
 
         m_sim->initEnvironment();

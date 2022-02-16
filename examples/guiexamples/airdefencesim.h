@@ -66,7 +66,8 @@ public:
 class AirdefenceAgentFactory: public AgentFactory
 {
 public:
-    AirdefenceAgentFactory(): AgentFactory() {}
+    AirdefenceAgentFactory(double planeSpeed, double missileSpeed): AgentFactory(),
+        m_planeSpeed(planeSpeed), m_missileSpeed(missileSpeed) {}
     virtual ~AirdefenceAgentFactory() {}
     std::list<std::shared_ptr<Agent>> createAgents() override
     {
@@ -74,8 +75,7 @@ public:
 
         Eigen::Vector2d target(0, 0);
         double planeDist = 300000;
-        int nPlanes = 40;
-        double missileSpeed = 500.0;
+        int nPlanes = 32;
 
         for(int i = 0; i < nPlanes; i++)
         {
@@ -86,23 +86,23 @@ public:
 
             auto hp = std::shared_ptr<HostilePlane>(new HostilePlane(20000+i));
             hp->setPosition(planePos);
-            hp->setMovingTowardsTarget(target, 400.0);
+            hp->setMovingTowardsTarget(target, m_planeSpeed);
             agents.push_back(hp);
         }
 
-        auto m = std::shared_ptr<MissileStation>(new MissileStation(2000, nPlanes, 50000, missileSpeed));
+        auto m = std::shared_ptr<MissileStation>(new MissileStation(2000, nPlanes, 50000, m_missileSpeed));
         m->setPosition(Eigen::Vector2d(-70000.0, 0.0), true);
         agents.push_back(m);
 
-        auto n = std::shared_ptr<MissileStation>(new MissileStation(3000, nPlanes, 50000, missileSpeed));
+        auto n = std::shared_ptr<MissileStation>(new MissileStation(3000, nPlanes, 50000, m_missileSpeed));
         n->setPosition(Eigen::Vector2d(60000.0, -60000.0), true);
         agents.push_back(n);
 
-        auto r = std::shared_ptr<MissileStation>(new MissileStation(4000, nPlanes, 50000, missileSpeed));
+        auto r = std::shared_ptr<MissileStation>(new MissileStation(4000, nPlanes, 50000, m_missileSpeed));
         r->setPosition(Eigen::Vector2d(18000.0, 75000.0), true);
         agents.push_back(r);
 
-        auto l = std::shared_ptr<MissileStation>(new MissileStation(5000, nPlanes, 50000, missileSpeed));
+        auto l = std::shared_ptr<MissileStation>(new MissileStation(5000, nPlanes, 50000, m_missileSpeed));
         l->setPosition(Eigen::Vector2d(170000, 0.0), true);
         agents.push_back(l);
 
@@ -111,6 +111,9 @@ public:
 
         return agents;
     }
+
+    double m_planeSpeed;
+    double m_missileSpeed;
 };
 
 // How many planes reached the target area
@@ -121,7 +124,8 @@ public:
     /**
      * @brief ReachEvaluation
      */
-    ReachEvaluation(): Evaluation()
+    ReachEvaluation(double speedPlane, double speedMissile): Evaluation(),
+        m_speedPlane(speedPlane), m_speedMissile(speedMissile)
     {
         m_currentTime = 0.0;
     }
@@ -164,6 +168,8 @@ public:
         s << std::fixed << std::setprecision( 3 ) << std::setfill( '0' ) <<
         "Time: " << m_currentTime << " s" << std::endl <<
              "Computation Time: " << m_computationTime << " ms" << std::endl <<
+             "Speed Planes: " << m_speedPlane << " m/s" << std::endl <<
+             "Speed Missiles: " << m_speedMissile << " m/s" << std::endl <<
                 "Target Hits: " << m_agentsReachedId.size();
         return s.str();
     }
@@ -171,6 +177,8 @@ public:
     std::set<unsigned long> m_agentsReachedId;
     double m_currentTime;
     int m_computationTime = 0;
+    double m_speedPlane;
+    double m_speedMissile;
 
 };
 
