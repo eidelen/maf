@@ -36,16 +36,16 @@ int main(int argc, char *argv[])
 
     size_t nSims = 0;
     double tStep = 1.0;
-    double simDur = 600.0;
+    double simDur = 700.0;
 
     std::vector<std::shared_ptr<ReachEvaluation>> results;
 
-    for(unsigned int a = 0; a < 30; a++)
+    for(unsigned int a = 0; a < 60; a++)
     {
-        for(unsigned int v = 0; v < 30; v++ )
+        for(unsigned int v = 0; v < 60; v++ )
         {
-            double missileSpeed = 500.0 + a * 50.0;
-            double planeSpeed = 500.0 + v * 50.0;
+            double missileSpeed = 500.0 + a * 25.0;
+            double planeSpeed = 500.0 + v * 25.0;
 
             auto sim = Simulation::createSimulation(nSims++);
 
