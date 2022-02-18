@@ -172,7 +172,7 @@ TEST(Simulation, RunSimulation)
     ASSERT_NEAR(s->getSimulationRunningTime(), 10.0, 0.0001);
 }
 
-// Acculates overall agent living time
+// Accumulates overall agent living time
 class MySumAgentEvaluation: public Evaluation
 {
 public:
@@ -189,6 +189,12 @@ public:
     }
 
     double m_sumAgentsLivingtime;
+
+    bool isSimulationFinished(std::shared_ptr<Simulation> sim) override
+    {
+        // stop the simulation after 5 seconds runtime
+        return sim->getSimulationRunningTime() > 5.0;
+    }
 };
 
 TEST(Simulation, Evaluation)
@@ -218,4 +224,22 @@ TEST(Simulation, Evaluation)
     s->doTimeStep(3.0);
     ASSERT_NEAR(eval->m_sumAgentsLivingtime, 8.0, 0.00001);
     ASSERT_EQ(eval->getResult(), std::to_string(8.0));
+}
+
+TEST(Simulation, RunTillFinished)
+{
+    auto s = Simulation::createSimulation(4);
+    s->setAgentFactory(std::shared_ptr<MyBoringAgentFactory>(new MyBoringAgentFactory()));
+    s->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
+
+    auto eval = std::shared_ptr<MySumAgentEvaluation>(new MySumAgentEvaluation());
+    s->setEvaluation(eval);
+
+    s->initEnvironment();
+    s->initAgents();
+
+    // implemented that evaluation is finished after 5 seconds -> that happens at 5.1 seconds
+    s->runSimulation(0.1);
+
+    ASSERT_NEAR(s->getSimulationRunningTime(), 5.1, 0.00001);
 }

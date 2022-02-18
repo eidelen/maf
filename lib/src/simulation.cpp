@@ -139,6 +139,14 @@ void Simulation::runSimulation(double timeStep, double simulationDuration)
     }
 }
 
+void Simulation::runSimulation(double timeStep)
+{
+    while( !m_evaluation->isSimulationFinished(this->shared_from_this()) )
+    {
+        doTimeStep(timeStep);
+    }
+}
+
 int Simulation::getComputationTime() const
 {
     return m_computationTime;

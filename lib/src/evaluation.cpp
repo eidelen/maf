@@ -34,7 +34,7 @@ Evaluation::~Evaluation()
 
 }
 
-void Evaluation::evaluate(std::shared_ptr<Simulation> /*env*/, double /*timeStep*/)
+void Evaluation::evaluate(std::shared_ptr<Simulation> /*sim*/, double /*timeStep*/)
 {
 
 }
@@ -42,4 +42,9 @@ void Evaluation::evaluate(std::shared_ptr<Simulation> /*env*/, double /*timeStep
 std::string Evaluation::getResult()
 {
     return "";
+}
+
+bool Evaluation::isSimulationFinished(std::shared_ptr<Simulation> /*sim*/)
+{
+    return false;
 }

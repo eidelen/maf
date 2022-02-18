@@ -141,6 +141,13 @@ public:
     void runSimulation(double timeStep, double simulationDuration);
 
     /**
+     * Run simulation till finished. The function Evaluation::isSimulationFinished
+     * indicates when the simulation is finished.
+     * @param timeStep Time steps in seconds.
+     */
+    void runSimulation(double timeStep);
+
+    /**
      * Used computation time in ms for
      * one time step.
      * @return ms.

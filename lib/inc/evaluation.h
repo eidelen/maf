@@ -51,16 +51,24 @@ public:
     /**
      * Evaluates the environment. Is called after each time step by
      * the simulation instant.
-     * @param env The environment.
+     * @param sim The environment.
      * @param timeStep Time step in seconds.
      */
-    virtual void evaluate(std::shared_ptr<Simulation> env, double timeStep);
+    virtual void evaluate(std::shared_ptr<Simulation> sim, double timeStep);
 
     /**
      * Get the intermediate result as a string.
      * @return Result string.
      */
     virtual std::string getResult();
+
+    /**
+     * This function evaluates if the simulation
+     * is finished. Needs to be overwritten.
+     * @param sim The environment.
+     * @return True if finished. False if still running.
+     */
+    virtual bool isSimulationFinished(std::shared_ptr<Simulation> sim);
 };
 
 
