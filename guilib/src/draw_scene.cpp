@@ -136,10 +136,18 @@ void SimulationDrawer::drawTarget(QPainter &painter, Target *target)
 
 void SimulationDrawer::drawHuman(QPainter &painter, Human* human)
 {
-    // Color indicates stress
-    double stress = human->getStressLevel();
-    QColor agentColor( (int)(stress*255.0), 255-(int)(stress*255.0), 0.0 );
-    painter.setBrush(agentColor);
+    // Color indicates stress or dead
+    if( human->getEnabled() )
+    {
+        double stress = human->getStressLevel();
+        QColor agentColor( (int)(stress*255.0), 255-(int)(stress*255.0), 0.0 );
+        painter.setBrush(agentColor);
+    }
+    else
+    {
+        painter.setBrush(QColor(0,0,0,120));
+    }
+
     painter.drawEllipse(sim2WidTrans(human->getPosition()), m_symbolWidht/10, m_symbolWidht/10);
 
     // Acceleration direction

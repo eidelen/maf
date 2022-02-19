@@ -62,6 +62,10 @@ public:
         painter.setBrush(Qt::white);
         painter.drawEllipse(m_drawer->sim2WidTrans(Eigen::Vector2d(0.0, 0.0)), m_drawer->sim2WidScale(10.0), m_drawer->sim2WidScale(10.0));
 
+        // draw door
+        painter.setBrush(Qt::green);
+        painter.drawRect(QRectF(m_drawer->sim2WidTrans(Eigen::Vector2d(9.0, -1.0)), m_drawer->sim2WidTrans(Eigen::Vector2d(11.0, 1.0))));
+
         m_drawer->drawScene(painter);
     }
 

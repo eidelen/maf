@@ -34,6 +34,7 @@
 #include "soldier.h"
 #include "simulation.h"
 #include "evaluation.h"
+#include "quadrant.h"
 
 /**
  * @brief Trivial environment with circle 10m radius and center at 0/0
@@ -45,10 +46,8 @@ public:
     virtual ~CircEnv() {}
     virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override
     {
-        // Circular environmet with radius 10m. If move not possible, return
-        // previous position.
-        double radius = 10.0;
-        if(destination.norm() < radius)
+        auto q = Quadrant::createQuadrant(77, Eigen::Vector2d(-1.0, -1.0), Eigen::Vector2d(10.0, 1.0));
+        if(q->isInQuadrant(destination))
             return {true, destination};
         else
             return {false, origin};
@@ -82,36 +81,17 @@ public:
         std::mt19937 gen{rd()};
         std::normal_distribution<> reactionDist{0.7, 0.2};
 
-        size_t sideNbr = 9;
+        size_t sideNbr = 20;
         unsigned int agentIdx = 0;
         for(size_t m = 0; m < sideNbr; m++)
         {
             for(size_t n = 0; n < sideNbr; n++)
             {
                 auto h1 = std::shared_ptr<Human>(new Human(agentIdx++, m_maxSpeed, m_maxAcceleration, 1.5, reactionDist(gen)));
-                h1->setPosition(Eigen::Vector2d(-3.0, -3.0) + m * Eigen::Vector2d(0.5, 0.0) + n * Eigen::Vector2d(0.0, 0.5) );
+                h1->setPosition(Eigen::Vector2d(0.0, 0.0) + m * Eigen::Vector2d(0.001, 0.0) + n * Eigen::Vector2d(0.0, 0.001) );
                 agents.push_back(h1);
             }
         }
-
-        // add a soldier
-        auto s1 = Soldier::createSoldier(3440);
-        s1->setPosition(Eigen::Vector2d(-9.0, 0.0));
-        s1->addObjective(Eigen::Vector2d(9.0, 0.0));
-        s1->addObjective(Eigen::Vector2d(0.0, 9.0));
-
-        auto s2 = Soldier::createSoldier(3441);
-        s2->setPosition(Eigen::Vector2d(-9.5, 0.5));
-        s2->addObjective(Eigen::Vector2d(8.5, 0.5));
-
-        auto s3 = Soldier::createSoldier(3442);
-        s3->setPosition(Eigen::Vector2d(-9.5, -0.5));
-        s3->addObjective(Eigen::Vector2d(8.5, -0.5));
-        s3->addObjective(Eigen::Vector2d(0.0, -9.0));
-
-        /*agents.push_back(s1);
-        agents.push_back(s2);
-        agents.push_back(s3);*/
 
         return agents;
     }
@@ -162,6 +142,17 @@ public:
         m_currentStress = avgStress;
 
         m_currentTime = sim->getSimulationRunningTime();
+
+        // simulate a door by disable agents in this region
+        auto door = Quadrant::createQuadrant(6666, Eigen::Vector2d(9.0, -1.0), Eigen::Vector2d(11.0, 1.0));
+        std::for_each(agents.begin(), agents.end(), [door](const auto& a) {
+            Human* h = (Human*)a.get();
+            if( door->isInQuadrant(h->getPosition()) )
+            {
+                h->setEnabled(false);
+            }
+        });
+
     }
 
     std::string getResult() override
