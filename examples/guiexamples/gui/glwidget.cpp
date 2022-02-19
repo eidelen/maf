@@ -33,6 +33,9 @@
 GLWidget::GLWidget(QWidget *parent): QOpenGLWidget(parent)
 {
     setFixedSize(1500, 1000);
+    QPalette pal = QPalette();
+    pal.setColor(QPalette::Window, QColor(150,150,150));
+    setPalette(pal);
     setAutoFillBackground(true);
 }
 

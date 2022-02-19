@@ -60,11 +60,13 @@ public:
         // draw background / environment
         painter.setRenderHint(QPainter::Antialiasing);
         painter.setBrush(Qt::white);
-        painter.drawEllipse(m_drawer->sim2WidTrans(Eigen::Vector2d(0.0, 0.0)), m_drawer->sim2WidScale(10.0), m_drawer->sim2WidScale(10.0));
+        painter.setPen(Qt::NoPen);
+        painter.drawRect(QRectF(m_drawer->sim2WidTrans(Eigen::Vector2d(-1.0, -1.0)), m_drawer->sim2WidTrans(Eigen::Vector2d(10.0, 1.0))));
+        painter.drawRect(QRectF(m_drawer->sim2WidTrans(Eigen::Vector2d(5.0, 1.0)), m_drawer->sim2WidTrans(Eigen::Vector2d(7.0, 4.0))));
 
         // draw door
         painter.setBrush(Qt::green);
-        painter.drawRect(QRectF(m_drawer->sim2WidTrans(Eigen::Vector2d(9.0, -1.0)), m_drawer->sim2WidTrans(Eigen::Vector2d(11.0, 1.0))));
+        painter.drawRect(QRectF(m_drawer->sim2WidTrans(Eigen::Vector2d(9.0, -1.0)), m_drawer->sim2WidTrans(Eigen::Vector2d(10.5, 1.0))));
 
         m_drawer->drawScene(painter);
     }

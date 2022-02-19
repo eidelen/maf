@@ -47,7 +47,8 @@ public:
     virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override
     {
         auto q = Quadrant::createQuadrant(77, Eigen::Vector2d(-1.0, -1.0), Eigen::Vector2d(10.0, 1.0));
-        if(q->isInQuadrant(destination))
+        auto p = Quadrant::createQuadrant(78, Eigen::Vector2d(5.0, 1.0), Eigen::Vector2d(7.0, 4.0));
+        if(q->isInQuadrant(destination) || p->isInQuadrant(destination))
             return {true, destination};
         else
             return {false, origin};
@@ -130,16 +131,23 @@ public:
 
         double avgStress = 0.0;
         int cntAgents = 0;
-        std::for_each(agents.begin(), agents.end(), [&avgStress, &cntAgents](const auto& a) {
+        int cntActive = 0;
+        std::for_each(agents.begin(), agents.end(), [&cntActive, &avgStress, &cntAgents](const auto& a) {
             Human* h = (Human*)a.get();
             double stress = h->getStressLevel();
             avgStress += stress;
             cntAgents++;
+
+            if(h->getEnabled())
+            {
+                cntActive++;
+            }
         });
 
         avgStress = avgStress / std::max(1, cntAgents);
         m_stressSeconds += timeStep * avgStress;
         m_currentStress = avgStress;
+        m_nActiveHuman = cntActive;
 
         m_currentTime = sim->getSimulationRunningTime();
 
@@ -162,13 +170,15 @@ public:
         "Time: " << m_currentTime << " s" << std::endl <<
              "Computation Time: " << m_computationTime << " ms" << std::endl <<
                 "Current Stress: " << m_currentStress << std::endl <<
-                    "AccumStress: " << m_stressSeconds;
+                    "AccumStress: " << m_stressSeconds << std::endl <<
+                        "Active Units: " << m_nActiveHuman;
         return s.str();
     }
 
     double m_stressSeconds;
     double m_currentTime;
     double m_currentStress;
+    size_t m_nActiveHuman;
 
     // simulation settings
     double m_maxSpeed;

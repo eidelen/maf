@@ -136,25 +136,21 @@ void SimulationDrawer::drawTarget(QPainter &painter, Target *target)
 
 void SimulationDrawer::drawHuman(QPainter &painter, Human* human)
 {
-    // Color indicates stress or dead
+    // Color indicates stress. Don't draw when disabled.
     if( human->getEnabled() )
     {
         double stress = human->getStressLevel();
         QColor agentColor( (int)(stress*255.0), 255-(int)(stress*255.0), 0.0 );
         painter.setBrush(agentColor);
-    }
-    else
-    {
-        painter.setBrush(QColor(0,0,0,120));
-    }
 
-    painter.drawEllipse(sim2WidTrans(human->getPosition()), m_symbolWidht/10, m_symbolWidht/10);
+        painter.drawEllipse(sim2WidTrans(human->getPosition()), m_symbolWidht/10, m_symbolWidht/10);
 
-    // Acceleration direction
-    Eigen::Vector2d posAgentScreen = sim2WidTransE(human->getPosition());
-    Eigen::Vector2d lengthAccScreen = human->getAcceleration().normalized() * 10.0;
-    painter.setPen(QPen(Qt::black, 1, Qt::SolidLine));
-    painter.drawLine(toQPointF(posAgentScreen), QPointF(posAgentScreen(0)+lengthAccScreen(0), posAgentScreen(1)+lengthAccScreen(1)));
+        // Acceleration direction
+        Eigen::Vector2d posAgentScreen = sim2WidTransE(human->getPosition());
+        Eigen::Vector2d lengthAccScreen = human->getAcceleration().normalized() * 10.0;
+        painter.setPen(QPen(Qt::black, 1, Qt::SolidLine));
+        painter.drawLine(toQPointF(posAgentScreen), QPointF(posAgentScreen(0)+lengthAccScreen(0), posAgentScreen(1)+lengthAccScreen(1)));
+    }
 }
 
 void SimulationDrawer::drawHostilePlane(QPainter &painter, HostilePlane* plane)
