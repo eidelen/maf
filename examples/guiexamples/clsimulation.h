@@ -46,9 +46,12 @@ public:
     virtual ~CircEnv() {}
     virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override
     {
-        auto q = Quadrant::createQuadrant(77, Eigen::Vector2d(-1.0, -1.0), Eigen::Vector2d(10.0, 1.0));
-        auto p = Quadrant::createQuadrant(78, Eigen::Vector2d(5.0, 1.0), Eigen::Vector2d(7.0, 4.0));
-        if(q->isInQuadrant(destination) || p->isInQuadrant(destination))
+        auto l = {Quadrant::createQuadrant(77, Eigen::Vector2d(-1.0, -1.0), Eigen::Vector2d(10.0, 1.0)),
+                  Quadrant::createQuadrant(78, Eigen::Vector2d(5.0, 1.0), Eigen::Vector2d(7.0, 9.0)),
+                   Quadrant::createQuadrant(79, Eigen::Vector2d(9.5, -12.0), Eigen::Vector2d(32.0, 17.0)),
+                    Quadrant::createQuadrant(80, Eigen::Vector2d(-10.0, 8.0), Eigen::Vector2d(32.0, 17.0))};
+
+        if( std::any_of(l.begin(), l.end(), [destination](auto thisQuadrant){ return thisQuadrant->isInQuadrant(destination);}) )
             return {true, destination};
         else
             return {false, origin};
@@ -80,9 +83,9 @@ public:
 
         std::random_device rd{};
         std::mt19937 gen{rd()};
-        std::normal_distribution<> reactionDist{0.7, 0.2};
+        std::normal_distribution<> reactionDist{0.4, 0.2};
 
-        size_t sideNbr = 20;
+        size_t sideNbr = 30;
         unsigned int agentIdx = 0;
         for(size_t m = 0; m < sideNbr; m++)
         {
@@ -152,14 +155,14 @@ public:
         m_currentTime = sim->getSimulationRunningTime();
 
         // simulate a door by disable agents in this region
-        auto door = Quadrant::createQuadrant(6666, Eigen::Vector2d(9.0, -1.0), Eigen::Vector2d(11.0, 1.0));
+        /*auto door = Quadrant::createQuadrant(6666, Eigen::Vector2d(9.0, -1.0), Eigen::Vector2d(11.0, 1.0));
         std::for_each(agents.begin(), agents.end(), [door](const auto& a) {
             Human* h = (Human*)a.get();
             if( door->isInQuadrant(h->getPosition()) )
             {
                 h->setEnabled(false);
             }
-        });
+        });*/
 
     }
 

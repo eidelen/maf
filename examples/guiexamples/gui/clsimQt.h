@@ -62,11 +62,13 @@ public:
         painter.setBrush(Qt::white);
         painter.setPen(Qt::NoPen);
         painter.drawRect(QRectF(m_drawer->sim2WidTrans(Eigen::Vector2d(-1.0, -1.0)), m_drawer->sim2WidTrans(Eigen::Vector2d(10.0, 1.0))));
-        painter.drawRect(QRectF(m_drawer->sim2WidTrans(Eigen::Vector2d(5.0, 1.0)), m_drawer->sim2WidTrans(Eigen::Vector2d(7.0, 4.0))));
+        painter.drawRect(QRectF(m_drawer->sim2WidTrans(Eigen::Vector2d(5.0, 1.0)), m_drawer->sim2WidTrans(Eigen::Vector2d(7.0, 9.0))));
+        painter.drawRect(QRectF(m_drawer->sim2WidTrans(Eigen::Vector2d(9.5, -12.0)), m_drawer->sim2WidTrans(Eigen::Vector2d(32.0, 17.0))));
+        painter.drawRect(QRectF(m_drawer->sim2WidTrans(Eigen::Vector2d(-10.0, 8.0)), m_drawer->sim2WidTrans(Eigen::Vector2d(32.0, 17.0))));
 
         // draw door
-        painter.setBrush(Qt::green);
-        painter.drawRect(QRectF(m_drawer->sim2WidTrans(Eigen::Vector2d(9.0, -1.0)), m_drawer->sim2WidTrans(Eigen::Vector2d(10.5, 1.0))));
+        //painter.setBrush(Qt::green);
+        //painter.drawRect(QRectF(m_drawer->sim2WidTrans(Eigen::Vector2d(9.0, -1.0)), m_drawer->sim2WidTrans(Eigen::Vector2d(10.5, 1.0))));
 
         m_drawer->drawScene(painter);
     }
