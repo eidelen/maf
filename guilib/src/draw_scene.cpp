@@ -101,7 +101,7 @@ void SimulationDrawer::drawScene(QPainter &painter)
     font.setPointSize(18);
     painter.setFont(font);
     painter.setPen(QColor(0,0,0));
-    painter.drawText(QRect(QPoint(30,30), QPoint(300, 300)), Qt::TextWordWrap, QString::fromStdString(m_sim->getEvaluation()->getResult()));
+    painter.drawText(QRect(QPoint(30,30), QPoint(400, 400)), Qt::TextWordWrap, QString::fromStdString(m_sim->getEvaluation()->getResult()));
 }
 
 void SimulationDrawer::drawMissileStation(QPainter &painter, MissileStation* station)

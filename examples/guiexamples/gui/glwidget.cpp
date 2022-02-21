@@ -33,10 +33,6 @@
 GLWidget::GLWidget(QWidget *parent): QOpenGLWidget(parent)
 {
     setFixedSize(1500, 1000);
-    QPalette pal = QPalette();
-    pal.setColor(QPalette::Window, QColor(150,150,150));
-    setPalette(pal);
-    setAutoFillBackground(true);
 }
 
 void GLWidget::setQtSimulation(std::shared_ptr<SimQt> sim)
@@ -56,6 +52,9 @@ void GLWidget::paintEvent(QPaintEvent *event)
 
     QPainter painter;
     painter.begin(this);
+
+    painter.setBrush(QColor(150,150,150));
+    painter.drawRect(event->rect());
 
     // draw scene
     m_sim->drawSim(painter);
