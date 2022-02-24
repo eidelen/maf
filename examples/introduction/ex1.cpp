@@ -21,12 +21,15 @@
 **
 *****************************************************************************/
 
-#include <chrono>
 #include <iostream>
 
-#include "simulation.h"
+#include "environment.h"
 #include "agent.h"
 
+/**
+ * Simple example using an unrestricted environment
+ * and two accelerating agents.
+ */
 int main(int argc, char *argv[])
 {
     // create an empty environment
