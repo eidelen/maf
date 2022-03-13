@@ -271,6 +271,8 @@ protected:
     double m_enabled;
 };
 
+using AgentSP = std::shared_ptr<Agent>;
+using AgentWP = std::weak_ptr<Agent>;
 
 /**
  * @brief The AgentFactory class is the base class for further
