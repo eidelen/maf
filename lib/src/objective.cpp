@@ -44,3 +44,13 @@ std::vector<AgentWP> Objective::agents() const
 {
     return m_agents;
 }
+
+void Objective::react(double /*timeStep*/)
+{
+
+}
+
+bool Objective::isDone() const
+{
+    return true;
+}

@@ -51,6 +51,18 @@ public:
      */
     std::vector<AgentWP> agents() const;
 
+    /**
+     * React towards objective. Has to be overwritten.
+     * @param timeStep Time step in seconds.
+     */
+    virtual void react(double timeStep);
+
+    /**
+     * Objective is reached?
+     * @return True if reached. Otherwise false.
+     */
+    virtual bool isDone() const;
+
 protected:
 
     unsigned int m_id;
