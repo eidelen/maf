@@ -24,10 +24,9 @@
 #include "objective.h"
 
 
-Objective::Objective(unsigned int id, std::vector<AgentWP> agents)
+Objective::Objective(unsigned int id)
 {
     m_id = id;
-    m_agents = agents;
 }
 
 Objective::~Objective()
@@ -40,17 +39,12 @@ unsigned int Objective::id()
     return m_id;
 }
 
-std::vector<AgentWP> Objective::agents() const
-{
-    return m_agents;
-}
-
-void Objective::react(double /*timeStep*/)
+void Objective::react(double /*timeStep*/, AgentSP agent)
 {
 
 }
 
-bool Objective::isDone() const
+bool Objective::isDone(AgentSP agent) const
 {
     return true;
 }

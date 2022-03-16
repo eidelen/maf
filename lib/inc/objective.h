@@ -27,12 +27,16 @@
 #include <vector>
 #include "agent.h"
 
+/**
+ * @brief The Objective class represents an interface which
+ * allows to implement agent behaviours or actions.
+ */
 class Objective
 {
 
 public:
 
-    Objective(unsigned int id, std::vector<AgentWP> agents);
+    Objective(unsigned int id);
 
     /**
      * Destructor
@@ -46,27 +50,22 @@ public:
     unsigned int id();
 
     /**
-     * Get agents.
-     * @return Agents.
-     */
-    std::vector<AgentWP> agents() const;
-
-    /**
      * React towards objective. Has to be overwritten.
      * @param timeStep Time step in seconds.
+     * @param agent The agent to compute reaction.
      */
-    virtual void react(double timeStep);
+    virtual void react(double timeStep, AgentSP agent);
 
     /**
      * Objective is reached?
+     * @param agent The agent to check against objective.
      * @return True if reached. Otherwise false.
      */
-    virtual bool isDone() const;
+    virtual bool isDone(AgentSP agent) const;
 
 protected:
 
     unsigned int m_id;
-    std::vector<AgentWP> m_agents;
 };
 
 #endif // OBJECTIVE_H
