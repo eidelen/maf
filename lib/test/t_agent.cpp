@@ -355,3 +355,49 @@ TEST(Agent, TowardsTarget)
 
 }
 
+class MySimpleObjective: public Objective
+{
+public:
+    MySimpleObjective(unsigned int id, int prio, AgentWP agent) : Objective(id, prio, agent)
+    {
+    }
+
+    void react(double timeStep) override
+    {
+        // set the target position
+        m_agent.lock()->setPosition(Eigen::Vector2d(2.0, 4.0));
+    }
+
+    bool isDone() const override
+    {
+        return (m_agent.lock()->getPosition() - Eigen::Vector2d(2.0, 4.0)).isMuchSmallerThan(0.0001);
+    }
+};
+
+TEST(Agent, SimpleObjectiveTest)
+{
+    auto env = Environment::createEnvironment(3);
+
+    auto a = Agent::createAgent(3);
+    a->setEnvironment(env);
+
+    a->setPosition(Eigen::Vector2d(0.0, 0.0));
+
+    // add dummy objective (ready immediatly) and simple Objective
+    auto o0 = std::shared_ptr<Objective>(new Objective(1, 10, a)); // higher prio
+    auto o1 = std::shared_ptr<MySimpleObjective>(new MySimpleObjective(2, 11, a));
+
+    a->addObjective(o0);
+    a->addObjective(o1);
+
+    a->update(1.0);
+
+    // first objective did nothing. it was deleted and agent is still on same pos.
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
+
+    a->update(1.0);
+
+    // second object kicked in and moved the agent
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(2.0, 4.0)).isMuchSmallerThan(0.0001));
+
+}

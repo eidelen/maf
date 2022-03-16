@@ -22,10 +22,11 @@
 *****************************************************************************/
 
 #include "objective.h"
+#include "agent.h"
 
 
-Objective::Objective(unsigned int id, AgentWP agent) :
-    m_id(id), m_agent(agent)
+Objective::Objective(unsigned int id,  int priority, AgentWP agent) :
+    m_id(id), m_priority(priority), m_agent(agent)
 {
 
 }
@@ -35,9 +36,14 @@ Objective::~Objective()
 
 }
 
-unsigned int Objective::id()
+unsigned int Objective::id() const
 {
     return m_id;
+}
+
+int Objective::priority() const
+{
+    return m_priority;
 }
 
 void Objective::react(double /*timeStep*/)
@@ -48,4 +54,15 @@ void Objective::react(double /*timeStep*/)
 bool Objective::isDone() const
 {
     return true;
+}
+
+
+//************** ObjectivePriorityQueue ********************//
+
+void ObjectivePriorityQueue::popWhenDone()
+{
+    if(!empty() && top()->isDone() )
+    {
+        pop();
+    }
 }

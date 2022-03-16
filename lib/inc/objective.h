@@ -25,7 +25,10 @@
 #define OBJECTIVE_H
 
 #include <vector>
-#include "agent.h"
+#include <memory>
+#include <queue>
+
+class Agent;
 
 /**
  * @brief The Objective class represents an interface which
@@ -39,9 +42,10 @@ public:
     /**
      * Constructor for Objective.
      * @param id Objective id.
+     * @param priority Objectives priority, where low is highest priority.
      * @param agent To which agent objective belongs.
      */
-    Objective(unsigned int id, AgentWP agent);
+    Objective(unsigned int id, int priority, std::weak_ptr<Agent> agent);
 
     /**
      * Destructor
@@ -52,7 +56,13 @@ public:
      * Returns the id of the objective.
      * @return id
      */
-    unsigned int id();
+    unsigned int id() const;
+
+    /**
+     * Get the priority of the objective.
+     * @return
+     */
+    int priority() const;
 
     /**
      * React towards objective. Has to be overwritten.
@@ -66,10 +76,38 @@ public:
      */
     virtual bool isDone() const;
 
+
 protected:
 
     unsigned int m_id;
-    AgentWP m_agent;
+    int m_priority;
+    std::weak_ptr<Agent> m_agent;
+};
+
+
+using ObjectiveSP = std::shared_ptr<Objective>;
+
+
+/**
+ * Objective priority queue.
+ */
+class CompareObjectivePrios
+{
+public:
+    bool operator() (ObjectiveSP a, ObjectiveSP b)
+    {
+        return a->priority() > b->priority();
+    }
+};
+
+class ObjectivePriorityQueue: public std::priority_queue<ObjectiveSP, std::vector<ObjectiveSP>, CompareObjectivePrios>
+{
+public:
+
+    /**
+     * Pop top objective when done.
+     */
+    void popWhenDone();
 };
 
 #endif // OBJECTIVE_H

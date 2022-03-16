@@ -29,6 +29,7 @@
 #include <Eigen/Dense>
 
 #include "environment_interface.h"
+#include "objective.h"
 
 /**
  * @brief The AgentType holds agent type identifiers. With
@@ -251,6 +252,12 @@ public:
      */
     void setEnabled(bool enabled);
 
+    /**
+     * Add an objecitve.
+     * @param objective SP to objective.
+     */
+    void addObjective(ObjectiveSP objective);
+
 protected:
 
     void updateSubAgents(double time);
@@ -269,6 +276,8 @@ protected:
     double m_maxAccelreation;
 
     double m_enabled;
+
+    ObjectivePriorityQueue m_objectives;
 };
 
 using AgentSP = std::shared_ptr<Agent>;

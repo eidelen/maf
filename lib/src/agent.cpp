@@ -161,6 +161,12 @@ void Agent::update(double time)
 
     if(m_enabled)
     {
+        if(!m_objectives.empty())
+        {
+            m_objectives.top()->react(time);
+            m_objectives.popWhenDone();
+        }
+
         performMove(time);
     }
 }
@@ -192,6 +198,11 @@ bool Agent::getEnabled() const
 void Agent::setEnabled(bool enabled)
 {
     m_enabled = enabled;
+}
+
+void Agent::addObjective(ObjectiveSP objective)
+{
+    m_objectives.push(objective);
 }
 
 double Agent::accelreationLimit() const
