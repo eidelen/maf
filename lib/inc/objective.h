@@ -36,7 +36,12 @@ class Objective
 
 public:
 
-    Objective(unsigned int id);
+    /**
+     * Constructor for Objective.
+     * @param id Objective id.
+     * @param agent To which agent objective belongs.
+     */
+    Objective(unsigned int id, AgentWP agent);
 
     /**
      * Destructor
@@ -52,20 +57,19 @@ public:
     /**
      * React towards objective. Has to be overwritten.
      * @param timeStep Time step in seconds.
-     * @param agent The agent to compute reaction.
      */
-    virtual void react(double timeStep, AgentSP agent);
+    virtual void react(double timeStep);
 
     /**
      * Objective is reached?
-     * @param agent The agent to check against objective.
      * @return True if reached. Otherwise false.
      */
-    virtual bool isDone(AgentSP agent) const;
+    virtual bool isDone() const;
 
 protected:
 
     unsigned int m_id;
+    AgentWP m_agent;
 };
 
 #endif // OBJECTIVE_H

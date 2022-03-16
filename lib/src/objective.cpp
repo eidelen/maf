@@ -24,9 +24,10 @@
 #include "objective.h"
 
 
-Objective::Objective(unsigned int id)
+Objective::Objective(unsigned int id, AgentWP agent) :
+    m_id(id), m_agent(agent)
 {
-    m_id = id;
+
 }
 
 Objective::~Objective()
@@ -39,12 +40,12 @@ unsigned int Objective::id()
     return m_id;
 }
 
-void Objective::react(double /*timeStep*/, AgentSP agent)
+void Objective::react(double /*timeStep*/)
 {
 
 }
 
-bool Objective::isDone(AgentSP agent) const
+bool Objective::isDone() const
 {
     return true;
 }
