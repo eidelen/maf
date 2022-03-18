@@ -21,63 +21,44 @@
 **
 *****************************************************************************/
 
-#include "objective.h"
+#include "maintain_distance.h"
+#include "helpers.h"
 #include "agent.h"
 
-
-Objective::Objective(unsigned int id,  int priority, AgentWP agent) :
-    m_id(id), m_priority(priority), m_agent(agent)
+MaintainDistance::MaintainDistance(unsigned int id, int priority, std::weak_ptr<Agent> agent, double obsDistance)
+    : Objective(id, priority, agent), m_observationDistance(obsDistance)
 {
 
 }
 
-Objective::~Objective()
+MaintainDistance::~MaintainDistance()
 {
 
 }
 
-unsigned int Objective::id() const
+void MaintainDistance::react(double timeStep)
 {
-    return m_id;
-}
+    // React on neighbours. When no neigbhours, slow down.
 
-int Objective::priority() const
-{
-    return m_priority;
-}
+    std::shared_ptr<Agent> agent = m_agent.lock();
 
-void Objective::react(double /*timeStep*/)
-{
+    // Compute mean direction of agents in range
+    auto[compPossible, avgAgentDir] = MafHlp::computeAvgWeightedDirectionToOtherAgents(agent->getEnvironment().lock()->getAgentDistancesToAllOtherAgents(agent->id()), m_observationDistance);
 
-}
-
-bool Objective::isDone() const
-{
-    return true;
-}
-
-
-//************** ObjectivePriorityQueue ********************//
-
-void ObjectivePriorityQueue::popWhenDone()
-{
-    if(!empty() && top()->isDone() )
+    if(compPossible)
     {
-        pop();
+        agent->setMaxAccelerationInDirection(-avgAgentDir);
+    }
+    else
+    {
+        // stop within time resolution with max acceleration
+
+        agent->setAcceleration(MafHlp::computeSlowDown(agent->getVelocity(), agent->accelreationLimit(), timeStep));
     }
 }
 
-void ObjectivePriorityQueue::processAndPopWhenDone(double timeStep)
+bool MaintainDistance::isDone() const
 {
-    if( !empty() )
-    {
-        top()->react(timeStep);
-
-        if(top()->isDone() )
-        {
-            pop();
-        }
-    }
+    // never finishes
+    return false;
 }
-
-

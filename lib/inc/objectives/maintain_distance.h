@@ -22,62 +22,34 @@
 *****************************************************************************/
 
 #include "objective.h"
-#include "agent.h"
 
-
-Objective::Objective(unsigned int id,  int priority, AgentWP agent) :
-    m_id(id), m_priority(priority), m_agent(agent)
+/**
+ * Maintain distance to all neighbouring agents.
+ */
+class MaintainDistance: public Objective
 {
+public:
 
-}
+    /**
+     * Objective of maintaining distance to other agents.
+     * @param id Objective id.
+     * @param priority Objectives priority, where low is highest priority.
+     * @param agent To which agent objective belongs.
+     * @param obsDistance Outside this distance, the human does not care.
+     */
+    MaintainDistance(unsigned int id, int priority, std::weak_ptr<Agent> agent, double obsDistance);
 
-Objective::~Objective()
-{
-
-}
-
-unsigned int Objective::id() const
-{
-    return m_id;
-}
-
-int Objective::priority() const
-{
-    return m_priority;
-}
-
-void Objective::react(double /*timeStep*/)
-{
-
-}
-
-bool Objective::isDone() const
-{
-    return true;
-}
+    /**
+     * Destructor
+     */
+    virtual ~MaintainDistance();
 
 
-//************** ObjectivePriorityQueue ********************//
 
-void ObjectivePriorityQueue::popWhenDone()
-{
-    if(!empty() && top()->isDone() )
-    {
-        pop();
-    }
-}
+    // From Objective interface
+    void react(double timeStep);
+    bool isDone() const;
 
-void ObjectivePriorityQueue::processAndPopWhenDone(double timeStep)
-{
-    if( !empty() )
-    {
-        top()->react(timeStep);
-
-        if(top()->isDone() )
-        {
-            pop();
-        }
-    }
-}
-
-
+protected:
+    double m_observationDistance;
+};

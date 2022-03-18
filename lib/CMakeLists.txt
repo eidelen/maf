@@ -6,11 +6,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Eigen3 REQUIRED NO_MODULE)
 
-SET(MAF_INC_FOLDERS inc inc/agents)
+SET(MAF_INC_FOLDERS inc inc/agents inc/objectives)
 
 INCLUDE_DIRECTORIES(${MAF_INC_FOLDERS})
-FILE(GLOB  MAF_INCLUDES        inc/*.h inc/agents/*.h)
-FILE(GLOB  MAF_SOURCES         src/*.cpp src/agents/*.cpp)
+FILE(GLOB  MAF_INCLUDES        inc/*.h inc/agents/*.h inc/objectives/*.h)
+FILE(GLOB  MAF_SOURCES         src/*.cpp src/agents/*.cpp src/objectives/*.cpp)
 
 ADD_LIBRARY(maflib STATIC ${MAF_INCLUDES} ${MAF_SOURCES} )
 target_include_directories(maflib INTERFACE ${MAF_INC_FOLDERS} )

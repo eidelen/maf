@@ -108,6 +108,11 @@ public:
      * Pop top objective when done.
      */
     void popWhenDone();
+    
+    /**
+     * Process top objective and remove when done.
+     */
+    void processAndPopWhenDone(double timeStep);
 };
 
 #endif // OBJECTIVE_H

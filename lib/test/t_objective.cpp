@@ -2,6 +2,8 @@
 #include <gtest/gtest.h>
 #include "objective.h"
 #include "agent.h"
+#include "maintain_distance.h"
+#include "environment.h"
 
 TEST(Objective, ConstructDefault)
 {
@@ -100,3 +102,86 @@ TEST(Objective, PopWhenDone)
 
     ASSERT_EQ(q.size(), 0);
 }
+
+
+//************************* Maintain Distance ****************************//
+
+
+TEST(MaintainDist, SlowDown)
+{
+    auto env = Environment::createEnvironment(3);
+    auto a = Agent::createAgent(11);
+
+    a->setVelocityLimit(10.0);
+    a->setAccelreationLimit(4.0);
+    a->setEnvironment(env);
+
+    double obsDist = 3.0;
+    auto m = std::shared_ptr<MaintainDistance>(new MaintainDistance(1, 10, a, obsDist));
+
+    a->addObjective(m);
+
+    // MaintainDistance-agent with 10 m/s in x direction
+    a->setVelocity(Eigen::Vector2d(10.0, 0.0));
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(10.0, 0.0)).isMuchSmallerThan(0.0001));
+
+    // MaintainDistance-agent gets slower, as no other agent around
+    double lastSpeed = a->getVelocity().norm();
+
+    a->update(1.0);
+    ASSERT_GT(lastSpeed, a->getVelocity().norm());
+    lastSpeed = a->getVelocity().norm();
+
+    a->update(1.0);
+    ASSERT_GT(lastSpeed, a->getVelocity().norm());
+    lastSpeed = a->getVelocity().norm();
+
+    a->update(1.0);
+    ASSERT_GT(lastSpeed, a->getVelocity().norm());
+}
+
+TEST(MaintainDist, MoveAwayFromOtherHuman)
+{
+    auto env = Environment::createEnvironment(3);
+
+    auto a = Agent::createAgent(0);
+    a->setEnvironment(env);
+    a->setVelocityLimit(10.0);
+    a->setAccelreationLimit(10.0);
+
+    double obsDist = 10.0;
+    auto m = std::shared_ptr<MaintainDistance>(new MaintainDistance(1, 10, a, obsDist));
+    a->addObjective(m);
+
+    // dummy does not care
+    auto dummy = Agent::createAgent(1);
+    dummy->setEnvironment(env);
+
+    env->addAgent(dummy);
+    env->addAgent(a);
+
+
+    // Dont care about a second agent outside the obsDistance
+    a->setPosition(Eigen::Vector2d(0.0, 0.0));
+    dummy->setPosition(Eigen::Vector2d(-20.0, 0.0));
+    env->update(1.0);
+    ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
+    ASSERT_TRUE((dummy->getPosition() - Eigen::Vector2d(-20.0, 0.0)).isMuchSmallerThan(0.0001));
+
+    // a moves away from dummy in x-direction
+    dummy->setPosition(Eigen::Vector2d(-1.0, 0.0));
+    double lastDist = 1.0;
+
+    while(lastDist < 10.0) // After 10m h1 does not care and slows down.
+    {
+        env->update(0.1);
+
+        // dummy stays
+        ASSERT_TRUE((dummy->getPosition() - Eigen::Vector2d(-1.0, 0.0)).isMuchSmallerThan(0.0001));
+        double dist = (dummy->getPosition().transpose() - a->getPosition().transpose()).norm();
+
+        //ASSERT_GT(dist, lastDist);
+        lastDist = dist;
+    }
+}
+
