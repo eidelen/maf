@@ -102,29 +102,15 @@ void Human::update(double time)
 
     if( !m_disableReacting )
     {
-        react(time);
+        if(!m_objectives.empty())
+        {
+            m_objectives.top()->react(time);
+            m_objectives.popWhenDone();
+        }
     }
 
     computeStressLevel(m_environment.lock()->getAgentDistancesToAllOtherAgents(id()));
     performMove(time);
-}
-
-void Human::react(double time)
-{
-    // React on neighbours. When no neigbhours, slow down.
-
-    // Compute mean direction of agents in range
-    auto[compPossible, avgAgentDir] = MafHlp::computeAvgWeightedDirectionToOtherAgents(m_environment.lock()->getAgentDistancesToAllOtherAgents(id()), m_obsDistance);
-
-    if(compPossible)
-    {
-        setAcceleration(-(avgAgentDir) * m_maxAccelreation);
-    }
-    else
-    {
-        // deaccelerate over reaction time, as react() will be no called in between.
-        setAcceleration(MafHlp::computeSlowDown(m_velocity, m_maxAccelreation, std::max(time, m_reactionTime)));
-    }
 }
 
 void Human::performMove(double time)

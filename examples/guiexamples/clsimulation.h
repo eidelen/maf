@@ -31,10 +31,10 @@
 
 #include "environment.h"
 #include "human.h"
-#include "soldier.h"
 #include "simulation.h"
 #include "evaluation.h"
 #include "quadrant.h"
+#include "maintain_distance.h"
 
 /**
  * @brief Trivial environment with circle 10m radius and center at 0/0
@@ -85,14 +85,19 @@ public:
         std::mt19937 gen{rd()};
         std::normal_distribution<> reactionDist{0.4, 0.2};
 
+        double obsDistance = 1.5;
         size_t sideNbr = 30;
         unsigned int agentIdx = 0;
         for(size_t m = 0; m < sideNbr; m++)
         {
             for(size_t n = 0; n < sideNbr; n++)
             {
-                auto h1 = std::shared_ptr<Human>(new Human(agentIdx++, m_maxSpeed, m_maxAcceleration, 1.5, reactionDist(gen)));
+                auto h1 = std::shared_ptr<Human>(new Human(agentIdx++, m_maxSpeed, m_maxAcceleration, obsDistance, reactionDist(gen)));
                 h1->setPosition(Eigen::Vector2d(0.0, 0.0) + m * Eigen::Vector2d(0.001, 0.0) + n * Eigen::Vector2d(0.0, 0.001) );
+
+                auto behavior = std::shared_ptr<MaintainDistance>(new MaintainDistance(h1->id(), 1, h1, obsDistance));
+                h1->addObjective(behavior);
+
                 agents.push_back(h1);
             }
         }

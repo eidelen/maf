@@ -68,11 +68,6 @@ public:
      */
     double getStressLevel() const;
 
-    /**
-     * React. Specify behaviour in this function.
-     */
-    virtual void react(double time);
-
 
 private:
     void computeStressLevel(EnvironmentInterface::DistanceQueue otherAgents);
