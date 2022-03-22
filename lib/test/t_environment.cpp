@@ -310,3 +310,44 @@ TEST(Environment, DistanceMapDisabledAgents)
     ASSERT_EQ(qA3.size(), 0);
 }
 
+class CircEnv: public Environment
+{
+public:
+    CircEnv(unsigned int id): Environment(id) {}
+    virtual ~CircEnv() {}
+    virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override
+    {
+        // Circular environmet with radius 10. If move not possible, return
+        // previous position.
+        double radius = 10.0;
+        if(destination.norm() < radius)
+            return {true, destination};
+        else
+            return {false, origin};
+    }
+
+};
+
+TEST(Environment, DistanceToEnvBorder)
+{
+    auto e = std::shared_ptr<CircEnv>(new CircEnv(4));
+
+    // 5 m to border in x-dir
+    double d1 = e->distanceToEnvironmentBorder(Eigen::Vector2d(5.0, 0.0), Eigen::Vector2d(1.0, 0.0), 0.1, 30.0);
+    ASSERT_NEAR(d1, 5.0, 0.0001);
+
+    // 15 m in y-dir
+    double d2 = e->distanceToEnvironmentBorder(Eigen::Vector2d(5.0, 0.0), Eigen::Vector2d(-1.0, 0.0), 0.1, 30.0);
+    ASSERT_NEAR(d2, 15.0, 0.0001);
+
+    // out of reach
+    double d3 = e->distanceToEnvironmentBorder(Eigen::Vector2d(5.0, 0.0), Eigen::Vector2d(1.0, 0.0), 0.1, 2.0);
+    ASSERT_NEAR(d3, 2.0, 0.0001);
+    double d4 = e->distanceToEnvironmentBorder(Eigen::Vector2d(5.0, 0.0), Eigen::Vector2d(-1.0, 0.0), 0.1, 2.0);
+    ASSERT_NEAR(d4, 2.0, 0.0001);
+
+    // starting at invalid position
+    double d5 = e->distanceToEnvironmentBorder(Eigen::Vector2d(15.0, 0.0), Eigen::Vector2d(-1.0, 0.0), 0.1, 2.0);
+    ASSERT_NEAR(d5, 0.0, 0.0001);
+}
+

@@ -108,6 +108,18 @@ public:
      * @param logMsg log message.
      */
     virtual void log(const std::string& logMsg) = 0;
+
+    /**
+     * Compute the distance from a given position into a given direction
+     * till the border of the environment is reached.
+     * @param pos Position.
+     * @param dir Direction.
+     * @param stepSize Stepsize in which is checked if border rached.
+     * @param maxDist At max distance, computation stops.
+     * @return Distance to env border. If boarder cannot be rached within maxDist, maxDist is returned.
+     */
+    virtual double distanceToEnvironmentBorder(const Eigen::Vector2d& pos, const Eigen::Vector2d& dir,
+                                               double stepSize, double maxDist) = 0;
 };
 
 #endif // ENVIRONMENTINTERFACE_H

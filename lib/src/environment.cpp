@@ -150,3 +150,28 @@ void Environment::log(const std::string &logMsg)
         std::cout << logMsg << std::endl;
     }
 }
+
+double Environment::distanceToEnvironmentBorder(const Eigen::Vector2d &pos, const Eigen::Vector2d &dir, double stepSize, double maxDist)
+{
+    Eigen::Vector2d dirStep = dir.normalized() * stepSize;
+    Eigen::Vector2d currentPos = pos;
+    double dist = 0.0;
+    double lastValidDist = 0.0;
+
+    while (dist < maxDist)
+    {
+        auto[possible, newPos] = possibleMove(pos, currentPos);
+        if( possible )
+        {
+            currentPos = currentPos + dirStep;
+            lastValidDist = dist;
+            dist += stepSize;
+        }
+        else
+        {
+            return lastValidDist;
+        }
+    }
+
+    return maxDist;
+}

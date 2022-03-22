@@ -125,6 +125,7 @@ public: //Inherited from EnvironmentInterface
     virtual MessageQueue& getMessages(unsigned int receiverAgendId) override;
     virtual void sendMessage(std::shared_ptr<Message> aMessage) override;
     virtual void log(const std::string &logMsg) override;
+    double distanceToEnvironmentBorder(const Eigen::Vector2d &pos, const Eigen::Vector2d &dir, double stepSize, double maxDist) override;
 
 protected:
 
