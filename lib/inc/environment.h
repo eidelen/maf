@@ -126,6 +126,8 @@ public: //Inherited from EnvironmentInterface
     virtual void sendMessage(std::shared_ptr<Message> aMessage) override;
     virtual void log(const std::string &logMsg) override;
     double distanceToEnvironmentBorder(const Eigen::Vector2d &pos, const Eigen::Vector2d &dir, double stepSize, double maxDist) override;
+    std::vector<std::pair<double, Eigen::Vector2d> > circularSamplingDistancesToEnvironmentBorder(const Eigen::Vector2d &pos, unsigned int nbrOfSamples,
+                                                                                                  double stepSize, double maxDist) override;
 
 protected:
 
@@ -134,6 +136,7 @@ protected:
     DistanceMap m_agentDistanceMap;
     MessagesMap m_msgMap;
     bool m_enableLogMessages;
+
 };
 
 

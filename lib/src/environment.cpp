@@ -25,6 +25,9 @@
 
 #include "environment.h"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 std::shared_ptr<Environment> Environment::createEnvironment(unsigned int id)
 {
     return std::shared_ptr<Environment>(new Environment(id));
@@ -174,4 +177,26 @@ double Environment::distanceToEnvironmentBorder(const Eigen::Vector2d &pos, cons
     }
 
     return maxDist;
+}
+
+std::vector<std::pair<double, Eigen::Vector2d> > Environment::circularSamplingDistancesToEnvironmentBorder(const Eigen::Vector2d &pos, unsigned int nbrOfSamples,
+                                                                                                           double stepSize, double maxDist)
+{
+    std::vector<std::pair<double, Eigen::Vector2d>> sampledDistances;
+    sampledDistances.reserve(nbrOfSamples);
+
+    Eigen::Vector2d baseDirection(1.0, 0.0);
+    double angularStep = M_PI * 2.0 / nbrOfSamples;
+
+    for(unsigned int i = 0; i < nbrOfSamples; i++)
+    {
+        Eigen::Rotation2Dd t(angularStep * i);
+        Eigen::Vector2d direction = (t.toRotationMatrix() * baseDirection);
+
+        double dist = distanceToEnvironmentBorder(pos, direction, stepSize, maxDist);
+
+        sampledDistances.emplace_back(dist, direction);
+    }
+
+    return sampledDistances;
 }

@@ -351,3 +351,50 @@ TEST(Environment, DistanceToEnvBorder)
     ASSERT_NEAR(d5, 0.0, 0.0001);
 }
 
+TEST(Environment, DistancesToEnvBorders)
+{
+    auto e = std::shared_ptr<CircEnv>(new CircEnv(4));
+
+    // all distances 10 m
+    auto res1 = e->circularSamplingDistancesToEnvironmentBorder(Eigen::Vector2d(0.0, 0.0), 4, 0.1, 30);
+    ASSERT_EQ(res1.size(), 4);
+
+    ASSERT_NEAR(res1.at(0).first, 10.0, 0.0001);
+    ASSERT_TRUE((res1.at(0).second - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.01));
+
+    ASSERT_NEAR(res1.at(1).first, 10.0, 0.0001);
+    ASSERT_TRUE((res1.at(1).second - Eigen::Vector2d(0.0, 1.0)).isMuchSmallerThan(0.01));
+
+    ASSERT_NEAR(res1.at(2).first, 10.0, 0.0001);
+    ASSERT_TRUE((res1.at(2).second - Eigen::Vector2d(-1.0, 0.0)).isMuchSmallerThan(0.01));
+
+    ASSERT_NEAR(res1.at(3).first, 10.0, 0.0001);
+    ASSERT_TRUE((res1.at(3).second - Eigen::Vector2d(0.0, -1.0)).isMuchSmallerThan(0.01));
+
+    // put pos in x direction
+    auto res2 = e->circularSamplingDistancesToEnvironmentBorder(Eigen::Vector2d(5.0, 0.0), 8, 0.1, 30);
+    ASSERT_EQ(res2.size(), 8);
+
+    ASSERT_NEAR(res2.at(0).first, 5.0, 0.0001);
+    ASSERT_TRUE((res2.at(0).second - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.01));
+
+    ASSERT_NEAR(res2.at(4).first, 15.0, 0.0001);
+    ASSERT_TRUE((res2.at(4).second - Eigen::Vector2d(-1.0, 0.0)).isMuchSmallerThan(0.01));
+
+    // all out of reach
+    auto res3 = e->circularSamplingDistancesToEnvironmentBorder(Eigen::Vector2d(0.0, 0.0), 8, 0.1, 2.0);
+    ASSERT_EQ(res3.size(), 8);
+    ASSERT_TRUE(std::all_of(res3.begin(), res3.end(), [](auto sample){
+        return std::abs(sample.first - 2.0) < 0.0001;
+    }));
+
+    // invalid start position
+    auto res4 = e->circularSamplingDistancesToEnvironmentBorder(Eigen::Vector2d(100.0, 0.0), 8, 0.1, 2.0);
+    ASSERT_EQ(res4.size(), 8);
+    ASSERT_TRUE(std::all_of(res4.begin(), res4.end(), [](auto sample){
+        return sample.first < 0.0001;
+    }));
+}
+
+
+

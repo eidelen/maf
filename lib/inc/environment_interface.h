@@ -120,6 +120,17 @@ public:
      */
     virtual double distanceToEnvironmentBorder(const Eigen::Vector2d& pos, const Eigen::Vector2d& dir,
                                                double stepSize, double maxDist) = 0;
+
+    /**
+     * Circular sampling of distances to the environment borders around the given position.
+     * @param pos Position.
+     * @param nbrOfSamples Number of distance samples.
+     * @param stepSize Stepsize in which is checked if border rached.
+     * @param maxDist At max distance, computation stops.
+     * @return A vector of distances and corresponding directions.
+     */
+    virtual std::vector<std::pair<double, Eigen::Vector2d>> circularSamplingDistancesToEnvironmentBorder(const Eigen::Vector2d& pos,
+                                                              unsigned int nbrOfSamples, double stepSize, double maxDist) = 0;
 };
 
 #endif // ENVIRONMENTINTERFACE_H
