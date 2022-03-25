@@ -150,7 +150,19 @@ public:
         return {false, EnvironmentInterface::Distance()};
     }
 
-
+    /**
+     * Return the pair with largest double.
+     * @param vec Input vector.
+     * @return max pair
+     */
+    static std::pair<double, Eigen::Vector2d> getMax(const std::vector<std::pair<double, Eigen::Vector2d>>& vec)
+    {
+        auto elemWithMaxDouble = std::max_element(vec.begin(), vec.end(),
+                    [] (const std::pair<double, Eigen::Vector2d>& a, const std::pair<double, Eigen::Vector2d>& b) {
+                    return a.first < b.first;
+            });
+        return *elemWithMaxDouble;
+    }
 };
 
 #endif // HELPERS_H

@@ -87,3 +87,14 @@ TEST(Helpers, AdjustVector)
     ASSERT_TRUE((MafHlp::adjustVectorScale(Eigen::Vector2d(-2.0, 0.0), 5.0) -
                  Eigen::Vector2d(-5.0, 0.0)).isMuchSmallerThan(0.0001));
 }
+
+TEST(Helpers, GetMax)
+{
+        std::vector<std::pair<double, Eigen::Vector2d>> vec = {{3.0, Eigen::Vector2d(1.0, 0.0)}, {6.0, Eigen::Vector2d(1.0, 1.0)},
+                                                              {2.0, Eigen::Vector2d(4.0, 0.0)}};
+
+        auto[maxVal, maxVec] = MafHlp::getMax(vec);
+
+        ASSERT_NEAR(maxVal, 6.0, 0.0001);
+        ASSERT_TRUE((Eigen::Vector2d(1.0, 1.0) - maxVec).isMuchSmallerThan(0.0001));
+}

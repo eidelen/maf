@@ -127,35 +127,33 @@ void Human::performMove(double time)
         return;
     }
 
-    // initial move did not work, try something similiar
+    // initial move did not work - likely collision with environment
+    m_stressLevel = 1.0;
 
-    // randomly generating angle deviation around wanted direction
-    std::random_device rd{};
-    std::mt19937 gen{rd()};
-    std::normal_distribution<> d{0.0, 3.14};
+    // move away from environment borders -> sample distances and take best
+    std::vector<std::pair<double, Eigen::Vector2d>> envBorderDistances = env->circularSamplingDistancesToEnvironmentBorder(getPosition(), 8, 0.2, m_obsDistance);
 
-    Eigen::Vector2d wantedAcceleration = getAcceleration();
-    for(int k = 0; k < 10; k++)
+    // compute weighted avg
+    Eigen::Vector2d bestDirection(0.0, 0.0);
+    for( std::pair<double, Eigen::Vector2d> sample : envBorderDistances)
     {
-        Eigen::Rotation2D<double> rotMat( d(gen) );
-        Eigen::Vector2d actualAcceleration = rotMat * wantedAcceleration;
+        bestDirection = bestDirection + (sample.first * sample.second);
+    }
 
-        setAcceleration(actualAcceleration);
-        auto[p, v] = computeMotion(time);
-        auto[possible, finalPos] = env->possibleMove(getPosition(), p);
+    bestDirection = bestDirection / envBorderDistances.size();
 
-        if(possible)
-        {
-            // found possible random move
-            setPosition(finalPos);
-            setVelocity(v);
-            return;
-        }
+    setMaxAccelerationInDirection(bestDirection);
+    auto[p, v] = computeMotion(time);
+    auto[possible, finalPos] = env->possibleMove(getPosition(), p);
+    if(possible)
+    {
+        setPosition(finalPos);
+        setVelocity(v);
+        return;
     }
 
     // No move found within sampling range
     setVelocity(Eigen::Vector2d(0.0, 0.0));
     setAcceleration(Eigen::Vector2d(0.0, 0.0));
-    m_stressLevel = 1.0;
 }
 
