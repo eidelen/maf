@@ -127,32 +127,8 @@ void Human::performMove(double time)
         return;
     }
 
-    // initial move did not work - likely collision with environment
+    // initial move did not work - collision with environment
     m_stressLevel = 1.0;
-
-    // move away from environment borders -> sample distances and take best
-    std::vector<std::pair<double, Eigen::Vector2d>> envBorderDistances = env->circularSamplingDistancesToEnvironmentBorder(getPosition(), 8, 0.2, m_obsDistance);
-
-    // compute weighted avg
-    Eigen::Vector2d bestDirection(0.0, 0.0);
-    for( std::pair<double, Eigen::Vector2d> sample : envBorderDistances)
-    {
-        bestDirection = bestDirection + (sample.first * sample.second);
-    }
-
-    bestDirection = bestDirection / envBorderDistances.size();
-
-    setMaxAccelerationInDirection(bestDirection);
-    auto[p, v] = computeMotion(time);
-    auto[possible, finalPos] = env->possibleMove(getPosition(), p);
-    if(possible)
-    {
-        setPosition(finalPos);
-        setVelocity(v);
-        return;
-    }
-
-    // No move found within sampling range
     setVelocity(Eigen::Vector2d(0.0, 0.0));
     setAcceleration(Eigen::Vector2d(0.0, 0.0));
 }

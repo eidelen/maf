@@ -38,39 +38,35 @@ MaintainDistance::~MaintainDistance()
 
 void MaintainDistance::react(double timeStep)
 {
-    // React on neighbours. When no neigbhours, slow down.
+    // React on neighbours and environment borders. When no neigbhours, slow down.
 
     std::shared_ptr<Agent> agent = m_agent.lock();
 
     // Compute mean direction of agents in range
     auto[compPossible, avgAgentDir] = MafHlp::computeAvgWeightedDirectionToOtherAgents(agent->getEnvironment().lock()->getAgentDistancesToAllOtherAgents(agent->id()), m_observationDistance);
 
-  /*
-    // Compute collision with environment
-    std::vector<std::pair<double, Eigen::Vector2d>> envBorderDistances = agent->getEnvironment().lock()->circularSamplingDistancesToEnvironmentBorder(agent->getPosition(), 8, 0.2, m_observationDistance);
-
-    // compute weighted avg
-    Eigen::Vector2d bestDirectionAwayFromEnvBorder(0.0, 0.0);
-    for( std::pair<double, Eigen::Vector2d> sample : envBorderDistances)
-    {
-        bestDirectionAwayFromEnvBorder = bestDirectionAwayFromEnvBorder + (sample.first * sample.second);
-    }
-
-    setMaxAccelerationInDirection(bestDirection);
-    auto[p, v] = computeMotion(time);
-    auto[possible, finalPos] = env->possibleMove(getPosition(), p);
-    if(possible)
-    {
-        setPosition(finalPos);
-        setVelocity(v);
-        return;
-    }*/
-
-
 
     if(compPossible)
     {
-        agent->setMaxAccelerationInDirection(-avgAgentDir);
+        // there were neighbours; also consider environment borders
+
+        // compute possible collision with environment
+        std::vector<std::pair<double, Eigen::Vector2d>> envBorderDistances = agent->getEnvironment().lock()->circularSamplingDistancesToEnvironmentBorder(agent->getPosition(),
+                                                                                                                                                          8, 0.2, m_observationDistance);
+        // direction as further away from border has more impact
+        Eigen::Vector2d bestDirectionAwayFromEnvBorder(0.0, 0.0);
+        for( std::pair<double, Eigen::Vector2d> sample : envBorderDistances)
+        {
+            bestDirectionAwayFromEnvBorder = bestDirectionAwayFromEnvBorder + (sample.first * sample.second);
+        }
+
+        double vecLengthAway = bestDirectionAwayFromEnvBorder.norm();
+        if(vecLengthAway > 0.0001)
+        {
+            bestDirectionAwayFromEnvBorder = bestDirectionAwayFromEnvBorder / vecLengthAway;
+        }
+
+        agent->setMaxAccelerationInDirection((-avgAgentDir) + bestDirectionAwayFromEnvBorder);
     }
     else
     {
