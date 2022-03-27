@@ -223,22 +223,25 @@ void Agent::processMessages()
     while (!messages.empty())
     {
         auto m = messages.front();
-
-        switch(m->subject())
-        {
-            case Message::Enable:
-                setEnabled(true);
-                break;
-
-            case Message::Disable:
-                setEnabled(false);
-                break;
-
-            default:
-                break;
-        }
-
+        processMessage(m);
         messages.pop();
+    }
+}
+
+void Agent::processMessage(std::shared_ptr<Message> msg)
+{
+    switch(msg->subject())
+    {
+        case Message::Enable:
+            setEnabled(true);
+            break;
+
+        case Message::Disable:
+            setEnabled(false);
+            break;
+
+        default:
+            break;
     }
 }
 

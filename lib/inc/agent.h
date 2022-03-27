@@ -262,6 +262,11 @@ protected:
 
     void updateSubAgents(double time);
 
+    /**
+     * Overwrite in derived classes, but if message unknown, ecalate it to parent class.
+     */
+    virtual void processMessage(std::shared_ptr<Message> msg);
+
     unsigned int m_id;
     double m_radius;
     Eigen::Vector2d m_position;

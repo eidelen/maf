@@ -401,3 +401,44 @@ TEST(Agent, SimpleObjectiveTest)
     ASSERT_TRUE((a->getPosition() - Eigen::Vector2d(2.0, 4.0)).isMuchSmallerThan(0.0001));
 
 }
+
+class MyPolyAgent: public Agent{
+public:
+    MyPolyAgent(unsigned int id): Agent(id)
+    {}
+
+    ~MyPolyAgent(){}
+
+    bool m_handeledMessage = false;
+
+    void processMessage(std::shared_ptr<Message> msg) override
+    {
+        m_handeledMessage = true;
+        Agent::processMessage(msg);
+    }
+};
+
+TEST(Agent, MessageHandlerPolymorphism)
+{
+    auto env = Environment::createEnvironment(3);
+
+    std::shared_ptr<MyPolyAgent> a(new MyPolyAgent(2));
+    a->setEnvironment(env);
+
+    env->addAgent(a);
+
+    env->update(1.0);
+
+    ASSERT_FALSE(a->m_handeledMessage);
+    ASSERT_TRUE(a->getEnabled());
+
+    std::shared_ptr<Message> m(new Message(0, 2, Message::Disable));
+    env->sendMessage(m);
+
+    env->update(1.0);
+
+    // message went through base class and was escalated up, where disable could be interpreted
+    ASSERT_TRUE(a->m_handeledMessage);
+    ASSERT_FALSE(a->getEnabled());
+}
+

@@ -41,7 +41,8 @@ public:
     {
         Information,
         Disable,
-        Enable
+        Enable,
+        Hit
     };
 
     Message(unsigned int senderId, unsigned int receiverId, Subject subject, const std::string& textParam = "",
