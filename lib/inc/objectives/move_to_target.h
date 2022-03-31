@@ -21,6 +21,8 @@
 **
 *****************************************************************************/
 
+#include <Eigen/Dense>
+
 #include "objective.h"
 
 /**
@@ -32,24 +34,25 @@ class MoveToTarget: public Objective
 public:
 
     /**
-     * Objective of maintaining distance to other agents.
+     * Objective of moving to a given target position.
      * @param id Objective id.
      * @param priority Objectives priority, where low is highest priority.
      * @param agent To which agent objective belongs.
-     * @param obsDistance Outside this distance, the human does not care.
+     * @param targetPos Target position to which to approach.
+     * @param accuracy How close agent has to be to given target position in order to complete mission. In meter.
      */
-    MoveToTarget(unsigned int id, int priority, std::weak_ptr<Agent> agent, double obsDistance);
+    MoveToTarget(unsigned int id, int priority, std::weak_ptr<Agent> agent, const Eigen::Vector2d& targetPos, double accuarcy);
 
     /**
      * Destructor
      */
     virtual ~MoveToTarget();
 
-
-
     // From Objective interface
     void react(double timeStep);
     bool isDone() const;
 
-
+protected:
+    Eigen::Vector2d m_targetPosition;
+    double m_accuracy;
 };

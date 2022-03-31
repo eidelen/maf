@@ -162,6 +162,13 @@ public:
     virtual void setMovingTowardsTarget(const Eigen::Vector2d& target, double velocity);
 
     /**
+     * Accelerate towards target.
+     * @param target Target postion.
+     * @param acceleration Acceleration.
+     */
+    virtual void setAccelerateTowardsTarget(const Eigen::Vector2d& target, double acceleration);
+
+    /**
      * Set the agent's environment.
      * @param env Environment.
      */

@@ -442,3 +442,34 @@ TEST(Agent, MessageHandlerPolymorphism)
     ASSERT_FALSE(a->getEnabled());
 }
 
+TEST(Agent, AccelerationTowards)
+{
+    auto env = Environment::createEnvironment(3);
+
+    auto a = Agent::createAgent(6);
+    a->setEnvironment(env);
+    a->setAccelreationLimit(2.0);
+
+    a->setVelocity(Eigen::Vector2d(0.0, 0.0));
+
+    a->setAccelerateTowardsTarget(Eigen::Vector2d(10.0, 0.0), 1.0);
+
+    // no speed after 0s
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
+
+    // 1 m/s after 1s
+    a->update(1.0);
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(1.0, 0.0)).isMuchSmallerThan(0.0001));
+
+    a->setAcceleration(Eigen::Vector2d(0.0, 0.0));
+    a->setVelocity(Eigen::Vector2d(0.0, 0.0));
+    a->setPosition(Eigen::Vector2d(0.0, 0.0));
+
+    // limit acceleration at max acceleration
+    a->setAccelerateTowardsTarget(Eigen::Vector2d(10.0, 0.0), 5.0);
+
+    // acceleration limit at 2
+    a->update(1);
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(2.0, 0.0)).isMuchSmallerThan(0.0001));
+}
+

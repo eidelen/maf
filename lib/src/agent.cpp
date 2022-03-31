@@ -135,6 +135,12 @@ void Agent::setMovingTowardsTarget(const Eigen::Vector2d &target, double velocit
     m_velocity = MafHlp::adjustVectorScale(diffVect, std::min(m_maxSpeed, velocity));
 }
 
+void Agent::setAccelerateTowardsTarget(const Eigen::Vector2d& target, double acceleration)
+{
+    Eigen::Vector2d diffVect = target - m_position;
+    m_acceleration = MafHlp::adjustVectorScale(diffVect, std::min(m_maxAccelreation, acceleration));
+}
+
 void Agent::setEnvironment(std::shared_ptr<EnvironmentInterface> env)
 {
     m_environment = env;
