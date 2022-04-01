@@ -3,6 +3,8 @@
 #include "objective.h"
 #include "agent.h"
 #include "maintain_distance.h"
+#include "move_to_target.h"
+#include "slowdown.h"
 #include "environment.h"
 
 TEST(Objective, ConstructDefault)
@@ -185,3 +187,88 @@ TEST(MaintainDist, MoveAwayFromOtherHuman)
     }
 }
 
+
+//************************* Move to target ****************************//
+
+TEST(MoveToTarget, Basic)
+{
+    auto env = Environment::createEnvironment(3);
+    auto a = Agent::createAgent(11);
+
+    a->setVelocityLimit(1.0);
+    a->setAccelreationLimit(1.0);
+    a->setPosition(Eigen::Vector2d(0.0, 0.0));
+    a->setEnvironment(env);
+
+    auto m = std::shared_ptr<MoveToTarget>(new MoveToTarget(1, 10, a, Eigen::Vector2d(0.0, 10.0), 0.2));
+
+    a->addObjective(m);
+
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.0001));
+
+    // full speed after 1 second towards target
+    a->update(1.0);
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(0.0, 1.0)).isMuchSmallerThan(0.0001));
+    ASSERT_FALSE(m->isDone());
+
+    // till done
+    while( !m->isDone() )
+    {
+        a->update(0.1);
+    }
+
+    // agent close target pos
+    ASSERT_LE((a->getPosition() - Eigen::Vector2d(0.0, 10.0)).norm(), 0.2001);
+
+    // agent continous with same speed after reach goal
+    a->update(2.0);
+    ASSERT_GE((a->getPosition() - Eigen::Vector2d(0.0, 10.0)).norm(), 1.0);
+
+    a->update(1.0);
+    ASSERT_GE((a->getPosition() - Eigen::Vector2d(0.0, 10.0)).norm(), 2.0);
+
+    a->update(1.0);
+    ASSERT_GE((a->getPosition() - Eigen::Vector2d(0.0, 10.0)).norm(), 3.0);
+}
+
+//************************* Move to target and stop ****************************//
+
+TEST(Stop, MoveAndStop)
+{
+    auto env = Environment::createEnvironment(3);
+    auto a = Agent::createAgent(11);
+
+    a->setVelocityLimit(1.0);
+    a->setAccelreationLimit(1.0);
+    a->setPosition(Eigen::Vector2d(0.0, 0.0));
+    a->setEnvironment(env);
+
+    auto m = std::shared_ptr<MoveToTarget>(new MoveToTarget(1, 10, a, Eigen::Vector2d(0.0, 10.0), 0.2));
+    auto s = std::shared_ptr<SlowDown>(new SlowDown(1, 11, a));
+
+    a->addObjective(m);
+    a->addObjective(s);
+
+    ASSERT_FALSE(m->isDone());
+
+    // first move to target
+    while( !m->isDone() )
+    {
+        a->update(0.01);
+    }
+
+    // now slow down happens
+    a->update(0.01); // pops move objective
+    a->update(0.01);
+
+    // max deacceleration
+    ASSERT_TRUE((a->getAcceleration() - Eigen::Vector2d(0.0, -1.0)).isMuchSmallerThan(0.0001));
+
+    while( !s->isDone() )
+    {
+        a->update(0.01);
+    }
+
+    // no speed when finished
+    ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(0.0, 0.0)).isMuchSmallerThan(0.001));
+}
