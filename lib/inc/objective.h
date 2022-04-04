@@ -29,6 +29,7 @@
 #include <queue>
 
 class Agent;
+class Message;
 
 /**
  * @brief The Objective class represents an interface which
@@ -76,12 +77,45 @@ public:
      */
     virtual bool isDone() const;
 
+    /**
+     * This message is sent when the objective gets active.
+     * @param startMsg Start message.
+     */
+    void setStartMessage(std::shared_ptr<Message> startMsg);
+
+    /**
+     * This message is sent when the objective is done.
+     * @param finishMsg Finishing message.
+     */
+    void setFinishMessage(std::shared_ptr<Message> finishMsg);
+
+    /**
+     * Perform an action when the objective starts.
+     * Note: Default implementation sends starting message.
+     */
+    virtual void startingAction();
+
+    /**
+     * Perform an action when the objective ends (isDone = true).
+     * Note: Default implementation sends finishing message.
+     */
+    virtual void finishingAction();
+
+    /**
+     * Process the objective
+     * @param timeStep Time step in seconds.
+     */
+    void process(double timeStep);
+
 
 protected:
 
     unsigned int m_id;
     int m_priority;
     std::weak_ptr<Agent> m_agent;
+    std::shared_ptr<Message> m_startMessage;
+    std::shared_ptr<Message> m_finishMessage;
+    bool m_isStart;
 };
 
 

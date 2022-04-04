@@ -169,7 +169,7 @@ void Agent::update(double time)
     {
         if(!m_objectives.empty())
         {
-            m_objectives.top()->react(time);
+            m_objectives.top()->process(time);
             m_objectives.popWhenDone();
         }
 
