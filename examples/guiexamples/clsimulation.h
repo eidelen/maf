@@ -51,7 +51,7 @@ public:
                    Quadrant::createQuadrant(79, Eigen::Vector2d(9.5, -12.0), Eigen::Vector2d(32.0, 17.0)),
                     Quadrant::createQuadrant(80, Eigen::Vector2d(-10.0, 8.0), Eigen::Vector2d(32.0, 17.0))};
 
-        if( std::any_of(l.begin(), l.end(), [destination](auto thisQuadrant){ return thisQuadrant->isInQuadrant(destination);}) )
+        if( std::any_of(l.begin(), l.end(), [destination](auto thisQuadrant){ return thisQuadrant->isInShape(destination);}) )
             return {true, destination};
         else
             return {false, origin};

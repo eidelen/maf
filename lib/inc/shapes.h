@@ -27,6 +27,12 @@
 #include <memory>
 #include <Eigen/Dense>
 
+enum ShapeType
+{
+    CircleShape,
+    PolygonShape
+};
+
 /**
  * @brief The Shape class is an interface for all kind of 2d shapes used within an environment.
  */
@@ -50,8 +56,27 @@ public:
      */
     unsigned int id() const;
 
-private:
+    /**
+     * @brief Is a given coordinate within the shape area.
+     * @param coordinate A coordinate.
+     * @return True if within shape, otherwise false.
+     */
+    virtual bool isInShape(const Eigen::Vector2d& coordinate) = 0;
+
+    /**
+     * Get center of area
+     */
+    virtual Eigen::Vector2d center() const;
+
+    /**
+     * Return type of Shape.
+     * @return Shape type.
+     */
+    virtual ShapeType type() const = 0;
+
+protected:
     unsigned int m_id;
+    Eigen::Vector2d m_center;
 };
 
 /**
@@ -96,22 +121,13 @@ public:
      */
     Eigen::Vector2d lowerRight() const;
 
-    /**
-     * Get center of area
-     */
-    Eigen::Vector2d center() const;
-
-    /**
-     * @brief Is a given coordinate within the area.
-     * @param coordinate A coordinate.
-     * @return True if within quadrant, otherwise false.
-     */
-    bool isInQuadrant(const Eigen::Vector2d& coordinate);
+    // inherit from Shape
+    bool isInShape(const Eigen::Vector2d &coordinate) override;
+    ShapeType type() const override;
 
 private:
     Eigen::Vector2d m_upperLeft;
     Eigen::Vector2d m_lowerRight;
-    Eigen::Vector2d m_center;
 
     // components used for fast comparisson
     double m_ux; double m_uy; double m_lx; double m_ly;

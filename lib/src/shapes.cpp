@@ -39,6 +39,11 @@ unsigned int Shape::id() const
     return m_id;
 }
 
+Eigen::Vector2d Shape::center() const
+{
+    return m_center;
+}
+
 //*******************************************************//
 
 
@@ -72,14 +77,14 @@ Eigen::Vector2d Quadrant::lowerRight() const
     return m_lowerRight;
 }
 
-Eigen::Vector2d Quadrant::center() const
-{
-    return m_center;
-}
-
-bool Quadrant::isInQuadrant(const Eigen::Vector2d &coordinate)
+bool Quadrant::isInShape(const Eigen::Vector2d &coordinate)
 {
     double cx = coordinate.x();
     double cy = coordinate.y();
     return !((cx < m_ux || cx > m_lx) || (cy < m_uy || cy > m_ly));
+}
+
+ShapeType Quadrant::type() const
+{
+    return PolygonShape;
 }
