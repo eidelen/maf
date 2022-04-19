@@ -105,6 +105,52 @@ TEST(Objective, PopWhenDone)
     ASSERT_EQ(q.size(), 0);
 }
 
+TEST(Objective, StartEndMessage)
+{
+    auto e = Environment::createEnvironment(9);
+    auto a1 = Agent::createAgent(10);
+    auto a2 = Agent::createAgent(20);
+    a1->setEnvironment(e);
+    a2->setEnvironment(e);
+    e->addAgent(a1);
+    e->addAgent(a2);
+
+    // use standard agents. They support processing enable and disable messages.
+
+    a1->setVelocityLimit(1.0);
+    a1->setAccelreationLimit(1.0);
+    a1->setPosition(Eigen::Vector2d(0.0, 0.0));
+
+    // a1 disables a2 at start and enables at finishing.
+    auto objec = std::shared_ptr<MoveToTarget>(new MoveToTarget(1, 10, a1, Eigen::Vector2d(0.0, 10.0), 0.2));
+    objec->setStartMessage( std::shared_ptr<Message>(new Message(a1->id(), a2->id(), Message::Disable)));
+    objec->setFinishMessage( std::shared_ptr<Message>(new Message(a1->id(), a2->id(), Message::Enable)));
+    a1->addObjective(objec);
+
+    // both enabled at beginning
+    ASSERT_TRUE(a1->getEnabled());
+    ASSERT_TRUE(a2->getEnabled());
+
+    e->update(0.1);
+
+    // after sending start message, a2 disabled
+    ASSERT_TRUE(a1->getEnabled());
+    ASSERT_FALSE(a2->getEnabled());
+
+    while(!objec->isDone())
+    {
+        e->update(0.1);
+    }
+
+    // when done, finish message enables a2
+
+    // to update agents
+    e->update(0.1);
+
+    ASSERT_TRUE(a1->getEnabled());
+    ASSERT_TRUE(a2->getEnabled());
+}
+
 
 //************************* Maintain Distance ****************************//
 

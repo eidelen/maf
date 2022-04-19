@@ -21,15 +21,39 @@
 **
 *****************************************************************************/
 
-#include "quadrant.h"
+#include "shapes.h"
+
+
+Shape::Shape(unsigned int id) : m_id(id)
+{
+
+}
+
+Shape::~Shape()
+{
+
+}
+
+unsigned int Shape::id() const
+{
+    return m_id;
+}
+
+Eigen::Vector2d Shape::center() const
+{
+    return m_center;
+}
+
+//*******************************************************//
+
 
 std::shared_ptr<Quadrant> Quadrant::createQuadrant(unsigned int id, const Eigen::Vector2d &upperLeft, const Eigen::Vector2d &lowerRight)
 {
     return std::shared_ptr<Quadrant>(new Quadrant(id, upperLeft, lowerRight));
 }
 
-Quadrant::Quadrant(unsigned int id, const Eigen::Vector2d &upperLeft, const Eigen::Vector2d &lowerRight) :
-    m_id(id), m_upperLeft(upperLeft), m_lowerRight(lowerRight)
+Quadrant::Quadrant(unsigned int id, const Eigen::Vector2d &upperLeft, const Eigen::Vector2d &lowerRight) : Shape(id),
+  m_upperLeft(upperLeft), m_lowerRight(lowerRight)
 {
     m_center = (m_upperLeft + m_lowerRight) / 2.0;
     m_ux = m_upperLeft.x();
@@ -43,11 +67,6 @@ Quadrant::~Quadrant()
 
 }
 
-unsigned int Quadrant::id() const
-{
-    return m_id;
-}
-
 Eigen::Vector2d Quadrant::upperLeft() const
 {
     return m_upperLeft;
@@ -58,14 +77,14 @@ Eigen::Vector2d Quadrant::lowerRight() const
     return m_lowerRight;
 }
 
-Eigen::Vector2d Quadrant::center() const
-{
-    return m_center;
-}
-
-bool Quadrant::isInQuadrant(const Eigen::Vector2d &coordinate)
+bool Quadrant::isInShape(const Eigen::Vector2d &coordinate)
 {
     double cx = coordinate.x();
     double cy = coordinate.y();
     return !((cx < m_ux || cx > m_lx) || (cy < m_uy || cy > m_ly));
+}
+
+ShapeType Quadrant::type() const
+{
+    return PolygonShape;
 }

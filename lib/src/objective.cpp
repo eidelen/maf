@@ -23,10 +23,12 @@
 
 #include "objective.h"
 #include "agent.h"
+#include "message.h"
+#include "environment.h"
 
 
 Objective::Objective(unsigned int id,  int priority, AgentWP agent) :
-    m_id(id), m_priority(priority), m_agent(agent)
+    m_id(id), m_priority(priority), m_agent(agent), m_isStart(true)
 {
 
 }
@@ -46,6 +48,17 @@ int Objective::priority() const
     return m_priority;
 }
 
+void Objective::process(double timeStep)
+{
+    if(m_isStart)
+    {
+        startingAction();
+        m_isStart = false;
+    }
+
+    react(timeStep);
+}
+
 void Objective::react(double /*timeStep*/)
 {
 
@@ -56,6 +69,31 @@ bool Objective::isDone() const
     return true;
 }
 
+void Objective::setStartMessage(std::shared_ptr<Message> startMsg)
+{
+    m_startMessage = startMsg;
+}
+
+void Objective::setFinishMessage(std::shared_ptr<Message> finishMsg)
+{
+    m_finishMessage = finishMsg;
+}
+
+void Objective::startingAction()
+{
+    if(m_startMessage)
+    {
+        m_agent.lock()->getEnvironment().lock()->sendMessage(m_startMessage);
+    }
+}
+
+void Objective::finishingAction()
+{
+    if(m_finishMessage)
+    {
+        m_agent.lock()->getEnvironment().lock()->sendMessage(m_finishMessage);
+    }
+}
 
 //************** ObjectivePriorityQueue ********************//
 
@@ -63,6 +101,9 @@ void ObjectivePriorityQueue::popWhenDone()
 {
     if(!empty() && top()->isDone() )
     {
+        // also handle pre and post objective tasks
+
+        top()->finishingAction();
         pop();
     }
 }
@@ -75,6 +116,8 @@ void ObjectivePriorityQueue::processAndPopWhenDone(double timeStep)
 
         if(top()->isDone() )
         {
+            // also handle pre and post objective tasks
+            top()->finishingAction();
             pop();
         }
     }
