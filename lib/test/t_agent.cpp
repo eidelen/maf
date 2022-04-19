@@ -473,3 +473,23 @@ TEST(Agent, AccelerationTowards)
     ASSERT_TRUE((a->getVelocity() - Eigen::Vector2d(2.0, 0.0)).isMuchSmallerThan(0.0001));
 }
 
+TEST(Agent, ManageObjectives)
+{
+    auto a = Agent::createAgent(6);
+
+    auto o0 = std::shared_ptr<Objective>(new Objective(1, 10, a)); // higher prio
+    auto o1 = std::shared_ptr<MySimpleObjective>(new MySimpleObjective(2, 11, a));
+
+    ASSERT_TRUE(a->getActiveObjective().get() == nullptr);
+
+    a->addObjective(o0);
+    a->addObjective(o1);
+
+    ASSERT_FALSE(a->getActiveObjective().get() == nullptr);
+
+    a->resetObjectives();
+
+    ASSERT_TRUE(a->getActiveObjective().get() == nullptr);
+}
+
+

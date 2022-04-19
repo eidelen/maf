@@ -80,4 +80,10 @@ void ObjectivePriorityQueue::processAndPopWhenDone(double timeStep)
     }
 }
 
+void ObjectivePriorityQueue::deleteAllObjectives()
+{
+    while( !empty() )
+        pop();
+}
+
 

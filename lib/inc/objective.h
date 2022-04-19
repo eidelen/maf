@@ -113,6 +113,11 @@ public:
      * Process top objective and remove when done.
      */
     void processAndPopWhenDone(double timeStep);
+
+    /**
+     * Delete all elements in queue.
+     */
+    void deleteAllObjectives();
 };
 
 #endif // OBJECTIVE_H

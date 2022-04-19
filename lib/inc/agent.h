@@ -265,6 +265,17 @@ public:
      */
     void addObjective(ObjectiveSP objective);
 
+    /**
+     * Delete all objectives.
+     */
+    void resetObjectives();
+
+    /**
+     * Get the current active objective.
+     * @return Objective.
+     */
+    ObjectiveSP getActiveObjective();
+
 protected:
 
     void updateSubAgents(double time);

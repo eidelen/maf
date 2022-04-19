@@ -86,7 +86,7 @@ public:
         std::normal_distribution<> reactionDist{0.4, 0.2};
 
         double obsDistance = 1.5;
-        size_t sideNbr = 15;
+        size_t sideNbr = 30;
         unsigned int agentIdx = 0;
         for(size_t m = 0; m < sideNbr; m++)
         {

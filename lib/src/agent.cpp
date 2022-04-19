@@ -211,6 +211,20 @@ void Agent::addObjective(ObjectiveSP objective)
     m_objectives.push(objective);
 }
 
+void Agent::resetObjectives()
+{
+    m_objectives.deleteAllObjectives();
+}
+
+ObjectiveSP Agent::getActiveObjective()
+{
+    ObjectiveSP ret;
+    if(!m_objectives.empty())
+        ret = m_objectives.top();
+
+    return ret;
+}
+
 double Agent::accelreationLimit() const
 {
     return m_maxAccelreation;
