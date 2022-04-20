@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
             auto sim = Simulation::createSimulation(nSims++);
 
             sim->setAgentFactory(std::shared_ptr<CivilianAgentFactory>(new CivilianAgentFactory(maxSpeed, maxAcceleration)));
-            sim->setEnvironmentFactory(std::shared_ptr<CircEnvFactory>(new CircEnvFactory()));
+            sim->setEnvironmentFactory(std::shared_ptr<CLEnvFactory>(new CLEnvFactory()));
 
             auto eval = std::shared_ptr<StressAccumulatorEvaluation>(new StressAccumulatorEvaluation(maxSpeed, maxAcceleration));
             sim->setEvaluation(eval);

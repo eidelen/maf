@@ -39,11 +39,11 @@
 /**
  * @brief Trivial environment with circle 10m radius and center at 0/0
  */
-class CircEnv: public Environment
+class CLEnv: public Environment
 {
 public:
-    CircEnv(unsigned int id): Environment(id) {}
-    virtual ~CircEnv() {}
+    CLEnv(unsigned int id): Environment(id) {}
+    virtual ~CLEnv() {}
     virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override
     {
         auto l = {Quadrant::createQuadrant(77, Eigen::Vector2d(-1.0, -1.0), Eigen::Vector2d(10.0, 1.0)),
@@ -58,15 +58,15 @@ public:
     }
 };
 
-class CircEnvFactory: public EnvironmentFactory
+class CLEnvFactory: public EnvironmentFactory
 {
 public:
-    CircEnvFactory(): EnvironmentFactory() {}
-    virtual ~CircEnvFactory() {}
+    CLEnvFactory(): EnvironmentFactory() {}
+    virtual ~CLEnvFactory() {}
 
     virtual std::shared_ptr<Environment> createEnvironment() override
     {
-        return std::shared_ptr<CircEnv>(new CircEnv(99));
+        return std::shared_ptr<CLEnv>(new CLEnv(99));
     }
 };
 
