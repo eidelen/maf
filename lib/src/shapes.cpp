@@ -88,3 +88,32 @@ ShapeType Quadrant::type() const
 {
     return PolygonShape;
 }
+
+//*******************************************************//
+
+
+Circle::Circle(unsigned int id, const Eigen::Vector2d &center, double radius) : Shape(id),
+    m_radius(radius), m_radSquared(radius*radius)
+{
+    m_center = center;
+}
+
+Circle::~Circle()
+{
+
+}
+
+double Circle::radius() const
+{
+    return m_radius;
+}
+
+bool Circle::isInShape(const Eigen::Vector2d &coordinate)
+{
+    return (coordinate - m_center).squaredNorm() < m_radSquared;
+}
+
+ShapeType Circle::type() const
+{
+    return CircleShape;
+}

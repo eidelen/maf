@@ -80,7 +80,7 @@ protected:
 };
 
 /**
- * @brief The Quadrant class is a rectangular area within the environment.
+ * @brief The Quadrant class is a rectangular area.
  */
 class Quadrant: public Shape
 {
@@ -131,6 +131,45 @@ private:
 
     // components used for fast comparisson
     double m_ux; double m_uy; double m_lx; double m_ly;
+};
+
+
+/**
+ * @brief The Circle class is a circular area .
+ */
+class Circle: public Shape
+{
+
+public:
+
+    /**
+     * Circle constructor
+     * @param id Id of area.
+     * @param center Center of circle.
+     * @param radius Radius of circle in meter.
+     */
+    Circle(unsigned int id, const Eigen::Vector2d& center, double radius);
+
+    /**
+     * Destructor.
+     */
+    virtual ~Circle();
+
+    /**
+     * Get the radius.
+     * @return Radius.
+     */
+    double radius() const;
+
+    // inherit from Shape
+    bool isInShape(const Eigen::Vector2d &coordinate) override;
+    ShapeType type() const override;
+
+protected:
+    double m_radius;
+
+private:
+    double m_radSquared;
 };
 
 #endif // SHAPES_H
