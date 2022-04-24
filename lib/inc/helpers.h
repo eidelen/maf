@@ -163,6 +163,31 @@ public:
             });
         return *elemWithMaxDouble;
     }
+
+    enum TriOrientation
+    {
+        Collinear,
+        Clockwise,
+        CounterClockwise
+    };
+
+    /**
+     * Computes the orienataion of a triangle.
+     * Source: https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
+     * @param p Point 1
+     * @param q Point 2
+     * @param r Point 3
+     * @return Triangle orientation
+     */
+    static TriOrientation orientationOfTriangle(const Eigen::Vector2d& p, const Eigen::Vector2d& q, const Eigen::Vector2d& r)
+    {
+        double val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1]);
+
+        if( std::abs(val) < std::numeric_limits<double>::epsilon() )
+            return TriOrientation::Collinear;
+
+        return (val > 0.0) ? TriOrientation::Clockwise : TriOrientation::CounterClockwise;
+    }
 };
 
 #endif // HELPERS_H

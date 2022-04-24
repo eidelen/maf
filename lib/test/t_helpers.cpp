@@ -98,3 +98,23 @@ TEST(Helpers, GetMax)
         ASSERT_NEAR(maxVal, 6.0, 0.0001);
         ASSERT_TRUE((Eigen::Vector2d(1.0, 1.0) - maxVec).isMuchSmallerThan(0.0001));
 }
+
+
+TEST(Helpers, TriangleOrientaion)
+{
+    Eigen::Vector2d p1(0.0, 0.0);
+    Eigen::Vector2d p2(0.0, 1.0);
+    Eigen::Vector2d p3(1.0, 0.0);
+    Eigen::Vector2d pc3(100.0, 0.0);
+
+    ASSERT_EQ(MafHlp::orientationOfTriangle(p1, p2, p3), MafHlp::TriOrientation::Clockwise);
+    ASSERT_EQ(MafHlp::orientationOfTriangle(p3, p1, p2), MafHlp::TriOrientation::Clockwise);
+    ASSERT_EQ(MafHlp::orientationOfTriangle(p2, p3, p1), MafHlp::TriOrientation::Clockwise);
+
+    ASSERT_EQ(MafHlp::orientationOfTriangle(p1, p3, p2), MafHlp::TriOrientation::CounterClockwise);
+    ASSERT_EQ(MafHlp::orientationOfTriangle(p2, p1, p3), MafHlp::TriOrientation::CounterClockwise);
+    ASSERT_EQ(MafHlp::orientationOfTriangle(p3, p2, p1), MafHlp::TriOrientation::CounterClockwise);
+
+    ASSERT_EQ(MafHlp::orientationOfTriangle(p1, p3, p3), MafHlp::TriOrientation::Collinear);
+    ASSERT_EQ(MafHlp::orientationOfTriangle(p1, p3, pc3), MafHlp::TriOrientation::Collinear);
+}
