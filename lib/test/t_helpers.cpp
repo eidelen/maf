@@ -118,3 +118,23 @@ TEST(Helpers, TriangleOrientaion)
     ASSERT_EQ(MafHlp::orientationOfTriangle(p1, p3, p3), MafHlp::TriOrientation::Collinear);
     ASSERT_EQ(MafHlp::orientationOfTriangle(p1, p3, pc3), MafHlp::TriOrientation::Collinear);
 }
+
+TEST(Helpers, VectorAngle)
+{
+    #ifndef PI
+    #define PI 3.14159265359
+    #endif
+
+    Eigen::Vector2d v1(1.0, 0.0);
+    Eigen::Vector2d v2(0.0, 1.0);
+    Eigen::Vector2d v3(1.0, 1.0);
+
+    ASSERT_NEAR(MafHlp::getAngleBetweenVectors(v1, v2), PI/2.0, 0.00001);
+    ASSERT_NEAR(MafHlp::getAngleBetweenVectors(v2, v1), PI/2.0, 0.00001);
+
+    ASSERT_NEAR(MafHlp::getAngleBetweenVectors(v1, v3), PI/4.0, 0.00001);
+    ASSERT_NEAR(MafHlp::getAngleBetweenVectors(v3, v1), PI/4.0, 0.00001);
+
+    ASSERT_NEAR(MafHlp::getAngleBetweenVectors(v2, v3), PI/4.0, 0.00001);
+    ASSERT_NEAR(MafHlp::getAngleBetweenVectors(v3, v2), PI/4.0, 0.00001);
+}

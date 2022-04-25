@@ -188,6 +188,17 @@ public:
 
         return (val > 0.0) ? TriOrientation::Clockwise : TriOrientation::CounterClockwise;
     }
+
+    /**
+     * Compute the angle between two vectors.
+     * @param v Vector 1.
+     * @param q Vector 2.
+     * @return Angle in radian.
+     */
+    static double getAngleBetweenVectors(const Eigen::Vector2d& v, const Eigen::Vector2d& q)
+    {
+        return acos( v.dot(q) / (v.norm() * q.norm()) );
+    }
 };
 
 #endif // HELPERS_H
