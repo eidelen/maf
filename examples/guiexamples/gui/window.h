@@ -27,6 +27,7 @@
 
 #include <QWidget>
 #include <QSlider>
+#include <QCheckBox>
 
 #include "glwidget.h"
 #include "simQt.h"
@@ -43,6 +44,7 @@ public slots:
     void startAirDefenceSim();
     void startCLSim();
     void adjustFastForwardSpeed();
+    void dbgCBChanged();
 
 private:
 
@@ -51,6 +53,7 @@ private:
     QTimer* m_timer;
     QSlider* m_ffSlider;
     double m_timeStep;
+    QCheckBox* m_dbgCB;
 };
 
 

@@ -40,6 +40,9 @@ public:
     SimulationDrawer(std::shared_ptr<Simulation> sim, Eigen::Vector2d center, double scale);
     ~SimulationDrawer();
 
+    void setDrawDebugInfo(bool showDebug);
+    bool getDrawDebugInfo() const;
+
     virtual void drawScene(QPainter& painter);
     virtual void drawMissileStation(QPainter& painter, MissileStation* station);
     virtual void drawProximitySensor(QPainter& painter, ProximitySensor* sensor);
@@ -63,8 +66,7 @@ private:
     double m_symbolWidht = 60;
     size_t m_nbrLastMessages = 5;
     std::deque<std::string> m_lastMessages;
-
-
+    bool m_drawDebug;
 };
 
 #endif //DRAW_SCENE_H

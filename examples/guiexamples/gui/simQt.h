@@ -49,6 +49,11 @@ public:
         m_sim->doTimeStep(m_timeStep);
     }
 
+    std::shared_ptr<SimulationDrawer> getDrawer()
+    {
+        return m_drawer;
+    }
+
 protected:
     double m_timeStep;
     std::shared_ptr<Simulation> m_sim;

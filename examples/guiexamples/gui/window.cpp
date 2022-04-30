@@ -29,6 +29,7 @@
 
 #include "adsimQt.h"
 #include "clsimQt.h"
+#include "simQt.h"
 
 Window::Window()
 {
@@ -45,12 +46,14 @@ Window::Window()
     QPushButton* restartBtn = new QPushButton("Restart");
     QPushButton* airDefBtn = new QPushButton("Air Defence");
     QPushButton* clBtn = new QPushButton("Claustrophobia");
+    m_dbgCB = new QCheckBox("Dbg");
 
     QHBoxLayout* btnLayout = new QHBoxLayout();
     btnLayout->addWidget(m_ffSlider);
     btnLayout->addWidget(airDefBtn);
     btnLayout->addWidget(clBtn);
     btnLayout->addWidget(restartBtn);
+    btnLayout->addWidget(m_dbgCB);
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addLayout(btnLayout);
@@ -68,9 +71,13 @@ Window::Window()
     connect(airDefBtn, SIGNAL (released()),this, SLOT(startAirDefenceSim()));
     connect(clBtn, SIGNAL (released()),this, SLOT(startCLSim()));
     connect(m_ffSlider, SIGNAL (valueChanged(int)),this, SLOT(adjustFastForwardSpeed()));
+    connect(m_dbgCB, SIGNAL(stateChanged(int)), this, SLOT(dbgCBChanged()));
 
 
     adjustFastForwardSpeed();
+
+    // adapt gui to presets
+    m_dbgCB->setChecked(m_Sim->getDrawer()->getDrawDebugInfo());
 }
 
 void Window::resetSimulation()
@@ -100,4 +107,9 @@ void Window::adjustFastForwardSpeed()
 
     double ffVal = (double)m_ffSlider->value();
     m_timer->start(static_cast<int>((m_timeStep*1000.0)/ffVal));
+}
+
+void Window::dbgCBChanged()
+{
+    m_Sim->getDrawer()->setDrawDebugInfo(m_dbgCB->isChecked());
 }

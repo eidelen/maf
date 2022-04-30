@@ -21,11 +21,12 @@
 **
 *****************************************************************************/
 
+#include <iomanip>
 #include "draw_scene.h"
 #include "evaluation.h"
 
 SimulationDrawer::SimulationDrawer(std::shared_ptr<Simulation> sim, Eigen::Vector2d center, double scale)
-    : m_sim(sim), m_center(center), m_scale(scale)
+    : m_sim(sim), m_center(center), m_scale(scale), m_drawDebug(false)
 {
     m_symbols = std::shared_ptr<NatoSymbols>(new NatoSymbols());
 }
@@ -33,6 +34,16 @@ SimulationDrawer::SimulationDrawer(std::shared_ptr<Simulation> sim, Eigen::Vecto
 SimulationDrawer::~SimulationDrawer()
 {
 
+}
+
+void SimulationDrawer::setDrawDebugInfo(bool showDebug)
+{
+    m_drawDebug = showDebug;
+}
+
+bool SimulationDrawer::getDrawDebugInfo() const
+{
+    return m_drawDebug;
 }
 
 double SimulationDrawer::sim2WidScale(double simLength)
@@ -92,6 +103,21 @@ void SimulationDrawer::drawScene(QPainter &painter)
         {
             painter.setBrush(Qt::blue);
             painter.drawEllipse(sim2WidTrans(a->getPosition()), m_symbolWidht/8, m_symbolWidht/8);
+        }
+
+        if(m_drawDebug)
+        {
+            QFont dbgFont = painter.font();
+            dbgFont.setPointSize(10);
+            painter.setFont(dbgFont);
+            painter.setPen(QColor(0,0,0));
+
+            QPointF agentPosGui = sim2WidTrans(a->getPosition());
+
+            std::ostringstream dbgStr;
+            dbgStr << std::fixed << std::setprecision( 3 ) << std::setfill( '0' ) <<
+            "ID: " << a->id();
+            painter.drawText(QRectF(agentPosGui + QPointF(-40, 0), agentPosGui + QPointF(50, 40)), Qt::TextWordWrap, QString::fromStdString(dbgStr.str()));
         }
 
     });
