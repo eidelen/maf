@@ -21,44 +21,22 @@
 **
 *****************************************************************************/
 
-#ifndef MAFCL_WINDOW_H
-#define MAFCL_WINDOW_H
+#include <QLabel>
+#include <QVBoxLayout>
 
-
-#include <QWidget>
-#include <QSlider>
-#include <QCheckBox>
-
-#include "glwidget.h"
-#include "simQt.h"
 #include "messageWindow.h"
 
-class Window : public QWidget
+
+MessageWindow::MessageWindow(QWidget *parent): QWidget(parent)
 {
-Q_OBJECT
+    setWindowTitle(tr("Messages"));
+    setWindowFlags(Qt::Tool | Qt::Dialog | Qt::FramelessWindowHint);
 
-public:
-    Window();
+    setAttribute(Qt::WA_NoSystemBackground, true);
+    setAttribute(Qt::WA_TranslucentBackground, true);
 
-public slots:
-    void resetSimulation();
-    void startAirDefenceSim();
-    void startCLSim();
-    void adjustFastForwardSpeed();
-    void dbgCBChanged();
-    void messageWinChanged();
+    QVBoxLayout* layout = new QVBoxLayout;
+    layout->addWidget(new QLabel("Messages"));
 
-private:
-
-    GLWidget* m_OpenGL;
-    std::shared_ptr<SimQt> m_Sim;
-    QTimer* m_timer;
-    QSlider* m_ffSlider;
-    double m_timeStep;
-    QCheckBox* m_dbgCB;
-    QCheckBox* m_showMessagesWindow;
-    MessageWindow* m_messageWindow;
-};
-
-
-#endif //MAFCL_WINDOW_H
+    setLayout(layout);
+}

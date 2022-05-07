@@ -21,44 +21,18 @@
 **
 *****************************************************************************/
 
-#ifndef MAFCL_WINDOW_H
-#define MAFCL_WINDOW_H
-
+#ifndef MAFMESSAGE_WINDOW_H
+#define MAFMESSAGE_WINDOW_H
 
 #include <QWidget>
-#include <QSlider>
-#include <QCheckBox>
 
-#include "glwidget.h"
-#include "simQt.h"
-#include "messageWindow.h"
-
-class Window : public QWidget
+class MessageWindow : public QWidget
 {
 Q_OBJECT
 
 public:
-    Window();
+    MessageWindow(QWidget *parent);
 
-public slots:
-    void resetSimulation();
-    void startAirDefenceSim();
-    void startCLSim();
-    void adjustFastForwardSpeed();
-    void dbgCBChanged();
-    void messageWinChanged();
-
-private:
-
-    GLWidget* m_OpenGL;
-    std::shared_ptr<SimQt> m_Sim;
-    QTimer* m_timer;
-    QSlider* m_ffSlider;
-    double m_timeStep;
-    QCheckBox* m_dbgCB;
-    QCheckBox* m_showMessagesWindow;
-    MessageWindow* m_messageWindow;
 };
 
-
-#endif //MAFCL_WINDOW_H
+#endif //MAFMESSAGE_WINDOW_H

@@ -37,6 +37,8 @@ Window::Window()
 
     m_OpenGL = new GLWidget(this);
 
+    m_messageWindow = new MessageWindow(this);
+
     // Default sim
     startAirDefenceSim();
 
@@ -47,6 +49,7 @@ Window::Window()
     QPushButton* airDefBtn = new QPushButton("Air Defence");
     QPushButton* clBtn = new QPushButton("Claustrophobia");
     m_dbgCB = new QCheckBox("Dbg");
+    m_showMessagesWindow = new QCheckBox("Msg");
 
     QHBoxLayout* btnLayout = new QHBoxLayout();
     btnLayout->addWidget(m_ffSlider);
@@ -54,6 +57,7 @@ Window::Window()
     btnLayout->addWidget(clBtn);
     btnLayout->addWidget(restartBtn);
     btnLayout->addWidget(m_dbgCB);
+    btnLayout->addWidget(m_showMessagesWindow);
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addLayout(btnLayout);
@@ -72,12 +76,14 @@ Window::Window()
     connect(clBtn, SIGNAL (released()),this, SLOT(startCLSim()));
     connect(m_ffSlider, SIGNAL (valueChanged(int)),this, SLOT(adjustFastForwardSpeed()));
     connect(m_dbgCB, SIGNAL(stateChanged(int)), this, SLOT(dbgCBChanged()));
+    connect(m_showMessagesWindow, SIGNAL(stateChanged(int)), this, SLOT(messageWinChanged()));
 
 
     adjustFastForwardSpeed();
 
     // adapt gui to presets
     m_dbgCB->setChecked(m_Sim->getDrawer()->getDrawDebugInfo());
+    m_showMessagesWindow->setChecked(false);
 }
 
 void Window::resetSimulation()
@@ -112,4 +118,17 @@ void Window::adjustFastForwardSpeed()
 void Window::dbgCBChanged()
 {
     m_Sim->getDrawer()->setDrawDebugInfo(m_dbgCB->isChecked());
+}
+
+void Window::messageWinChanged()
+{
+    if(m_showMessagesWindow->isChecked())
+    {
+        m_messageWindow->show();
+        m_messageWindow->setFocus();
+    }
+    else
+    {
+        m_messageWindow->hide();
+    }
 }
