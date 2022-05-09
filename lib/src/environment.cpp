@@ -144,7 +144,14 @@ EnvironmentInterface::MessageQueue &Environment::getMessages(unsigned int receiv
 void Environment::sendMessage(std::shared_ptr<Message> aMessage)
 {
     m_msgMap[aMessage->receiverId()].push(aMessage);
+    log(aMessage);
 }
+
+void Environment::log(std::shared_ptr<Message> aMessage)
+{
+    log(aMessage->toString());
+}
+
 
 void Environment::log(const std::string &logMsg)
 {

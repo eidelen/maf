@@ -27,3 +27,15 @@ TEST(Message, Constructor)
 
     delete m;
 }
+
+TEST(Message, ToString)
+{
+    auto m = new Message(99, 88, Message::Enable, "ABC", {1.0, 2.0}, {4, 5});
+
+    std::string mStr = m->toString();
+
+    ASSERT_TRUE(mStr.find("99") != std::string::npos);
+    ASSERT_TRUE(mStr.find("88") != std::string::npos);
+
+    delete m;
+}

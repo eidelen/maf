@@ -30,13 +30,15 @@
 MessageWindow::MessageWindow(QWidget *parent): QWidget(parent)
 {
     setWindowTitle(tr("Messages"));
-    setWindowFlags(Qt::Tool | Qt::Dialog | Qt::FramelessWindowHint);
-
+    setWindowFlags(Qt::Tool | Qt::Dialog); //| Qt::FramelessWindowHint);
     setAttribute(Qt::WA_NoSystemBackground, true);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
+    m_messagesList = new QListWidget(this);
+    m_messagesList->addItem(new QListWidgetItem("abc"));
+
     QVBoxLayout* layout = new QVBoxLayout;
-    layout->addWidget(new QLabel("Messages"));
+    layout->addWidget(m_messagesList);
 
     setLayout(layout);
 }

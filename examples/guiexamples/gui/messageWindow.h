@@ -25,6 +25,7 @@
 #define MAFMESSAGE_WINDOW_H
 
 #include <QWidget>
+#include <QListWidget>
 
 class MessageWindow : public QWidget
 {
@@ -32,6 +33,9 @@ Q_OBJECT
 
 public:
     MessageWindow(QWidget *parent);
+
+private:
+    QListWidget* m_messagesList;
 
 };
 

@@ -65,3 +65,13 @@ Message::Subject Message::subject() const
 {
     return m_subject;
 }
+
+std::string Message::toString() const
+{
+    std::ostringstream s;
+    s << "Sender: " << this->m_senderId << ", Receiver: " << this->m_receiverId;
+    //todo extend message
+
+    return s.str();
+}
+

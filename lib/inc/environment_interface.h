@@ -110,6 +110,12 @@ public:
     virtual void log(const std::string& logMsg) = 0;
 
     /**
+     * Log a message to the std out.
+     * @param aMessage Message type
+     */
+    virtual void log(std::shared_ptr<Message> aMessage) = 0;
+
+    /**
      * Compute the distance from a given position into a given direction
      * till the border of the environment is reached.
      * @param pos Position.

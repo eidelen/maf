@@ -84,6 +84,11 @@ public:
      */
     Subject subject() const;
 
+    /**
+     * To string.
+     */
+    std::string toString() const;
+
 protected:
 
     unsigned int m_senderId;
