@@ -34,6 +34,7 @@ TEST(Message, ToString)
 
     std::string mStr = m->toString();
 
+    ASSERT_TRUE(mStr.find("Enable") != std::string::npos);
     ASSERT_TRUE(mStr.find("99") != std::string::npos);
     ASSERT_TRUE(mStr.find("88") != std::string::npos);
 

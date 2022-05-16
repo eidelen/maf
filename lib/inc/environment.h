@@ -118,6 +118,12 @@ public:
      */
     void setEnableLogMessages(bool enable);
 
+    /**
+     * Add a message listener. Each message will be sent forward to each listener.
+     * @param listener Message listener.
+     */
+    void addMessageListener(std::weak_ptr<MessageListener> listener);
+
 public: //Inherited from EnvironmentInterface
 
     virtual std::pair<bool, Eigen::Vector2d> possibleMove(const Eigen::Vector2d& origin, const Eigen::Vector2d& destination) const override;
@@ -137,6 +143,7 @@ protected:
     DistanceMap m_agentDistanceMap;
     MessagesMap m_msgMap;
     bool m_enableLogMessages;
+    std::vector<std::weak_ptr<MessageListener>> m_messageListeners;
 
 };
 

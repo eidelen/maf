@@ -396,5 +396,49 @@ TEST(Environment, DistancesToEnvBorders)
     }));
 }
 
+class MessageListenerTest: public MessageListener
+{
+public:
+    MessageListenerTest()
+    {
+    }
+
+    virtual ~MessageListenerTest()
+    {
+    }
+
+    void messageReceived(std::shared_ptr<Message> /*message*/)
+    {
+        m_nbrMessagesReceived++;
+    }
+
+    size_t m_nbrMessagesReceived = 0;
+};
+
+TEST(Environment, MessageListener)
+{
+    auto e = Environment::createEnvironment(9);
+    auto a1 = Agent::createAgent(10);
+    auto a2 = Agent::createAgent(20);
+    a1->setEnvironment(e);
+    a2->setEnvironment(e);
+    e->addAgent(a1);
+    e->addAgent(a2);
+
+    std::shared_ptr<MessageListenerTest> ml(new MessageListenerTest());
+
+    // send any message
+    a1->sendMessage(20, Message::Disable);
+
+    // listener not added yet
+    ASSERT_EQ(ml->m_nbrMessagesReceived, 0);
+
+    e->addMessageListener(ml);
+
+    // send any message
+    a1->sendMessage(20, Message::Disable);
+    ASSERT_EQ(ml->m_nbrMessagesReceived, 1);
+}
+
 
 

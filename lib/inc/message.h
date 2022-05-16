@@ -97,7 +97,13 @@ protected:
     std::string m_textParam;
     std::vector<double> m_doubleVecParam;
     std::vector<int> m_intVecParam;
+};
 
+
+class MessageListener
+{
+public:
+    virtual void messageReceived(std::shared_ptr<Message> message) = 0;
 };
 
 #endif // MESSAGE_H

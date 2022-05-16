@@ -70,7 +70,22 @@ std::string Message::toString() const
 {
     std::ostringstream s;
     s << "Sender: " << this->m_senderId << ", Receiver: " << this->m_receiverId;
-    //todo extend message
+
+    switch(this->subject())
+    {
+    case Message::Information:
+        s << ", Subject: Information";
+        break;
+    case Message::Disable:
+        s << ", Subject: Disable";
+        break;
+    case Message::Enable:
+        s << ", Subject: Enable";
+        break;
+    case Message::Hit:
+        s << ", Subject: Hit";
+        break;
+    }
 
     return s.str();
 }

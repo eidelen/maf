@@ -136,6 +136,11 @@ void Environment::setEnableLogMessages(bool enable)
     m_enableLogMessages = enable;
 }
 
+void Environment::addMessageListener(std::weak_ptr<MessageListener> listener)
+{
+    m_messageListeners.push_back(listener);
+}
+
 EnvironmentInterface::MessageQueue &Environment::getMessages(unsigned int receiverAgendId)
 {
     return m_msgMap[receiverAgendId];
@@ -145,11 +150,17 @@ void Environment::sendMessage(std::shared_ptr<Message> aMessage)
 {
     m_msgMap[aMessage->receiverId()].push(aMessage);
     log(aMessage);
+
+    // forward message to each listener
+    for(std::weak_ptr<MessageListener>& listener: m_messageListeners)
+    {
+        listener.lock()->messageReceived(aMessage);
+    }
 }
 
 void Environment::log(std::shared_ptr<Message> aMessage)
 {
-    log(aMessage->toString());
+    log("Message: " + aMessage->toString());
 }
 
 
