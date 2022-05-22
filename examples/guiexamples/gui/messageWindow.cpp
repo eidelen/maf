@@ -42,3 +42,8 @@ MessageWindow::MessageWindow(QWidget *parent): QWidget(parent)
 
     setLayout(layout);
 }
+
+void MessageWindow::messageReceived(std::shared_ptr<Message> message)
+{
+    m_messagesList->addItem(new QListWidgetItem(QString::fromStdString(message->toString())));
+}

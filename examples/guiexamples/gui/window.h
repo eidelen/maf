@@ -57,7 +57,7 @@ private:
     double m_timeStep;
     QCheckBox* m_dbgCB;
     QCheckBox* m_showMessagesWindow;
-    MessageWindow* m_messageWindow;
+    std::shared_ptr<MessageWindow> m_messageWindow;
 };
 
 

@@ -37,7 +37,7 @@ Window::Window()
 
     m_OpenGL = new GLWidget(this);
 
-    m_messageWindow = new MessageWindow(this);
+    m_messageWindow = std::shared_ptr<MessageWindow>(new MessageWindow(this));
 
     // Default sim
     startAirDefenceSim();
@@ -97,6 +97,8 @@ void Window::startAirDefenceSim()
     m_Sim = std::shared_ptr<AirDefenceQtSim>(new AirDefenceQtSim());
     m_Sim->setTimeStep(m_timeStep);
     m_OpenGL->setQtSimulation(m_Sim);
+
+    m_Sim->getSimulation()->getEnvironment()->addMessageListener(m_messageWindow);
 }
 
 void Window::startCLSim()

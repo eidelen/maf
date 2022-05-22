@@ -27,12 +27,17 @@
 #include <QWidget>
 #include <QListWidget>
 
-class MessageWindow : public QWidget
+#include "message.h"
+
+class MessageWindow : public QWidget, public MessageListener
 {
 Q_OBJECT
 
 public:
     MessageWindow(QWidget *parent);
+
+    // MessageListener interface
+    void messageReceived(std::shared_ptr<Message> message) override;
 
 private:
     QListWidget* m_messagesList;
