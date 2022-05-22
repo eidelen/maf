@@ -26,6 +26,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include <Eigen/Dense>
 
 /**
