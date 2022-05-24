@@ -89,6 +89,7 @@ Window::Window()
 void Window::resetSimulation()
 {
     m_Sim->restart();
+    m_Sim->getSimulation()->getEnvironment()->addMessageListener(m_messageWindow);
 }
 
 void Window::startAirDefenceSim()
@@ -107,6 +108,8 @@ void Window::startCLSim()
     m_Sim = std::shared_ptr<HumanoidAgentQtSim>(new HumanoidAgentQtSim());
     m_Sim->setTimeStep(m_timeStep);
     m_OpenGL->setQtSimulation(m_Sim);
+
+    m_Sim->getSimulation()->getEnvironment()->addMessageListener(m_messageWindow);
 }
 
 void Window::adjustFastForwardSpeed()
